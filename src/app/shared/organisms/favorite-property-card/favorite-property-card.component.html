@@ -1,0 +1,142 @@
+@if (userProperties().length > 0) {
+  <div class="flex flex-col container mx-auto p-2 gap-y-4">
+    <div class="flex flex-row justify-between items-center">
+      <div class="text-lg flex items-center py-2 font-bold">
+        {{ userProperties().length }} case trovate
+      </div>
+      <div class="flex items-center">
+        <app-select
+          [withBorder]="false"
+          [control]="sortControl"
+          [options]="sortOptions"
+          label="Predefinito"
+        >
+        </app-select>
+      </div>
+    </div>
+
+    @for (property of userProperties(); track property.id) {
+      <div class="relative">
+        <!-- Entire property card as a link -->
+        <div
+          class="property-card flex flex-col lg:flex-row border border-gray-300 bg-white overflow-hidden mb-2 w-full hover:shadow-md transition-shadow duration-200"
+        >
+          <!-- Immagine della proprietà -->
+          <div class="w-full lg:w-[240px] lg:h-auto flex-shrink-0 relative overflow-hidden">
+            @if (property?.images && property.images.length > 0) {
+              <img
+                [src]="property?.images[0]?.url"
+                alt="Property Image"
+                class="w-full h-full object-cover"
+              />
+            }
+          </div>
+
+          <!-- Dettagli della proprietà -->
+          <div class="flex flex-col flex-grow justify-between px-6 py-6 gap-y-4 lg:gap-y-0">
+            <!-- Località e Titolo -->
+            <div>
+              <span class="text-[10px] lg:text-xs text-[#97999B] uppercase font-open-sans">
+                {{ property.city }} - {{ property.district }} - {{ property.region }}
+              </span>
+              <h2 class="font-bold text-primary-dark heading-xs"
+                >{{ property.type }} in {{ property.address }}, {{ property.house_number }} -
+                {{ property.city }} {{ property.district }} {{ property.region }},
+                {{ property.country }}</h2
+              >
+            </div>
+
+            <!-- Info della proprietà (Locali, Dimensione, Bagni) e Prezzo -->
+            <div class="flex items-center justify-between mt-2 text-black">
+              <div class="flex flex-wrap space-x-4 gap-y-2 text-sm">
+                <div class="flex flex-nowrap w-min-[160px] items-center gap-x-2">
+                  <app-floorplan-icon class="w-4 h-4"></app-floorplan-icon>
+                  <span>{{ property.number_rooms }} {{ property.type }}</span>
+                </div>
+
+                <div class="flex flex-nowrap w-min-[160px] items-center gap-x-2">
+                  <app-measure-icon class="w-4 h-4"></app-measure-icon>
+                  <span>{{ property.square_metres }}</span>
+                </div>
+
+                <div class="flex flex-nowrap w-min-[160px] items-center gap-x-2">
+                  <app-bath-icon class="w-4 h-4"></app-bath-icon>
+                  <span>{{ property.number_baths }} bagni</span>
+                </div>
+              </div>
+            </div>
+            <!-- Interazioni -->
+            <div class="flex flex-wrap items-center gap-x-3 lg:gap-x-6 mb-2 lg:mb-0 lg:mt-2">
+              <app-button
+                class="z-10"
+                [size]="'nopadding'"
+                type="withoutBorder"
+                [hasBorder]="false"
+                [routerLink]="['/property', property.id]"
+                (click)="$event.stopPropagation()"
+              >
+                <app-heart-icon class="w-4 h-3 mr-1"></app-heart-icon>
+              </app-button>
+              <app-button
+                class="z-10"
+                [size]="'nopadding'"
+                type="withoutBorder"
+                [hasBorder]="false"
+                [routerLink]="['/property', property.id]"
+                (click)="$event.stopPropagation()"
+              >
+                <app-arrow-right-icon class="w-4 h-3 mr-1"></app-arrow-right-icon>
+              </app-button>
+              <app-button
+                class="z-10"
+                [size]="'nopadding'"
+                type="withoutBorder"
+                [hasBorder]="false"
+                (click)="contactProperty(property)"
+              >
+                <div class="text-xs flex items-center py-2">
+                  <app-mail-icon class="w-4 h-3 items-center flex mr-1"></app-mail-icon> Contatta
+                </div>
+              </app-button>
+
+              <app-button
+                class="z-10"
+                [size]="'nopadding'"
+                type="withoutBorder"
+                [hasBorder]="false"
+                (click)="scheduleAppointment(property)"
+              >
+                <div class="text-xs flex items-center py-2">
+                  <app-calendar-icon class="w-4 h-3 items-center flex mr-1"></app-calendar-icon>
+                  Appuntamento
+                </div>
+              </app-button>
+              @if (!isAdvertismentePage()) {
+                <app-button
+                  class="z-10"
+                  [size]="'nopadding'"
+                  type="withoutBorder"
+                  [hasBorder]="false"
+                  (click)="deleteFavoriteProperty(property.id!)"
+                >
+                  <div class="text-xs flex items-center py-2">
+                    <app-trash-icon class="w-4 h-3 items-center flex mr-1"></app-trash-icon> Elimina
+                  </div>
+                </app-button>
+              }
+              <div class="w-full flex justify-end text-sm font-bold pt-4 lg:pl-0 lg:pt-0 lg:text-lg"
+                >{{ property.price }} €</div
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+} @else {
+  <div classs="font-open-sans font-semibold text-gray-800">{{
+    isAdvertismentePage()
+      ? "Non abbiamo trovato nessun immobile in quest'area"
+      : 'Non hai nessun immobile tra i favoriti'
+  }}</div>
+}

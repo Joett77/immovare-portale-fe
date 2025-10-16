@@ -1,0 +1,87 @@
+<!-- step-price.component.html -->
+<div class="container mx-auto p-6">
+  <div class="flex flex-col md:flex-row">
+    <div class="w-full mb-6 md:mb-0 md:w-2/5 p-6">
+      <h2 class="text-2xl font-bold text-primary-dark mb-4 font-montserrat">{{ title() }}</h2>
+      <form
+        [formGroup]="propertyPriceForm"
+        novalidate
+      >
+        <div class="w-full mb-6">
+          <h3 class="text-xl text-primary-dark mb-6 font-montserrat">
+            Inserisci il prezzo del tuo immobile
+          </h3>
+          <div class="group relative w-full">
+            <input
+              type="text"
+              id="propertyPrice"
+              formControlName="propertyPrice"
+              [value]="formatNumber(propertyPriceForm.get('propertyPrice')?.value)"
+              (input)="onPriceInputChange($event)"
+              (blur)="emitValidationUpdate()"
+              placeholder="Prezzo in €"
+              class="text-gray-900 focus:border-primary-500 focus:ring-primary-500 peer h-14 w-full rounded-md border border-gray-300 px-4 text-base placeholder-transparent outline-none transition-all duration-200 focus:pb-2 focus:pt-6 focus:ring-1 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500 [&:not(:placeholder-shown)]:pb-2 [&:not(:placeholder-shown)]:pt-6"
+            />
+            <label
+              for="propertyPrice"
+              class="pointer-events-none absolute left-4 top-2 text-xs text-gray-500 peer-focus:text-primary-500"
+            >
+              Prezzo in €
+            </label>
+          </div>
+          <div
+            *ngIf="getControl('propertyPrice').invalid && getControl('propertyPrice').touched"
+            class="ml-1 mt-1 text-xs text-red-500"
+          >
+            Inserisci un prezzo valido
+          </div>
+        </div>
+
+        <div class="w-full mt-10">
+          <h3 class="text-xl text-primary-dark mb-3 font-montserrat">
+            Sono previste spese condominiali?
+          </h3>
+          <div class="mb-4">
+            <app-radio-button
+              class="mb-4"
+              [radioButtonList]="communityFeesChoicesList"
+              [control]="getControl('hasCondoFees')"
+            >
+            </app-radio-button>
+          </div>
+
+          <!-- Condo fees input - only visible when "yes" is selected -->
+          <div
+            class="mt-6"
+            *ngIf="showCondoFeesInput()"
+          >
+            <div class="group relative w-full">
+              <input
+                type="text"
+                id="condoFees"
+                formControlName="condoFees"
+                [value]="formatNumber(propertyPriceForm.get('condoFees')?.value)"
+                (input)="onCondoFeesInputChange($event)"
+                placeholder="Costo spese condominiali mensile in €"
+                [disabled]="getControl('condoFees').disabled"
+                class="text-gray-900 focus:border-primary-500 focus:ring-primary-500 peer h-14 w-full rounded-md border border-gray-300 px-4 text-base placeholder-transparent outline-none transition-all duration-200 focus:pb-2 focus:pt-6 focus:ring-1 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500 [&:not(:placeholder-shown)]:pb-2 [&:not(:placeholder-shown)]:pt-6"
+              />
+              <label
+                for="condoFees"
+                class="pointer-events-none absolute left-4 top-2 text-xs text-gray-500 peer-focus:text-primary-500"
+              >
+                Costo spese condominiali mensile in €
+              </label>
+            </div>
+            <div
+              *ngIf="getControl('condoFees').invalid && getControl('condoFees').touched"
+              class="ml-1 mt-1 text-xs text-red-500"
+            >
+              Inserisci un importo valido per le spese condominiali
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

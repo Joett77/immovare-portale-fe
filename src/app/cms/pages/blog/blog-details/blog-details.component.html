@@ -1,0 +1,273 @@
+<!-- /src/app/cms/pages/blog-editor/blog-editor.component.html -->
+<div class="container mx-auto">
+  <h1 class="heading-md font-bold text-primary-dark mb-6">
+    {{ isNewArticle ? 'Nuovo articolo' : 'Modifica articolo' }}
+  </h1>
+
+  <!-- Tabs Navigation -->
+  <div class="flex mb-4 border-b border-[#CBCCCD]">
+    <div
+      class="px-6 py-3 cursor-pointer flex items-center gap-2 text-[#97999B] font-bold border-[#CBCCCD]"
+      (click)="setActiveTab('content')"
+      [ngClass]="{
+        'border-b-2 border-black -mb-[2px] bg-secondary text-black font-bold ':
+          activeTab() === 'content',
+      }"
+    >
+      <span
+        class="inline-flex items-center justify-center rounded-full bg-gray-200 w-5 h-5 text-sm font-bold"
+        >1</span
+      >
+      Testo e dati
+    </div>
+    <div
+      class="px-6 py-3 cursor-pointer flex items-center gap-2 text-[#97999B] font-bold border-[#CBCCCD]"
+      [ngClass]="{
+        'border-b-2 border-black -mb-[2px] bg-secondary text-black font-bold':
+          activeTab() === 'preview',
+      }"
+      (click)="setActiveTab('preview')"
+    >
+      <span
+        class="inline-flex items-center justify-center rounded-full bg-gray-200 w-5 h-5 text-sm font-bold"
+        >2</span
+      >
+      Anteprima
+    </div>
+  </div>
+
+  <!-- Loading state -->
+  @if (isLoading()) {
+    <div class="flex justify-center py-10">
+      <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-primary"></div>
+    </div>
+  }
+
+  <!-- Error message -->
+  @if (error()) {
+    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+      <span class="block sm:inline">{{ error() }}</span>
+      <button
+        class="absolute top-0 bottom-0 right-0 px-4 py-3"
+        (click)="error.set(null)"
+      >
+        <span class="sr-only">Chiudi</span>
+      </button>
+    </div>
+  }
+
+  <!-- Content Tab -->
+  @if (activeTab() === 'content' && !isLoading()) {
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+      <!-- Left column: Content editor -->
+      <div class="md:col-span-7">
+        <div class="mb-6">
+          <!-- Markdown Editor -->
+          <div class="mb-6">
+            <app-markdown-editor [control]="getControl('content')"></app-markdown-editor>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right column: Form fields -->
+      <div class="md:col-span-5">
+        <form
+          [formGroup]="blogForm"
+          class="space-y-6"
+        >
+          <!-- Title field -->
+          <div>
+            <app-input
+              label="Titolo articolo*"
+              [control]="getControl('title')"
+            ></app-input>
+          </div>
+
+          <!-- Category -->
+          <div>
+            <app-select
+              id="category"
+              label="Categoria*"
+              [withBorder]="true"
+              [options]="categoryOptions"
+              [control]="getControl('category')"
+            ></app-select>
+          </div>
+
+          <!-- Author - Changed from SelectComponent to InputComponent -->
+          <div>
+            <app-input
+              label="Autore*"
+              [control]="getControl('author')"
+            ></app-input>
+          </div>
+
+          <!-- Publication date and time -->
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2"
+                >Data pubblicazione*</label
+              >
+              <input
+                type="date"
+                formControlName="publicationDate"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-300"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Ora pubblicazione*</label>
+              <input
+                type="time"
+                formControlName="publicationTime"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-300"
+              />
+            </div>
+          </div>
+
+          <!-- Featured Image -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Immagine in evidenza</label>
+            <app-blog-image-uploader
+              [articleId]="articleId"
+              [initialImage]="uploadedImage"
+              (imageUploaded)="onImageUploaded($event)"
+            ></app-blog-image-uploader>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Action buttons -->
+    <div class="flex justify-between mt-8 mb-8">
+      <div>
+        <app-button
+          type="secondary"
+          [text]="'Salva bozza'"
+          [size]="'md'"
+          (buttonClick)="saveDraft()"
+          [icon]="true"
+          [iconType]="'floppy'"
+          iconPosition="left"
+        ></app-button>
+      </div>
+      <div class="flex gap-3">
+        <app-button
+          type="secondary"
+          [text]="'Annulla'"
+          [size]="'md'"
+          (buttonClick)="onCancel()"
+        ></app-button>
+        <app-button
+          type="primary"
+          [text]="'Avanti'"
+          [size]="'md'"
+          [icon]="true"
+          [iconType]="'arrow-right'"
+          iconPosition="right"
+          (buttonClick)="onNext()"
+        ></app-button>
+      </div>
+    </div>
+  }
+
+  <!-- Preview Tab -->
+  @if (activeTab() === 'preview' && !isLoading()) {
+    <div class="container mx-auto max-w-5xl px-4">
+      <!-- Tags -->
+      <div class="mx-auto flex space-x-2 mb-4">
+        <span
+          class="inline-block bg-[#ECE81A] text-[#3C3D3E] text-xs font-semibold px-2 py-1 rounded"
+          >{{ blogForm.value.category }}</span
+        >
+      </div>
+
+      <!-- Main article title -->
+      <h1 class="heading-xl font-extrabold font-montserrat text-primary-dark mt-4">
+        {{ blogForm.value.title }}
+      </h1>
+
+      <!-- Author and reading time -->
+      <div class="text-[#3C3D3E] text-base flex gap-4 mt-4">
+        <p>Di {{ blogForm.value.author }}</p>
+        <div class="flex gap-1 items-center">
+          <svg
+            class="w-[16px]"
+            viewBox="0 0 24 24"
+            width="24"
+            height="24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle
+              cx="12"
+              cy="12"
+              r="10"
+            />
+            <polyline points="12 6 12 12 16 14" />
+          </svg>
+          <span>{{ estimatedReadingTime }} minuti</span>
+        </div>
+      </div>
+
+      <!-- Main content -->
+      <div class="mt-10">
+        <!-- Main image -->
+        @if (uploadedImage) {
+          <img
+            [src]="uploadedImage.url"
+            [alt]="blogForm.value.title"
+            class="w-full h-auto mt-4 rounded-md max-h-96 object-cover"
+          />
+        } @else {
+          <div class="w-full h-64 bg-gray-200 flex items-center justify-center rounded-md">
+            <span class="text-gray-500">Nessuna immagine caricata</span>
+          </div>
+        }
+
+        <!-- Content -->
+        <div class="py-8">
+          <div
+            class="text-base text-black space-y-4 prose max-w-none"
+            [innerHTML]="renderContent(blogForm.value.content)"
+          ></div>
+        </div>
+      </div>
+
+      <!-- Action buttons -->
+      <div class="flex justify-between mt-8 mb-8">
+        <div>
+          <app-button
+            type="secondary"
+            [text]="'Indietro'"
+            (buttonClick)="setActiveTab('content')"
+            [icon]="true"
+            [size]="'md'"
+            [iconType]="'arrow-left'"
+            iconPosition="left"
+          ></app-button>
+        </div>
+        <div class="flex gap-3">
+          <app-button
+            type="secondary"
+            [text]="'Annulla'"
+            [size]="'md'"
+            (buttonClick)="onCancel()"
+          ></app-button>
+          <app-button
+            type="primary"
+            [text]="isSaving() ? 'Pubblicando...' : 'Conferma e pubblica articolo'"
+            [isDisabled]="isSaving() || blogForm.invalid"
+            [icon]="true"
+            [iconType]="'floppy'"
+            [size]="'md'"
+            iconPosition="right"
+            (buttonClick)="onSubmit()"
+          ></app-button>
+        </div>
+      </div>
+    </div>
+  }
+</div>

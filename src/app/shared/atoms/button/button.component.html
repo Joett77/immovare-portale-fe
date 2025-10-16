@@ -1,0 +1,146 @@
+<button
+  class="bg-secondary text-black font-bold rounded-sm flex items-center w-full h-full"
+  [ngClass]="{
+    'bg-secondary hover:bg-secondary-dark': type === 'primary' && !isDisabled,
+    'bg-white hover:bg-secondary-light': type === 'secondary' && !isDisabled,
+    'bg-white text-red-600 border-2 border-red-600 hover:bg-red-700':
+      type === 'danger' && !isDisabled,
+    'bg-transparent': type === 'withoutBackground' && !isDisabled,
+    'bg-white border-none hover:bg-secondary-light px-[5px] rounded-sm':
+      type === 'withoutBorder' && !isDisabled,
+    'bg-[#F6F6F6] text-[#CBCCCD]': type === 'primary' && isDisabled,
+    'bg-white text-[#CBCCCD]': type === 'secondary' && isDisabled,
+    'border-[1px] border-black': hasBorder,
+    'text-sm py-2': size === 'sm',
+    'text-md py-3': size === 'md',
+    'text-lg': size === 'lg',
+    'px-0': size === 'none',
+    'justify-between gap-3': icon,
+    'justify-center': !icon,
+    'bg-[#F6F6F6] text-[#CBCCCD] cursor-not-allowed opacity-60': isDisabled,
+    'px-4': size !== 'nopadding',
+  }"
+  [disabled]="isDisabled"
+  (click)="onClick()"
+>
+  @if (icon && iconPosition === 'left' && iconType === 'upload') {
+    <app-upload-icon></app-upload-icon>
+  }
+  @if (icon && iconPosition === 'left' && iconType === 'arrow-left') {
+    <svg
+      width="17"
+      height="14"
+      viewBox="0 0 17 14"
+      fill="none"
+    >
+      <path
+        d="M16.7148 7.25C16.7148 7.88281 16.2227 8.375 15.625 8.375H4.83203L8.52344 12.1016C8.98047 12.5234 8.98047 13.2617 8.52344 13.6836C8.3125 13.8945 8.03125 14 7.75 14C7.43359 14 7.15234 13.8945 6.94141 13.6836L1.31641 8.05859C0.859375 7.63672 0.859375 6.89844 1.31641 6.47656L6.94141 0.851562C7.36328 0.394531 8.10156 0.394531 8.52344 0.851562C8.98047 1.27344 8.98047 2.01172 8.52344 2.43359L4.83203 6.125H15.625C16.2227 6.125 16.7148 6.65234 16.7148 7.25Z"
+        fill="#3C3D3E"
+      />
+    </svg>
+  }
+  @if (icon && iconPosition === 'left' && iconType === 'bars-filter') {
+    <app-bars-filter-icon></app-bars-filter-icon>
+  }
+  @if (icon && iconPosition === 'left' && iconType === 'floppy') {
+    <app-floppy-icon></app-floppy-icon>
+  }
+  @if (icon && iconPosition === 'left' && iconType === 'map') {
+    <app-map-icon></app-map-icon>
+  }
+  @if (icon && iconPosition === 'left' && iconType === 'list') {
+    <app-list-icon></app-list-icon>
+  }
+  @if (icon && iconPosition === 'left' && iconType === 'document') {
+    <app-document-icon></app-document-icon>
+  }
+  @if (icon && iconPosition === 'left' && iconType === 'settings') {
+    <app-settings-icon></app-settings-icon>
+  }
+  @if (icon && iconPosition === 'left' && iconType === 'villas') {
+    <app-villas-icon></app-villas-icon>
+  }
+  @if (icon && iconPosition === 'left' && iconType === 'shop') {
+    <app-shop-icon></app-shop-icon>
+  }
+  @if (icon && iconPosition === 'left' && iconType === 'trash') {
+    <app-trash-icon></app-trash-icon>
+  }
+  <!-- DA CAMBIARE-->
+  @if (icon && iconPosition === 'left' && iconType === 'ban') {
+    <fa-icon [icon]="faBan"></fa-icon>
+  }
+  @if (icon && iconPosition === 'left' && iconType === 'check') {
+    <app-check-icon></app-check-icon>
+  }
+  @if (icon && iconPosition === 'left' && iconType === 'edit') {
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 576 512"
+      class="w-4 h-4"
+    >
+      <path
+        d="M402.6 83.2l90.2 90.2c3.8 3.8 3.8 10 0 13.8L274.4 405.6l-92.8 10.3c-12.4 1.4-22.9-9.1-21.5-21.5l10.3-92.8L388.8 83.2c3.8-3.8 10-3.8 13.8 0zm162-22.9l-48.8-48.8c-15.2-15.2-39.9-15.2-55.2 0l-35.4 35.4c-3.8 3.8-3.8 10 0 13.8l90.2 90.2c3.8 3.8 10 3.8 13.8 0l35.4-35.4c15.2-15.3 15.2-40 0-55.2zM384 346.2V448H64V128h229.8c3.2 0 6.2-1.3 8.5-3.5l40-40c7.6-7.6 2.2-20.5-8.5-20.5H48C21.5 64 0 85.5 0 112v352c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V306.2c0-10.7-12.9-16-20.5-8.5l-40 40c-2.2 2.3-3.5 5.3-3.5 8.5z"
+      />
+    </svg>
+  }
+  @if (icon && iconPosition === 'left' && iconType === 'download') {
+    <svg
+      width="12"
+      height="12"
+      viewBox="0 0 16 16"
+      fill="none"
+    >
+      <path
+        d="M15 11C15.5312 11 16 11.4688 16 12V15C16 15.5625 15.5312 16 15 16H1C0.4375 16 0 15.5625 0 15V12C0 11.4688 0.4375 11 1 11H5.15625L6.5625 12.4375C6.9375 12.8125 7.4375 13 8 13C8.53125 13 9.03125 12.8125 9.40625 12.4375L10.8125 11H15ZM13.5 14.25C13.9062 14.25 14.25 13.9375 14.25 13.5C14.25 13.0938 13.9062 12.75 13.5 12.75C13.0625 12.75 12.75 13.0938 12.75 13.5C12.75 13.9375 13.0625 14.25 13.5 14.25ZM7.28125 11.7188L3.28125 7.71875C2.875 7.34375 2.875 6.6875 3.28125 6.3125C3.65625 5.90625 4.3125 5.90625 4.6875 6.3125L7 8.59375V1C7 0.46875 7.4375 0 8 0C8.53125 0 9 0.46875 9 1V8.59375L11.2812 6.3125C11.6562 5.90625 12.3125 5.90625 12.6875 6.3125C13.0938 6.6875 13.0938 7.34375 12.6875 7.71875L8.6875 11.7188C8.5 11.9062 8.25 12 8 12C7.71875 12 7.46875 11.9062 7.28125 11.7188Z"
+        fill="#3C3D3E"
+      />
+    </svg>
+  }
+  @if (text !== '') {
+    {{ text }}
+  } @else {
+    <ng-content selector=".child"></ng-content>
+  }
+  @if (icon && iconPosition === 'right' && iconType === 'arrow-right') {
+    <svg
+      width="15"
+      height="13"
+      viewBox="0 0 15 13"
+      fill="none"
+    >
+      <path
+        d="M13.6875 7.71875L8.6875 12.7188C8.5 12.9062 8.25 13 8 13C7.71875 13 7.46875 12.9062 7.28125 12.7188C6.875 12.3438 6.875 11.6875 7.28125 11.3125L10.5625 8H1C0.4375 8 0 7.5625 0 7C0 6.46875 0.4375 6 1 6H10.5625L7.28125 2.71875C6.875 2.34375 6.875 1.6875 7.28125 1.3125C7.65625 0.90625 8.3125 0.90625 8.6875 1.3125L13.6875 6.3125C14.0938 6.6875 14.0938 7.34375 13.6875 7.71875Z"
+        fill="#3C3D3E"
+      />
+    </svg>
+  }
+  @if (icon && iconPosition === 'right' && iconType === 'download') {
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 16 16"
+      fill="none"
+    >
+      <path
+        d="M15 11C15.5312 11 16 11.4688 16 12V15C16 15.5625 15.5312 16 15 16H1C0.4375 16 0 15.5625 0 15V12C0 11.4688 0.4375 11 1 11H5.15625L6.5625 12.4375C6.9375 12.8125 7.4375 13 8 13C8.53125 13 9.03125 12.8125 9.40625 12.4375L10.8125 11H15ZM13.5 14.25C13.9062 14.25 14.25 13.9375 14.25 13.5C14.25 13.0938 13.9062 12.75 13.5 12.75C13.0625 12.75 12.75 13.0938 12.75 13.5C12.75 13.9375 13.0625 14.25 13.5 14.25ZM7.28125 11.7188L3.28125 7.71875C2.875 7.34375 2.875 6.6875 3.28125 6.3125C3.65625 5.90625 4.3125 5.90625 4.6875 6.3125L7 8.59375V1C7 0.46875 7.4375 0 8 0C8.53125 0 9 0.46875 9 1V8.59375L11.2812 6.3125C11.6562 5.90625 12.3125 5.90625 12.6875 6.3125C13.0938 6.6875 13.0938 7.34375 12.6875 7.71875L8.6875 11.7188C8.5 11.9062 8.25 12 8 12C7.71875 12 7.46875 11.9062 7.28125 11.7188Z"
+        fill="#3C3D3E"
+      />
+    </svg>
+  }
+  @if (icon && iconPosition === 'right' && iconType === 'bars-filter') {
+    <app-bars-filter-icon></app-bars-filter-icon>
+  }
+  @if (icon && iconPosition === 'right' && iconType === 'reset') {
+    <app-reset-icon></app-reset-icon>
+  }
+  @if (icon && iconPosition === 'right' && iconType === 'floppy') {
+    <app-floppy-icon></app-floppy-icon>
+  }
+  @if (icon && iconPosition === 'right' && iconType === 'search') {
+    <app-search-icon></app-search-icon>
+  }
+  @if (icon && iconPosition === 'right' && iconType === 'check') {
+    <app-check-icon></app-check-icon>
+  }
+</button>

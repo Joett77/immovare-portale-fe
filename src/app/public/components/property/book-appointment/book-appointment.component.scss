@@ -1,0 +1,76 @@
+// book-appointment.component.scss
+
+.calendar-button {
+  &:disabled {
+    cursor: not-allowed !important;
+    opacity: 0.5;
+
+    &:hover {
+      background-color: transparent !important;
+    }
+  }
+
+  &.past-date {
+    color: #9ca3af;
+    background-color: #f9fafb;
+    cursor: not-allowed;
+
+    &:hover {
+      background-color: #f9fafb !important;
+    }
+  }
+}
+
+.month-navigation-button {
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+    background-color: #e5e7eb !important;
+
+    &:hover {
+      background-color: #e5e7eb !important;
+    }
+  }
+}
+
+// Enhanced appointment type selection
+.appointment-type-button {
+  transition: all 0.2s ease-in-out;
+
+  &:hover:not(.selected) {
+    background-color: #f3f4f6;
+    border-color: #d1d5db;
+  }
+
+  &.selected {
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  }
+}
+
+// Time slot styling improvements
+.time-slot-button {
+  transition: all 0.2s ease-in-out;
+
+  &:hover:not(.selected) {
+    background-color: #f9fafb;
+    border-color: #d1d5db;
+  }
+
+  &.selected {
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  }
+}
+
+// Calendar container enhancements
+.calendar-container {
+  box-shadow:
+    0 1px 3px 0 rgba(0, 0, 0, 0.1),
+    0 1px 2px 0 rgba(0, 0, 0, 0.06);
+}
+
+// Helper text styling
+.helper-text {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-top: 0.5rem;
+}

@@ -1,0 +1,38 @@
+<div class="relative inline-block text-left">
+  <button
+    (click)="toggleMenu()"
+    [class.bg-[#ECE81A]]="isOpen"
+    class="bg-white hover:bg-[#FCFBD9] text-[#3C3D3E] text-sm font-bold px-4 py-2 rounded flex items-center space-x-2"
+  >
+    <app-settings-icon class="w-4 h-4"></app-settings-icon>
+    <span>Azioni</span>
+  </button>
+
+  <!-- Menu a tendina -->
+  <div
+    *ngIf="isOpen"
+    class="absolute right-0 mt-2 w-56 shadow-xl origin-top-right bg-white ring-1 ring-black ring-opacity-5 z-20 border-black border"
+  >
+    <div class="py-1">
+      <a
+        (click)="onEditArticle()"
+        class="block px-4 py-2 text-sm text-[#3C3D3E] hover:bg-[#FCFBD9] font-semibold cursor-pointer"
+      >
+        Modifica articolo
+      </a>
+      <a
+        (click)="onPreviewArticle()"
+        class="block px-4 py-2 text-sm text-[#3C3D3E] hover:bg-[#FCFBD9] font-semibold cursor-pointer"
+      >
+        Anteprima
+      </a>
+      <div class="border-t border-gray-300 my-1"></div>
+      <a
+        (click)="onDeleteArticle()"
+        class="block px-4 py-2 text-sm text-red-500 hover:bg-[#FCFBD9] font-semibold cursor-pointer"
+      >
+        Elimina articolo
+      </a>
+    </div>
+  </div>
+</div>

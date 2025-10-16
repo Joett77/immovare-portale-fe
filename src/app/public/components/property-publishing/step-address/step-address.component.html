@@ -1,0 +1,80 @@
+<!-- step-address.component.html -->
+<form
+  [formGroup]="propertyAddressForm"
+  class="container mx-auto mb-[100px] md:mb-0 py-8 md:py-24 px-6"
+>
+  <h2 class="text-2xl font-bold text-primary-dark mb-3 font-montserrat">
+    {{ title() }}
+  </h2>
+
+  <h3 class="text-xl text-primary-dark mb-3 font-montserrat">
+    {{ description() }}
+  </h3>
+
+  <div class="flex flex-col md:flex-row md:gap-x-20">
+    <div class="w-full h-full md:w-1/2">
+      <!-- Street with Autocomplete -->
+      <div class="flex flex-wrap">
+        <div class="w-full mb-4">
+          <app-l-input-autocomplete
+            [placeholder]="'Via, numero civico, cap, comune'"
+            [initialValue]="formData()?.street || ''"
+          ></app-l-input-autocomplete>
+        </div>
+      </div>
+
+      <!-- Street Number and ZIP Code -->
+      <div class="flex flex-wrap mb-4">
+        <div class="w-full flex flex-row space-x-2">
+          <div class="w-1/2">
+            <app-input
+              [label]="'Numero civico'"
+              [control]="getControl('street_number')"
+              type="text"
+            />
+          </div>
+          <div class="w-1/2">
+            <app-input
+              [label]="'CAP'"
+              [control]="getControl('zip_code')"
+              type="text"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- City -->
+      <div class="flex flex-wrap">
+        <div class="w-full mb-4">
+          <app-input
+            [label]="'Città'"
+            [control]="getControl('city')"
+            type="text"
+          />
+        </div>
+      </div>
+
+      <!-- Country -->
+      <div class="flex flex-wrap pb-0">
+        <div class="w-full mb-4">
+          <app-input
+            [label]="'Paese'"
+            [control]="getControl('country')"
+            type="text"
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- Map -->
+    <div class="w-full h-full md:w-1/2">
+      @if (isBrowser) {
+        <app-leaflet-map-lite
+          [height]="'300px'"
+          [latitude]="currentLocation.lat"
+          [longitude]="currentLocation.lng"
+        />
+      }
+    </div>
+  </div>
+</form>

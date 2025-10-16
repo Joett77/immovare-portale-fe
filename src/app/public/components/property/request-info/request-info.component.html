@@ -1,0 +1,195 @@
+<div>
+  <h2 class="text-lg font-bold text-black mb-4">Richiedi informazioni</h2>
+  @if (!isLoggedIn) {
+    <div class="mb-8 bg-[#F5F5F5] flex items-center justify-between px-4 py-5 rounded-sm mb-4">
+      <p class="text-base text-black">
+        <span class="font-semibold">Sei già iscritto?</span> Effettua il login per accedere
+      </p>
+      <button
+        (click)="gotoLogin()"
+        class="px-4 py-2 border cursor-pointer rounded-sm text-sm font-semibold text-black hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+      >
+        Login
+      </button>
+    </div>
+  }
+
+  <form
+    [formGroup]="contactForm"
+    (ngSubmit)="onSubmit()"
+    class="space-y-3"
+  >
+    <div class="flex items-center">
+      <app-input
+        class="w-full"
+        label="Nome"
+        [control]="getControl('name')"
+        type="text"
+      >
+        @if (hasError('name', 'required')) {
+          <span class="text-red-500 text-sm">Il nome è obbligatorio</span>
+        }
+        @if (hasError('name', 'minlength')) {
+          <span class="text-red-500 text-sm">Il nome deve contenere almeno 2 caratteri</span>
+        }
+      </app-input>
+    </div>
+    <div class="flex items-center">
+      <app-input
+        class="w-full"
+        label="Cognome"
+        [control]="getControl('lastname')"
+        type="text"
+      >
+        @if (hasError('lastname', 'required')) {
+          <span class="text-red-500 text-sm">Il cognome è obbligatorio</span>
+        }
+        @if (hasError('lastname', 'minlength')) {
+          <span class="text-red-500 text-sm">Il cognome deve contenere almeno 2 caratteri</span>
+        }
+      </app-input>
+    </div>
+
+    <div class="flex items-center">
+      <app-input
+        class="w-full"
+        label="Email"
+        [control]="getControl('email')"
+        type="text"
+      >
+        @if (hasError('email', 'required')) {
+          <span class="text-red-500 text-sm">L'email è obbligatoria</span>
+        }
+        @if (hasError('email', 'email')) {
+          <span class="text-red-500 text-sm">Inserisci un indirizzo email valido</span>
+        }
+      </app-input>
+    </div>
+
+    <div class="flex space-x-4 items-start">
+      <!-- Custom Country Code Dropdown -->
+      <div class="w-32 relative">
+        <button
+          type="button"
+          (click)="toggleCountryDropdown()"
+          class="relative h-14 w-full rounded-md border border-gray-300 bg-white px-4 py-3 text-left text-base text-gray-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 hover:bg-gray-50 transition-colors duration-200"
+          [class.border-red-500]="hasError('countryCode', 'required')"
+        >
+          <span class="flex items-center">
+            <span class="font-medium">{{ selectedCountry.code }}</span>
+          </span>
+          <span class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+            <svg
+              class="h-4 w-4 text-gray-400 transition-transform duration-200"
+              [class.rotate-180]="isCountryDropdownOpen"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+          </span>
+        </button>
+
+        <!-- Dropdown Menu -->
+        <div
+          *ngIf="isCountryDropdownOpen"
+          class="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg"
+        >
+          <div class="py-1 max-h-60 overflow-auto">
+            <div
+              *ngFor="let country of countries; trackBy: trackByCountry"
+              (click)="selectCountry(country)"
+              class="flex items-center px-4 py-3 text-base text-gray-900 cursor-pointer hover:bg-gray-50 transition-colors duration-150"
+              [class.bg-blue-50]="selectedCountry.code === country.code"
+            >
+              <span class="font-medium">{{ country.code }}</span>
+              <span class="ml-2 text-gray-500 text-sm">{{ country.name }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Error Messages -->
+        @if (hasError('countryCode', 'required')) {
+          <span class="text-red-500 text-sm mt-1 block">Il codice paese è obbligatorio</span>
+        }
+      </div>
+
+      <!-- Phone Input -->
+      <div class="flex-1">
+        <app-input
+          label="Telefono"
+          [control]="getControl('phone')"
+          type="text"
+        >
+          @if (hasError('phone', 'required')) {
+            <span class="text-red-500 text-sm">Il telefono è obbligatorio</span>
+          }
+          @if (hasError('phone', 'pattern')) {
+            <span class="text-red-500 text-sm">Inserisci un numero di telefono valido</span>
+          }
+        </app-input>
+      </div>
+    </div>
+
+    <div class="flex items-center space-x-4">
+      <app-input
+        class="w-full"
+        label="Messaggio"
+        [control]="getControl('message')"
+        type="textarea"
+        [rows]="4"
+      >
+        @if (hasError('message', 'required')) {
+          <span class="text-red-500 text-sm">Il messaggio è obbligatorio</span>
+        }
+        @if (hasError('message', 'minlength')) {
+          <span class="text-red-500 text-sm">Il messaggio deve contenere almeno 10 caratteri</span>
+        }
+      </app-input>
+    </div>
+
+    <div class="flex items-start gap-x-3">
+      <div class="flex h-6 items-center">
+        <input
+          type="checkbox"
+          formControlName="privacyConsent"
+          class="h-4 w-4 rounded border-gray-300"
+          [class.border-red-500]="hasError('privacyConsent', 'required')"
+        />
+      </div>
+      <label class="text-sm">
+        Consento al trattamento dei miei dati personali
+        @if (hasError('privacyConsent', 'required')) {
+          <span class="text-red-500 block"
+            >È necessario accettare il trattamento dei dati personali</span
+          >
+        }
+      </label>
+    </div>
+
+    @if (submitError) {
+      <div class="bg-red-50 text-red-500 p-4 rounded">
+        {{ submitError }}
+      </div>
+    }
+
+    <div class="max-w-[312px]">
+      <app-button
+        [isDisabled]="loading || contactForm.invalid"
+        type="primary"
+        size="md"
+      >
+        @if (loading) {
+          <span class="inline-block animate-spin mr-2">⌛</span>
+        }
+        Invia richiesta
+      </app-button>
+    </div>
+  </form>
+</div>

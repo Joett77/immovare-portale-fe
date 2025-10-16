@@ -1,0 +1,400 @@
+<div class="container mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-8 py-6">
+  <div class="w-full min-h-[calc(100vh-14rem)]">
+    <div class="flex justify-between items-center mb-4">
+      <div class="space-y-2">
+        <div
+          class="flex items-center space-x-2 bg-[#F6F6F6] border border-[#F6F6F6] px-4 py-1 rounded-full text-xs mb-4"
+        >
+          <a
+            class="text-[#97999B] font-semibold"
+            [routerLink]="['/dashboard']"
+            >Dashboard</a
+          >
+          <span class="text-[#3C3D3E]">›</span>
+          <span class="text-black font-bold">I tuoi annunci</span>
+        </div>
+        <h1 class="heading-md font-bold text-primary-dark mb-8">I tuoi annunci</h1>
+      </div>
+      <app-button
+        type="primary"
+        size="nopadding"
+        (click)="openNewPropertyAd()"
+        class="hidden lg:block"
+      >
+        <div class="px-5 py-3 flex items-center text-xs font-bold gap-x-2">
+          <app-plus-icon class="h-3 w-3 flex"></app-plus-icon> Nuovo annuncio
+        </div>
+      </app-button>
+    </div>
+
+    <!-- Mobile Add Button -->
+    <div class="lg:hidden mb-4">
+      <app-button
+        type="primary"
+        size="md"
+        (click)="openNewPropertyAd()"
+        class="w-full"
+      >
+        <div class="flex items-center justify-center text-sm font-bold gap-x-2">
+          <app-plus-icon class="h-4 w-4"></app-plus-icon> Nuovo annuncio
+        </div>
+      </app-button>
+    </div>
+
+    <!-- Loading state -->
+    <div
+      *ngIf="isLoading"
+      class="flex justify-center items-center py-8"
+    >
+      <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+    </div>
+
+    <!-- Error state -->
+    <div
+      *ngIf="hasError"
+      class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4"
+    >
+      <p>{{ errorMessage }}</p>
+    </div>
+
+    <!-- Properties list -->
+    <div
+      *ngIf="userProperties && userProperties.length > 0"
+      class="space-y-4"
+    >
+      <!-- Desktop Property card -->
+      <div
+        *ngFor="let property of userProperties"
+        class="hidden lg:flex border border-gray-300 rounded-md shadow-sm bg-white w-full mb-4"
+      >
+        @let haveplan = !haveSubsriptionPlan(property.id!);
+
+        <!-- Image and Status Section -->
+        <div class="relative w-[240px] h-[145px] bg-gray-300 rounded-l overflow-hidden">
+          <img
+            [src]="
+              property.images && property.images.length > 0
+                ? property.images[0].url
+                : '/assets/placeholder-noimage.png'
+            "
+            alt="Immagine annuncio"
+            class="w-full h-full object-cover"
+          />
+          <span
+            class="absolute top-2 left-2 bg-[#CCFCD4] border border-[#CCFCD4] text-[#3C3D3E] text-xs font-semibold px-2 py-0.5 rounded"
+          >
+            {{
+              property.adStatus === 'published'
+                ? 'Pubblicato'
+                : property.adStatus === 'draft'
+                  ? 'Bozza'
+                  : property.adStatus === 'sent'
+                    ? 'In attesa'
+                    : property.adStatus
+            }}
+          </span>
+          <span
+            class="absolute bottom-2 right-2 bg-black bg-opacity-80 text-white text-xs font-semibold px-2 py-0.5 rounded"
+          >
+            {{
+              property.images
+                ? property.images.length > 0
+                  ? '1/' + property.images.length
+                  : '0/0'
+                : '0/0'
+            }}
+          </span>
+        </div>
+
+        <!-- Property Details -->
+        <div class="flex flex-col justify-between space-y-1.5 px-2 py-1 flex-grow">
+          <p class="text-xs text-[#97999B] tracking-wide"
+            >{{ property.city }}, {{ property.region || 'Italia' }}</p
+          >
+          <h2 class="heading-xs font-montserrat font-bold text-primary-dark leading-tight">
+            {{ property.address }} {{ property.houseNumber }}, {{ property.city }}
+          </h2>
+          <div class="flex items-center space-x-2 text-xs">
+            <!-- Badge del piano -->
+            <span class="bg-[#ECE81A] text-[#3C3D3E] text-xs font-bold px-2 py-0.5 rounded">
+              Piano {{ property.lastActiveSubscription || 'Free' }}
+            </span>
+            <!-- Property stats -->
+            <span class="text-[#3C3D3E] text-[12px] font-bold">{{ property.visitCount || 0 }}</span>
+            <span class="text-[#3C3D3E] text-[12px]">Visite</span>
+            <span class="text-[#3C3D3E] text-[12px] font-bold">{{
+              property.requestCount || 0
+            }}</span>
+            <span class="text-[#3C3D3E] text-[12px]">Richiesta di informazioni</span>
+            <span class="text-[#3C3D3E] text-[12px] font-bold">{{
+              property.appointmentCount || 0
+            }}</span>
+            <span class="text-[#3C3D3E] text-[12px]">Appuntamento fissato</span>
+          </div>
+          <p class="text-xs font-semibold text-[#97999B]">
+            {{
+              property.lastUpdate
+                ? 'Aggiornato il ' + (property.lastUpdate | date: 'dd/MM/yyyy')
+                : property.creation
+                  ? 'Creato il ' + (property.creation | date: 'dd/MM/yyyy')
+                  : 'Nessun aggiornamento'
+            }}
+          </p>
+        </div>
+
+        <!-- Promotional Section -->
+        @if (haveplan) {
+          <div
+            class="flex items-center justify-center bg-[#ECE81A] w-[200px] h-full py-3 px-6 mr-12"
+          >
+            <div class="text-center">
+              <p class="text-sm font-bold text-[#3C3D3E] mb-2 leading-tight">
+                Vuoi aumentare la visibilità<br />del tuo annuncio?
+              </p>
+              <button
+                (click)="
+                  propertyId.set(property.id!);
+                  modalOpen.set(true);
+                  propertyStatus.set(property.adStatus || '')
+                "
+                class="border border-black text-black text-sm font-semibold px-4 py-2 rounded flex items-center justify-center"
+              >
+                Scopri piani e servizi <span class="ml-2">→</span>
+              </button>
+            </div>
+          </div>
+        }
+        <div class="flex items-center py-4 space-x-4">
+          <app-button
+            class="hover:bg-[#FCFBD9]"
+            (click)="editPropertySettings(property.id!)"
+            type="withoutBorder"
+            [icon]="false"
+            size="sm"
+          >
+            <fa-icon
+              [icon]="faScrewdriverWrench"
+              class="h-4 w-4 px-1 flex items-center justify-center mr-2"
+            />
+            Impostazioni
+          </app-button>
+        </div>
+
+        <!-- Action Icons -->
+        <div class="flex items-center pr-4 py-4 space-x-4">
+          <app-actions-dropdown
+            [propertyId]="property?.id || ''"
+            [propertyStatus]="property?.adStatus || ''"
+            (editPropertySteps)="editPropertySteps($event)"
+            (goToTicket)="goToTicket()"
+            (deleteProperty)="deleteProperty($event)"
+            (openPlanModal)="openPlanModal(property)"
+          ></app-actions-dropdown>
+        </div>
+      </div>
+
+      <!-- Mobile Property card -->
+      <div
+        *ngFor="let property of userProperties"
+        class="lg:hidden bg-white rounded border border-[#CBCCCD] mb-4"
+      >
+        @let haveplan = !haveSubsriptionPlan(property.id!);
+
+        <!-- Image Section with Status -->
+        <div class="relative w-full h-48 bg-gray-300">
+          <img
+            [src]="
+              property.images && property.images.length > 0
+                ? property.images[0].url
+                : '/assets/placeholder-noimage.png'
+            "
+            alt="Immagine annuncio"
+            class="w-full h-full object-cover"
+          />
+          <!-- Status Badge -->
+          <div class="absolute top-3 left-3">
+            <span
+              class="bg-[#CCFCD4] border border-[#CCFCD4] text-[#3C3D3E] text-xs font-semibold px-2 py-1 rounded"
+            >
+              {{
+                property.adStatus === 'published'
+                  ? 'Pubblicato'
+                  : property.adStatus === 'draft'
+                    ? 'Bozza'
+                    : property.adStatus === 'sent'
+                      ? 'In attesa'
+                      : property.adStatus
+              }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Content Section -->
+        <div class="p-4">
+          <!-- Location -->
+          <p class="text-xs text-[#97999B] tracking-wide mb-2">
+            {{ property.city }}, {{ property.region || 'Italia' }}
+          </p>
+
+          <!-- Title -->
+          <h2 class="text-lg font-bold text-primary-dark leading-tight mb-3">
+            {{ property.address }} {{ property.houseNumber }}, {{ property.city }}
+          </h2>
+
+          <!-- Plan Badge -->
+          <div class="mb-3">
+            <span class="bg-[#ECE81A] text-[#3C3D3E] text-xs font-bold px-2 py-1 rounded">
+              Piano {{ property.lastActiveSubscription || 'Free' }}
+            </span>
+          </div>
+
+          <!-- Stats -->
+          <div class="flex items-center space-x-4 text-xs text-[#3C3D3E] mb-3">
+            <div class="flex items-center">
+              <span class="font-bold mr-1">{{ property.visitCount || 0 }}</span>
+              <span>Visite</span>
+            </div>
+            <div class="flex items-center">
+              <span class="font-bold mr-1">{{ property.requestCount || 0 }}</span>
+              <span>Richieste</span>
+            </div>
+            <div class="flex items-center">
+              <span class="font-bold mr-1">{{ property.appointmentCount || 0 }}</span>
+              <span>Appuntamenti</span>
+            </div>
+          </div>
+
+          <!-- Update Date -->
+          <p class="text-xs font-semibold text-[#97999B] mb-4">
+            {{
+              property.lastUpdate
+                ? 'Aggiornato il ' + (property.lastUpdate | date: 'dd/MM/yyyy')
+                : property.creation
+                  ? 'Creato il ' + (property.creation | date: 'dd/MM/yyyy')
+                  : 'Nessun aggiornamento'
+            }}
+          </p>
+
+          <!-- Promotional Section for Mobile -->
+          @if (haveplan) {
+            <div class="bg-[#ECE81A] p-4 rounded-lg mb-4">
+              <p class="text-sm font-bold text-[#3C3D3E] mb-3 text-center">
+                Vuoi aumentare la visibilità del tuo annuncio?
+              </p>
+              <button
+                (click)="
+                  propertyId.set(property.id!);
+                  modalOpen.set(true);
+                  propertyStatus.set(property.adStatus || '')
+                "
+                class="w-full border border-black text-black text-sm font-semibold py-2 px-4 rounded flex items-center justify-center"
+              >
+                Scopri piani e servizi
+                <span class="ml-2">→</span>
+              </button>
+            </div>
+          }
+
+          <!-- Action Buttons -->
+          <div class="flex space-x-2">
+            <!-- Impostazioni Button -->
+            <button
+              (click)="editPropertySettings(property.id!)"
+              class="flex-1 flex items-center justify-center py-2 px-3 border border-gray-300 rounded text-sm text-black font-bold"
+            >
+              <fa-icon
+                [icon]="faScrewdriverWrench"
+                class="h-4 w-4 mr-2"
+              />
+              Impostazioni
+            </button>
+
+            <!-- Actions Button -->
+            <div class="flex-1">
+              <app-actions-dropdown
+                [propertyId]="property?.id || ''"
+                [propertyStatus]="property?.adStatus || ''"
+                (editPropertySteps)="editPropertySteps($event)"
+                (goToTicket)="goToTicket()"
+                (deleteProperty)="deleteProperty($event)"
+                (openPlanModal)="openPlanModal(property)"
+                class="w-full"
+              >
+                <button
+                  class="w-full flex items-center justify-center py-2 px-3 border border-gray-300 rounded text-sm text-gray-700"
+                >
+                  <fa-icon
+                    [icon]="faScrewdriverWrench"
+                    class="h-4 w-4 mr-2"
+                  />
+                  Azioni
+                </button>
+              </app-actions-dropdown>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <app-pagination
+        [currentPage]="currentPage"
+        [totalPages]="pageCount"
+        (pageChange)="onPageChange($event)"
+      ></app-pagination>
+    </div>
+
+    <!-- Empty state -->
+    <div
+      *ngIf="!isLoading && (!userProperties || userProperties.length === 0) && !hasError"
+      class="bg-white rounded-lg p-8 text-center shadow-sm border border-gray-200"
+    >
+      <div class="flex flex-col items-center justify-center space-y-4">
+        <div class="bg-gray-100 rounded-full p-4">
+          <app-plus-icon class="h-8 w-8 text-gray-400"></app-plus-icon>
+        </div>
+        <h3 class="text-lg font-semibold text-gray-800">Nessun annuncio trovato</h3>
+        <p class="text-gray-600 max-w-md">
+          Non hai ancora creato alcun annuncio. Crea il tuo primo annuncio per iniziare a promuovere
+          le tue proprietà.
+        </p>
+        <app-button
+          type="primary"
+          size="nopadding"
+          (click)="openNewPropertyAd()"
+        >
+          <div class="px-5 py-3 flex items-center text-xs font-bold gap-x-2">
+            <app-plus-icon class="h-3 w-3 flex"></app-plus-icon> Nuovo annuncio
+          </div>
+        </app-button>
+      </div>
+    </div>
+  </div>
+</div>
+
+@if (modalOpen()) {
+  <app-modal-full-screen
+    class="modal-full-screen"
+    [open]="modalOpen()"
+  >
+    <app-choose-a-plan
+      [propertyStatus]="propertyStatus()"
+      [propertyId]="propertyId()"
+      [listService]="true"
+      [activePlan]="activePlan()"
+      (onModalClose)="modalOpen.set(false)"
+    ></app-choose-a-plan>
+  </app-modal-full-screen>
+}
+
+@if (this.modalType) {
+  <app-modal-small
+    [modalType]="modalType"
+    [loading]="isLoading"
+    [params]="{
+      title: 'Sei sicuro di voler eliminare questo annuncio?',
+      subtitle: 'L\'annuncio sarà eliminato definitivamente',
+      elementId: propertyToDelete,
+    }"
+    (onAction)="modalAction($event)"
+    (onClose)="modalClosed()"
+  ></app-modal-small>
+}

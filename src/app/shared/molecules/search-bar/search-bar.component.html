@@ -1,0 +1,31 @@
+<div class="w-full mx-auto mb-4 lg:mb-8">
+  <div class="relative">
+    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+      <svg
+        class="h-5 w-5 text-gray-400"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <circle
+          cx="11"
+          cy="11"
+          r="8"
+        />
+        <line
+          x1="21"
+          y1="21"
+          x2="16.65"
+          y2="16.65"
+        />
+      </svg>
+    </div>
+    <input
+      type="text"
+      [(ngModel)]="searchQuery"
+      (input)="onSearchChange()"
+      class="w-full text-sm pl-10 pr-4 py-4 border border-[#CBCCCD] rounded-md shadow-sm focus:ring-[#CBCCCD] focus:outline-none placeholder-[#3C3D3E] font-medium text-black"
+      placeholder="Ricerca articoli"
+    />
+  </div>
+</div>

@@ -1,0 +1,9 @@
+.textarea {
+  border: 1px solid rgb(203 204 205);
+}
+
+.disabled-btn {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}

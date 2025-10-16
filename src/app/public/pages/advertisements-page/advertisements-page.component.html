@@ -1,0 +1,208 @@
+<!-- advertisements-page.component.html with polygon support -->
+<div class="w-full">
+  <div class="w-full lg:sticky top-0 z-20 bg-white">
+    <app-filter-bar (openSideFilter)="openSideFilter()"></app-filter-bar>
+  </div>
+
+  <!-- Polygon search indicator -->
+  <div
+    *ngIf="hasPolygonFilter()"
+    class="bg-[#e6f0f1] p-2 border-b border-[#2E5D63]"
+  >
+    <div class="container mx-auto flex items-center justify-between">
+      <div class="flex items-center">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5 text-[#2E5D63] mr-2"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 013.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"
+          />
+        </svg>
+        <span class="text-sm font-medium">Ricerca per area personalizzata</span>
+      </div>
+      <button
+        (click)="clearPolygonFilter()"
+        class="text-[#2E5D63] text-sm hover:underline flex items-center"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-4 w-4 mr-1"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M6 18L18 6M6 6l12 12"
+          />
+        </svg>
+        Rimuovi filtro area
+      </button>
+    </div>
+  </div>
+
+  @if (isMobile) {
+    @if (isMapShown) {
+      <!-- Mobile Map View -->
+      <div class="w-full h-[calc(100vh-120px)]">
+        <app-leaflet-map
+          class="relative h-full w-full"
+          [properties]="properties"
+          (visiblePropertiesChange)="handleVisiblePropertiesChange($event)"
+          (mapBoundsChanged)="handleMapBoundsChanged($event)"
+        ></app-leaflet-map>
+      </div>
+    } @else {
+      <!-- Mobile List View -->
+      <div class="w-full">
+        @if (isLoading) {
+          <div class="flex justify-center items-center py-8">
+            <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-primary"></div>
+          </div>
+        } @else if (hasError) {
+          <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 mx-4">
+            <span class="block sm:inline">{{ errorMessage }}</span>
+          </div>
+        } @else if (getDisplayedProperties().length > 0) {
+          <div class="flex flex-col container mx-auto p-2 gap-y-4">
+            <div class="flex flex-row justify-between items-center">
+              <div class="text-lg flex items-center py-2 font-bold">
+                {{ getDisplayedProperties().length }} case trovate
+              </div>
+              <div class="flex items-center">
+                <app-select
+                  [withBorder]="false"
+                  [control]="sortControl"
+                  [options]="sortOptions"
+                  label="Predefinito"
+                  (selectionChange)="onSortChange($event)"
+                >
+                </app-select>
+              </div>
+            </div>
+
+            @for (property of getDisplayedProperties(); track property.id) {
+              <app-advertisement-card
+                [property]="property"
+                [showDeleteButton]="false"
+                (favoriteToggle)="toggleFavorite($event)"
+              ></app-advertisement-card>
+            }
+          </div>
+        } @else {
+          <div class="flex flex-col items-center justify-center py-12 px-4 text-center">
+            <div class="text-center py-10 min-h-[calc(100vh-332px)]">
+              <img
+                src="assets/empty.png"
+                alt="Empty state"
+                class="w-[154px] mx-auto"
+              />
+              <p class="text text-black mb-4 mt-8">
+                Non abbiamo trovato nessun immobile in quest'area
+              </p>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  } @else {
+    <!-- Desktop View -->
+    <div
+      class="px-4 flex flex-col md:flex-row md:flex-wrap lg:flex-nowrap md:justify-between md:items-start h-[calc(100vh-120px)]"
+    >
+      <!-- Desktop Property List -->
+      <div class="w-full lg:w-1/2 lg:min-w-[710px] overflow-y-auto h-full">
+        @if (isLoading) {
+          <div class="flex justify-center items-center py-8">
+            <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-primary"></div>
+          </div>
+        } @else if (hasError) {
+          <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+            <span class="block sm:inline">{{ errorMessage }}</span>
+          </div>
+        } @else if (getDisplayedProperties().length > 0) {
+          <div class="flex flex-col container mx-auto p-2 gap-y-4">
+            <div class="flex flex-row justify-between items-center">
+              <div class="text-lg flex items-center py-2 font-bold">
+                {{ getDisplayedProperties().length }} case trovate
+                @if (shouldFilterByMap() && !hasPolygonFilter()) {
+                  <span class="ml-2 text-sm text-gray-500">(visualizzate nella mappa)</span>
+                }
+                @if (hasPolygonFilter()) {
+                  <span class="ml-2 text-sm text-gray-500">(nell'area selezionata)</span>
+                }
+              </div>
+              <div class="flex items-center">
+                <app-select
+                  [withBorder]="false"
+                  [control]="sortControl"
+                  [options]="sortOptions"
+                  label="Predefinito"
+                  (selectionChange)="onSortChange($event)"
+                >
+                </app-select>
+              </div>
+            </div>
+
+            @for (property of getDisplayedProperties(); track property.id) {
+              <app-advertisement-card
+                [property]="property"
+                (favoriteToggle)="toggleFavorite($event)"
+              ></app-advertisement-card>
+            }
+          </div>
+        } @else {
+          <!-- Empty state message for desktop -->
+          <div class="flex flex-col items-center justify-center py-12 px-4 text-center">
+            <div class="text-center py-10 min-h-[calc(100vh-332px)]">
+              <img
+                src="assets/empty.png"
+                alt="Empty state"
+                class="w-[154px] mx-auto"
+              />
+              <p class="text text-black mb-4 mt-8">
+                Non abbiamo trovato nessun immobile in quest'area
+              </p>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Desktop Map -->
+      <div class="w-full h-full lg:w-1/2 lg:pl-4 z-10">
+        @if (isMapVisible()) {
+          <app-leaflet-map
+            class="relative h-full w-full"
+            [properties]="properties"
+            (visiblePropertiesChange)="handleVisiblePropertiesChange($event)"
+            (mapBoundsChanged)="handleMapBoundsChanged($event)"
+          ></app-leaflet-map>
+        }
+      </div>
+    </div>
+  }
+</div>
+
+@if (isSideBarFilterOpen) {
+  <app-side-filter-bar
+    [isOpen]="isSideBarFilterOpen"
+    (closeSheet)="closeSideFilter()"
+  />
+}
+
+<!-- Draw map modal - controlled by autocomplete service signal -->
+@if (isDrawMapModalOpen()) {
+  <app-draw-map-modal
+    [isOpen]="isDrawMapModalOpen()"
+    (close)="onDrawMapModalClose()"
+  ></app-draw-map-modal>
+}

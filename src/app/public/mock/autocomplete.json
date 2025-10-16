@@ -1,0 +1,97 @@
+{
+  "address_components": [
+      {
+          "long_name": "6",
+          "short_name": "6",
+          "types": [
+              "street_number"
+          ]
+      },
+      {
+          "long_name": "Via Franco Russoli",
+          "short_name": "Via Franco Russoli",
+          "types": [
+              "route"
+          ]
+      },
+      {
+          "long_name": "Milano",
+          "short_name": "Milano",
+          "types": [
+              "locality",
+              "political"
+          ]
+      },
+      {
+          "long_name": "Milano",
+          "short_name": "Milano",
+          "types": [
+              "administrative_area_level_3",
+              "political"
+          ]
+      },
+      {
+          "long_name": "Città metropolitana di Milano",
+          "short_name": "MI",
+          "types": [
+              "administrative_area_level_2",
+              "political"
+          ]
+      },
+      {
+          "long_name": "Lombardia",
+          "short_name": "Lombardia",
+          "types": [
+              "administrative_area_level_1",
+              "political"
+          ]
+      },
+      {
+          "long_name": "Italia",
+          "short_name": "IT",
+          "types": [
+              "country",
+              "political"
+          ]
+      },
+      {
+          "long_name": "20143",
+          "short_name": "20143",
+          "types": [
+              "postal_code"
+          ]
+      }
+  ],
+  "adr_address": "<span class=\"street-address\">Via Franco Russoli, 6</span>, <span class=\"postal-code\">20143</span> <span class=\"locality\">Milano</span> <span class=\"region\">MI</span>, <span class=\"country-name\">Italia</span>",
+  "formatted_address": "Via Franco Russoli, 6, 20143 Milano MI, Italia",
+  "geometry": {
+      "location": {
+          "lat": 45.4423676,
+          "lng": 9.165657500000002
+      },
+      "viewport": {
+          "south": 45.44101991970849,
+          "west": 9.164386369708497,
+          "north": 45.44371788029149,
+          "east": 9.167084330291502
+      }
+  },
+  "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/geocode-71.png",
+  "icon_background_color": "#7B9EB0",
+  "icon_mask_base_uri": "https://maps.gstatic.com/mapfiles/place_api/icons/v2/generic_pinlet",
+  "name": "Via Franco Russoli, 6",
+  "place_id": "ChIJY1rgmfLDhkcRSl3TBk86rK0",
+  "plus_code": {
+      "compound_code": "C5R8+W7 Milano MI, Italia",
+      "global_code": "8FQFC5R8+W7"
+  },
+  "reference": "ChIJY1rgmfLDhkcRSl3TBk86rK0",
+  "types": [
+      "street_address"
+  ],
+  "url": "https://maps.google.com/?q=Via+Franco+Russoli,+6,+20143+Milano+MI,+Italia&ftid=0x4786c3f299e05a63:0xadac3a4f06d35d4a",
+  "utc_offset": 120,
+  "vicinity": "Milano",
+  "html_attributions": [],
+  "utc_offset_minutes": 120
+}

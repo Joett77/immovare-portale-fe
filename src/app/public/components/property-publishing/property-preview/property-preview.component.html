@@ -1,0 +1,353 @@
+<div>
+  <div class="container mx-auto max-w-6xl py-0 lg:py-4 lg:pt-0 lg:pb-16 lg:px-0">
+    <!-- Property content -->
+    <div class="flex flex-wrap lg:-mx-2 mx-0">
+      <div class="w-full lg:w-7/12 px-0 lg:px-2 mb-4">
+        <div class="h-96 overflow-hidden lg:rounded">
+          <img
+            [src]="mainImage"
+            [ngClass]="{
+              'border-[1px] border-[#D9D9D9]': mainImage === '/assets/placeholder-noimage.png',
+            }"
+            alt="Main property image"
+            class="w-full h-full object-cover"
+          />
+        </div>
+      </div>
+      <div class="lg:block hidden w-5/12 px-2">
+        <div class="flex flex-wrap -mx-2 h-full">
+          <ng-container *ngIf="thumbnails.length > 0; else noImages">
+            <div
+              class="w-1/2 px-2 mb-4"
+              *ngFor="let image of thumbnails.slice(0, 3)"
+            >
+              <div class="h-full overflow-hidden rounded">
+                <img
+                  [src]="image"
+                  alt="Property thumbnail"
+                  class="w-full h-full object-cover"
+                />
+              </div>
+            </div>
+            <div
+              class="w-1/2 px-2 mb-4"
+              *ngIf="thumbnails.length > 3"
+            >
+              <div class="relative h-full overflow-hidden rounded">
+                <img
+                  [src]="thumbnails[3]"
+                  alt="Property thumbnail"
+                  class="w-full h-full object-cover"
+                />
+                <div
+                  class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center cursor-pointer"
+                  (click)="openModal('gallery')"
+                >
+                  <span class="text-white text-xl font-bold"
+                    >+{{ remainingPhotos }} Fotografie</span
+                  >
+                </div>
+              </div>
+            </div>
+          </ng-container>
+          <ng-template #noImages>
+            <div class="w-full h-full flex items-center justify-center bg-gray-200 rounded"> </div>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+
+    <div class="mb-8 flex gap-x-4 px-4 lg:px-0">
+      <app-button
+        type="secondary"
+        (click)="openModal('map')"
+      >
+        <div class="px-1 py-1 lg:px-4 lg:py-2 flex items-center">
+          <app-map-icon class="h-3 w-3 lg:w-4 lg:h-4 mr-2 flex" />
+          <span class="text-xs lg:text-base inline-block"> Vedi sulla mappa </span>
+        </div>
+      </app-button>
+      <app-button
+        type="secondary"
+        (click)="openModal('floorplan')"
+      >
+        <div class="px-1 py-1 lg:px-4 lg:py-2 flex items-center">
+          <app-floorplan-icon class="w-3 lg:w-4 lg:h-4 mr-2 flex" />
+          <span class="text-xs lg:text-base inline-block"> Planimetria </span>
+        </div>
+      </app-button>
+    </div>
+
+    <div class="flex flex-col lg:flex-row justify-between items-start mb-8 px-4 lg:px-0">
+      <div>
+        <h1 class="heading-md font-bold text-primary-dark">
+          {{ getPropertyTitle() }}
+        </h1>
+        <p class="text-lg text-black mt-2 flex items-center gap-2">
+          <app-location-dot-icon class="h-5 w-5" />
+          {{ getFullAddress() }}
+        </p>
+      </div>
+      <div class="heading-md font-semibold text-black mt-4 lg:mt-0">{{
+        formatPrice(property?.price || 0)
+      }}</div>
+    </div>
+
+    <div class="flex flex-col lg:flex-row gap-8">
+      <div class="w-full lg:w-7/12">
+        <app-property-info [property]="property" />
+
+        <div class="mb-8">
+          <h2 class="text-lg font-bold text-black mb-4 px-4 lg:px-0">Mappa</h2>
+          <div class="relative">
+            <app-button
+              [size]="'sm'"
+              class="absolute top-4 right-4 z-50"
+              (click)="openModal('map')"
+            >
+              <app-map-icon class="mr-2" />
+              Apri mappa
+            </app-button>
+            <app-leaflet-map-lite
+              [latitude]="property?.latitude || 0"
+              [longitude]="property?.longitude || 0"
+              [height]="'400px'"
+            />
+          </div>
+        </div>
+
+        <div class="mb-8">
+          <h2 class="text-lg font-bold text-black mb-4 px-4 lg:px-0">Planimetria</h2>
+          <div class="relative">
+            <app-button
+              [size]="'sm'"
+              class="absolute top-4 right-4"
+              (click)="openModal('floorplan')"
+            >
+              <app-floorplan-icon class="h-4 w-4 inline-block mr-1" />
+              Apri planimetria
+            </app-button>
+            <img
+              [src]="property?.floorplan?.[0]?.url || '/assets/placeholder-noimage.png'"
+              alt="Floorplan"
+              class="w-full h-full object-contain mx-auto bg-gray-200"
+            />
+          </div>
+        </div>
+
+        <div class="mb-8 px-4 lg:px-0">
+          <app-calculate-mortgage />
+        </div>
+
+        <div class="mb-8 px-4 lg:px-0">
+          <app-request-info [propertyId]="property?.id" />
+        </div>
+      </div>
+
+      <div class="w-full lg:w-5/12 fixed lg:relative bottom-0 h-fit lg:h-auto z-10"> </div>
+    </div>
+
+    <app-sidesheet
+      [isOpen]="isSidesheetOpen"
+      [propertyId]="property?.id"
+      (closeSheet)="closeSidesheet()"
+    />
+
+    <!-- Image gallery modal -->
+    <div
+      *ngIf="isModalOpen"
+      class="fixed inset-0 z-50 bg-white flex flex-col"
+    >
+      <!-- Header -->
+      <div class="py-4 relative hidden lg:block">
+        <div class="container mx-auto bg-[#F6F6F6] px-6 py-4 flex justify-between items-center">
+          <div class="flex-grow">
+            <h2 class="heading-xs font-bold text-primary-dark">
+              {{ getPropertyTitle() }}
+            </h2>
+            <p class="text-sm text-black mt-1">
+              <span class="mr-3">{{ property?.type || 'Immobile' }}</span>
+              <span class="mr-3">
+                <app-floorplan-icon class="h-4 w-4 inline-block mr-1" />
+                {{ property?.numberRooms || 0 }} locali</span
+              >
+              <span class="mr-3">
+                <app-measure-icon class="h-4 w-4 inline-block mr-1" />
+                {{ property?.squareMetres || 0 }} m²</span
+              >
+              <span class="mr-3">
+                <app-bath-icon class="h-4 w-4 inline-block mr-1" />
+                {{ property?.numberBaths || 0 }} bagni</span
+              >
+              <span class="font-bold text-lg ml-8">{{ formatPrice(property?.price || 0) }}</span>
+            </p>
+          </div>
+          <div class="flex items-center space-x-2">
+            <div class="mr-2">
+              <app-button
+                [type]="'secondary'"
+                [size]="'sm'"
+              >
+                <app-mail-icon class="mr-2 text-black" />
+                Richiedi informazioni
+              </app-button>
+            </div>
+            <div class="mr-2">
+              <app-button
+                [type]="'primary'"
+                [size]="'sm'"
+                (click)="openSidesheet()"
+              >
+                <app-calendar-icon class="mr-2 text-black" />
+                Fissa appuntamento
+              </app-button>
+            </div>
+          </div>
+        </div>
+        <button
+          (click)="closeModal()"
+          class="text-gray-500 hover:text-gray-700 absolute top-8 right-8"
+        >
+          <fa-icon
+            [icon]="faClose"
+            class="w-6 h-6 mr-2 text-lg"
+          ></fa-icon>
+        </button>
+      </div>
+
+      <div class="py-4 relative lg:hidden flex justify-between px-4">
+        <h2 class="heading-xs font-bold text-primary-dark">Gallery</h2>
+        <button
+          (click)="closeModal()"
+          class="text-gray-500 hover:text-gray-700"
+        >
+          <fa-icon
+            [icon]="faClose"
+            class="w-5 h-5 mr-2 text-lg"
+          ></fa-icon>
+        </button>
+      </div>
+
+      <div class="container mx-auto pt-4 border-b-[2px] border-[#CBCCCD]">
+        <div class="overflow-x-auto">
+          <div class="flex text-sm lg:text-xl text-[#97999B] min-w-min">
+            <button
+              (click)="setActiveTab('gallery')"
+              [ngClass]="{
+                'border-b-2 border-black -mb-[2px] bg-secondary text-black font-bold':
+                  activeTab === 'gallery',
+              }"
+              class="py-4 px-6 w-50 whitespace-nowrap flex items-center"
+            >
+              <app-gallery-icon
+                class="mr-2 inline-block h-5 w-5"
+                [ngClass]="{
+                  'fill-black': activeTab === 'gallery',
+                  'fill-[#97999B]': activeTab !== 'gallery',
+                }"
+              ></app-gallery-icon>
+
+              Foto ({{ thumbnails.length || 0 }})
+            </button>
+            <button
+              (click)="setActiveTab('floorplan')"
+              [ngClass]="{
+                'border-b-2 border-black -mb-[2px] bg-secondary text-black font-bold':
+                  activeTab === 'floorplan',
+              }"
+              class="py-4 px-6 w-50 whitespace-nowrap flex items-center"
+            >
+              <app-floorplan-icon
+                class="mr-2 inline-block h-5 w-5"
+                [ngClass]="{
+                  'fill-black': activeTab === 'floorplan',
+                  'fill-[#97999B]': activeTab !== 'floorplan',
+                }"
+              ></app-floorplan-icon>
+              Planimetria
+            </button>
+            <button
+              (click)="setActiveTab('map')"
+              [ngClass]="{
+                'border-b-2 border-black -mb-[2px] bg-secondary text-black font-bold':
+                  activeTab === 'map',
+              }"
+              class="py-4 px-6 w-50 whitespace-nowrap flex items-center"
+            >
+              <app-map-icon
+                class="mr-2 inline-block"
+                [ngClass]="{
+                  'fill-black': activeTab === 'map',
+                  'fill-[#97999B]': activeTab !== 'map',
+                }"
+              ></app-map-icon>
+              Mappa
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex-grow overflow-hidden">
+        <div class="h-full overflow-auto">
+          <div
+            [ngSwitch]="activeTab"
+            class="container mx-auto px-4 py-6 h-full"
+          >
+            <div
+              *ngSwitchCase="'gallery'"
+              class="h-full flex items-center justify-center"
+            >
+              <div class="w-full max-w-4xl mx-auto h-full flex items-center">
+                <ng-container *ngIf="thumbnails.length > 0; else noGalleryImages">
+                  <!-- Note: Replace with actual gallery implementation -->
+                  <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    <div
+                      *ngFor="let image of thumbnails"
+                      class="aspect-square"
+                    >
+                      <img
+                        [src]="image"
+                        alt="Property image"
+                        class="w-full h-full object-cover rounded"
+                      />
+                    </div>
+                  </div>
+                </ng-container>
+                <ng-template #noGalleryImages>
+                  <div class="w-full h-64 flex items-center justify-center bg-gray-200 rounded">
+                  </div>
+                </ng-template>
+              </div>
+            </div>
+            <div
+              *ngSwitchCase="'floorplan'"
+              class="text-center h-full flex flex-col justify-center"
+            >
+              @if (property?.floorplan) {
+                <img
+                  [src]="property?.floorplan?.[0]?.url || '/assets/placeholder-noimage.png'"
+                  alt="Floorplan"
+                  class="max-w-full max-h-full object-contain mx-auto"
+                />
+              }
+            </div>
+            <div
+              *ngSwitchCase="'map'"
+              class="h-full flex items-center justify-center w-full"
+            >
+              <app-leaflet-map-lite
+                *ngIf="activeTab === 'map'"
+                [latitude]="property?.latitude || 0"
+                [longitude]="property?.longitude || 0"
+                [height]="'100%'"
+                [mapId]="'modal-map-' + (property?.id || 'default')"
+                class="w-full h-full"
+              ></app-leaflet-map-lite>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <app-footer type="slim"></app-footer>
+</div>

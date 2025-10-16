@@ -1,0 +1,12 @@
+<div
+  class="mb-6 px-4 flex space-x-6 w-100 min-h-[48px] flex-wrap items-center bg-[#F6F6F6] rounded-sm justify-center lg:justify-start"
+>
+  @for (tag of tagsList(); let index = $index; track tag) {
+    <button
+      class="text-black font-bold px-4 py-2 text-xs whitespace-nowrap hover:bg-secondary rounded transition duration-300"
+      [ngClass]="{ 'bg-secondary': isSelected(tag) }"
+      (click)="handleTagClick($event.target)"
+      >{{ tag }}</button
+    >
+  }
+</div>

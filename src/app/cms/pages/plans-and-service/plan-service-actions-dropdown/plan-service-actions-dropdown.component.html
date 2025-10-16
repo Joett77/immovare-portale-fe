@@ -1,0 +1,74 @@
+<div class="relative inline-block text-left">
+  <button
+    (click)="toggleMenu()"
+    [class.bg-[#ECE81A]]="isOpen"
+    class="bg-white hover:bg-[#FCFBD9] text-[#3C3D3E] text-sm font-bold px-4 py-2 rounded flex items-center space-x-2"
+  >
+    <app-settings-icon class="w-4 h-4"></app-settings-icon>
+    <span>Azioni</span>
+  </button>
+
+  <div
+    *ngIf="isOpen"
+    class="absolute right-0 mt-2 w-56 shadow-xl origin-top-right bg-white ring-1 ring-black ring-opacity-5 z-100 border-black border"
+  >
+    <div class="py-1">
+      @if (isService) {
+        <a
+          [routerLink]="['/cms/plans-and-service/service/', plan.id]"
+          class="block px-4 py-2 text-sm text-[#3C3D3E] hover:bg-[#FCFBD9] font-semibold cursor-pointer"
+        >
+          Visualizza Servizio
+        </a>
+        @if (status === 'active') {
+          <a
+            (click)="onDeactivateService()"
+            class="block px-4 py-2 text-sm text-red-600 hover:bg-red-100 font-semibold cursor-pointer"
+          >
+            Disattiva Servizio
+          </a>
+        } @else if (status === 'inactive') {
+          <a
+            (click)="onActivateService()"
+            class="block px-4 py-2 text-sm text-[#3C3D3E] hover:bg-[#FCFBD9] font-semibold cursor-pointer"
+          >
+            Attiva Servizio
+          </a>
+        }
+      } @else {
+        <a
+          [routerLink]="['/cms/plans-and-service/plan/', plan.id]"
+          routerLinkActive="router-link-active"
+          class="block px-4 py-2 text-sm text-[#3C3D3E] hover:bg-[#FCFBD9] font-semibold cursor-pointer"
+        >
+          Visualizza Piano
+        </a>
+        @if (status === 'active') {
+          <a
+            (click)="onDeactivatePlan()"
+            class="block px-4 py-2 text-sm text-red-600 hover:bg-red-100 font-semibold cursor-pointer"
+          >
+            Disattiva Piano
+          </a>
+        } @else if (status === 'inactive') {
+          <a
+            (click)="onActivatePlan()"
+            class="block px-4 py-2 text-sm text-[#3C3D3E] hover:bg-[#FCFBD9] font-semibold cursor-pointer"
+          >
+            Attiva Piano
+          </a>
+        }
+      }
+    </div>
+  </div>
+</div>
+@if (modalType) {
+  <app-modal-small
+    [modalType]="modalType"
+    [loading]="isLoading"
+    [params]="{ planName: plan.title }"
+    (onAction)="modalAction()"
+    (onClose)="modalClosed()"
+  >
+  </app-modal-small>
+}

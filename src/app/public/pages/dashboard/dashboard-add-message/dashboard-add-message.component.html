@@ -1,0 +1,209 @@
+<!-- src/app/public/pages/dashboard/dashboard-add-message/dashboard-add-message.component.html -->
+<div class="container mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-8 py-6">
+  <div class="w-full min-h-[calc(100vh-16rem)]">
+    <div class="flex justify-between items-center mb-4">
+      <div class="space-y-2">
+        <div
+          class="flex items-center space-x-2 bg-[#F6F6F6] border border-[#F6F6F6] px-4 py-1 rounded-full text-xs mb-4 w-fit"
+        >
+          <a
+            class="text-[#97999B] font-semibold"
+            [routerLink]="['/dashboard']"
+            >Dashboard</a
+          >
+          <span class="text-[#3C3D3E]">›</span>
+          <a
+            class="text-[#97999B] font-semibold"
+            [routerLink]="['/dashboard/messaggi']"
+            >Centro messaggi</a
+          >
+          <span class="text-[#3C3D3E]">›</span>
+          <span class="text-black font-bold">Nuovo messaggio</span>
+        </div>
+        <h1 class="heading-md font-bold text-primary-dark mb-8">
+          Compila i campi per inviare una richiesta di modifica o assistenza
+        </h1>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    @if (isLoading && propertyAdsOptions.length === 0) {
+      <div class="flex justify-center items-center py-8">
+        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        <span class="ml-2 text-gray-600">Caricamento...</span>
+      </div>
+    }
+
+    <!-- Error State -->
+    @if (hasError) {
+      <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
+        <span class="block sm:inline">{{ errorMessage }}</span>
+      </div>
+    }
+
+    <!-- Form -->
+    <div class="flex flex-col gap-y-4 max-w-2xl">
+      <form
+        [formGroup]="sendTicketForm"
+        class="space-y-6"
+        (ngSubmit)="onSubmit()"
+        novalidate
+      >
+        <!-- Category -->
+        <div class="flex flex-col space-y-4">
+          <h3 class="text-lg font-bold text-black">Seleziona il tipo di richiesta</h3>
+          <app-select
+            [withBorder]="true"
+            class="w-full"
+            [control]="getControl('category')"
+            [options]="categoryOptions"
+            label="Tipologia richiesta"
+          ></app-select>
+          @if (hasFieldError('category')) {
+            <div class="text-red-500 text-sm">{{ getFieldError('category') }}</div>
+          }
+        </div>
+
+        <!-- Priority -->
+        <div class="flex flex-col space-y-4">
+          <h3 class="text-lg font-bold text-black">Priorità</h3>
+          <app-select
+            [withBorder]="true"
+            class="w-full"
+            [control]="getControl('priority')"
+            [options]="priorityOptions"
+            label="Seleziona la priorità"
+          ></app-select>
+          <p class="text-sm text-gray-500">
+            Seleziona "Alta" o "Urgente" solo per problemi che richiedono attenzione immediata.
+          </p>
+        </div>
+
+        <!-- Message -->
+        <div class="flex flex-col space-y-4">
+          <h3 class="text-lg text-black">
+            <b>Messaggio</b>
+          </h3>
+          <app-input
+            [control]="getControl('message')"
+            type="textarea"
+            [rows]="6"
+            label="Descrivi dettagliatamente il tuo problema o richiesta..."
+          ></app-input>
+          @if (hasFieldError('message')) {
+            <div class="text-red-500 text-sm">{{ getFieldError('message') }}</div>
+          }
+          <p class="text-sm text-gray-500">
+            Fornisci quanti più dettagli possibili per aiutarci a comprendere e risolvere la tua
+            richiesta.
+          </p>
+        </div>
+
+        <div class="flex flex-col space-y-4">
+          <h3 class="text-lg text-black">
+            <b>Allega foto o documenti a supporto della richiesta</b>
+            <span class="text-gray-500">(Opzionale)</span>
+          </h3>
+          <app-simple-file-uploader
+            [acceptedTypes]="'image/*,.pdf,.doc,.docx,.xls,.xlsx'"
+            [maxFileSize]="10485760"
+            [maxFiles]="5"
+            [acceptedTypesText]="'PDF, Word, Excel, JPG, PNG, GIF (max 10 MB per file)'"
+            (filesSelected)="handleFileUpload($event)"
+          ></app-simple-file-uploader>
+        </div>
+
+        <!-- Property Selection -->
+        <div class="flex flex-col space-y-4">
+          <h3 class="text-lg text-black">
+            <b>Seleziona l'annuncio oggetto della richiesta</b>
+            <span class="text-gray-500">(Opzionale)</span>
+          </h3>
+          @if (propertyAdsOptions.length > 1) {
+            <app-select
+              [withBorder]="true"
+              class="w-full"
+              [control]="getControl('advertisementId')"
+              [options]="propertyAdsOptions"
+              label="Seleziona un annuncio"
+            ></app-select>
+          } @else {
+            <div class="text-gray-500 italic p-3 bg-gray-50 rounded">
+              Non hai ancora pubblicato annunci. Puoi comunque inviare il ticket senza riferimenti
+              specifici.
+            </div>
+          }
+          <p class="text-sm text-gray-500">
+            Se la tua richiesta riguarda un annuncio specifico, selezionalo dall'elenco.
+          </p>
+        </div>
+
+        <!-- Submit buttons -->
+        <div class="flex flex-col sm:flex-row gap-4 pt-4">
+          <div class="w-full sm:w-auto">
+            <app-button
+              type="primary"
+              [isDisabled]="sendTicketForm.invalid || isSubmitting"
+              size="md"
+              class="w-full sm:w-auto"
+            >
+              {{ isSubmitting ? 'Invio in corso...' : 'Invia ticket' }}
+            </app-button>
+          </div>
+
+          <div class="w-full sm:w-auto">
+            <app-button
+              type="secondary"
+              size="md"
+              [isDisabled]="isSubmitting"
+              (click)="resetForm()"
+              class="w-full sm:w-auto"
+            >
+              Cancella tutto
+            </app-button>
+          </div>
+
+          <div class="w-full sm:w-auto">
+            <app-button
+              type="withoutBorder"
+              size="md"
+              [isDisabled]="isSubmitting"
+              (click)="goBack()"
+              class="w-full sm:w-auto"
+            >
+              Torna indietro
+            </app-button>
+          </div>
+        </div>
+
+        <!-- Form validation summary -->
+        @if (sendTicketForm.invalid && sendTicketForm.touched) {
+          <div class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded">
+            <p class="font-bold">Attenzione:</p>
+            <ul class="list-disc list-inside mt-2">
+              @if (getControl('category').errors && getControl('category').touched) {
+                <li>Seleziona una tipologia di richiesta</li>
+              }
+              @if (getControl('message').errors && getControl('message').touched) {
+                <li>Il messaggio è obbligatorio</li>
+              }
+            </ul>
+          </div>
+        }
+      </form>
+    </div>
+  </div>
+</div>
+
+@if (this.modalType) {
+  <app-modal-small
+    [modalType]="modalType"
+    [loading]="false"
+    [params]="{
+      title: 'Sei sicuro di voler tornare indietro?',
+      subtitle: 'Le modifiche non salvate andranno perdute',
+    }"
+    (onAction)="modalAction()"
+    (onClose)="modalClosed()"
+  ></app-modal-small>
+}

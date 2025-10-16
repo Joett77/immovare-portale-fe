@@ -1,0 +1,147 @@
+<div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8 px-4 lg:px-0">
+  <div class="p-4 bg-[#F6F6F6]">
+    <h3 class="font-semibold text-black text-xs mb-2">Tipologia</h3>
+    <p class="text-base font-semibold text-black flex items-center gap-x-2">
+      <app-apartment-icon class="h-5 w-5 inline-block" />
+      {{ property?.type || '-' }}
+    </p>
+  </div>
+  <div class="p-4 bg-[#F6F6F6]">
+    <h3 class="font-semibold text-black text-xs mb-2">Locali</h3>
+    <p class="text-base font-semibold text-black flex items-center gap-x-2">
+      <app-floorplan-icon class="h-5 w-5 inline-block" />
+      {{ property?.numberRooms || '-' }}
+    </p>
+  </div>
+  <div class="p-4 bg-[#F6F6F6]">
+    <h3 class="font-semibold text-black text-xs mb-2">Superficie</h3>
+    <p class="text-base font-semibold text-black flex items-center gap-x-2">
+      <app-measure-icon class="h-5 w-5 inline-block" />
+      {{ property?.squareMetres || '-' }} m²
+    </p>
+  </div>
+  <div class="p-4 bg-[#F6F6F6]">
+    <h3 class="font-semibold text-black text-xs mb-2">Piano</h3>
+    <p class="text-base font-semibold text-black flex items-center gap-x-2">
+      <app-floor-icon class="h-5 w-5 inline-block" />
+      {{ property?.floor || '-' }}
+    </p>
+  </div>
+  <div class="p-4 bg-[#F6F6F6]">
+    <h3 class="font-semibold text-black text-xs mb-2">Bagni</h3>
+    <p class="text-base font-semibold text-black flex items-center gap-x-2">
+      <app-bath-icon class="h-5 w-5 inline-block" />
+      {{ property?.numberBaths || '-' }}
+    </p>
+  </div>
+  <div class="p-4 bg-[#F6F6F6]">
+    <h3 class="font-semibold text-black text-xs mb-2">Stato immobile</h3>
+    <p class="text-base font-semibold text-black">
+      {{ property?.propertyCondition || '-' }}
+    </p>
+  </div>
+</div>
+
+<div class="mb-8 px-4 lg:px-0">
+  <h2 class="text-lg font-bold text-black mb-4">Descrizione</h2>
+  <div class="text-base">
+    <p
+      class="mb-4"
+      [class.line-clamp-3]="!isDescriptionExpanded"
+    >
+      {{ property?.description || '' }}
+    </p>
+  </div>
+  <app-button
+    [type]="'secondary'"
+    [size]="'sm'"
+    class="block w-full lg:w-fit"
+    (click)="toggleDescription()"
+  >
+    {{ isDescriptionExpanded ? 'Nascondi' : 'Leggi' }}
+    <app-chevron-down-icon
+      class="inline-block ml-1"
+      [class.rotate-180]="isDescriptionExpanded"
+    />
+  </app-button>
+</div>
+
+<div class="mb-8 px-4 lg:px-0">
+  <h2 class="text-lg font-bold text-black mb-4">Caratteristiche</h2>
+  <div>
+    <div class="flex justify-between pb-1 pt-3 border-b border-[#CBCCCD]">
+      <span class="text-sm text-black font-semibold">Locali</span>
+      <span class="text-sm text-black">{{ property?.numberRooms || '-' }}</span>
+    </div>
+    <div class="flex justify-between pb-1 pt-3 border-b border-[#CBCCCD]">
+      <span class="text-sm text-black font-semibold">Superficie</span>
+      <span class="text-sm text-black">{{ property?.squareMetres || '-' }} m²</span>
+    </div>
+    <div class="flex justify-between pb-1 pt-3 border-b border-[#CBCCCD]">
+      <span class="text-sm text-black font-semibold">Tipologia</span>
+      <span class="text-sm text-black">{{ property?.type || '-' }}</span>
+    </div>
+    <div class="flex justify-between pb-1 pt-3 border-b border-[#CBCCCD]">
+      <span class="text-sm text-black font-semibold">Stato immobile</span>
+      <span class="text-sm text-black">{{ property?.propertyCondition || '-' }}</span>
+    </div>
+    <div class="flex justify-between pb-1 pt-3 border-b border-[#CBCCCD]">
+      <span class="text-sm text-black font-semibold">Riscaldamento</span>
+      <span class="text-sm text-black">{{ property?.heating || '-' }}</span>
+    </div>
+    <div class="flex justify-between pb-1 pt-3 border-b border-[#CBCCCD]">
+      <span class="text-sm text-black font-semibold">Anno di costruzione</span>
+      <span class="text-sm text-black">{{ property?.constructionYear || '-' }}</span>
+    </div>
+    <div class="flex justify-between pb-1 pt-3 border-b border-[#CBCCCD]">
+      <span class="text-sm text-black font-semibold">Bagni</span>
+      <span class="text-sm text-black">{{ property?.numberBaths || '-' }}</span>
+    </div>
+    <div class="flex justify-between pb-1 pt-3 border-b border-[#CBCCCD]">
+      <span class="text-sm text-black font-semibold">Piano</span>
+      <span class="text-sm text-black">{{ property?.floorNumber || '-' }}</span>
+    </div>
+    <div class="flex justify-between pb-1 pt-3 border-b border-[#CBCCCD]">
+      <span class="text-sm text-black font-semibold">Classe energetica</span>
+      <span class="text-sm text-black">{{
+        property?.energyClass ? property?.energyClass?.trim() : '-'
+      }}</span>
+    </div>
+  </div>
+</div>
+
+<div class="mb-8 px-4 lg:px-0">
+  <h2 class="text-lg font-bold text-black mb-4">Caratteristiche aggiuntive</h2>
+  <div class="flex flex-wrap gap-4">
+    <div class="flex flex-wrap gap-4">
+      @for (feature of additionalFeatures; track feature.name) {
+        @if (feature.enabled) {
+          <div class="flex items-center p-3 bg-[#F6F6F6]">
+            <div class="flex items-center justify-center h-4 w-4">
+              <ng-container *ngComponentOutlet="feature.icon" />
+            </div>
+            <span class="text-black text-sm ml-2">{{ feature.name }}</span>
+          </div>
+        }
+      }
+    </div>
+  </div>
+</div>
+
+<div class="mb-8 px-4 lg:px-0">
+  <h2 class="text-lg font-bold text-black mb-4">Info sul prezzo</h2>
+  <div>
+    <div class="flex justify-between pb-1 pt-3 border-b border-[#CBCCCD]">
+      <span class="text-sm text-black font-semibold">Prezzo</span>
+      <span class="text-sm text-black">{{ formatPrice(property?.price) }}</span>
+    </div>
+    <div class="flex justify-between pb-1 pt-3 border-b border-[#CBCCCD]">
+      <span class="text-sm text-black font-semibold">Prezzo al m²</span>
+      <span class="text-sm text-black">{{ calculatePricePerSqm() }}</span>
+    </div>
+    <div class="flex justify-between pb-1 pt-3 border-b border-[#CBCCCD]">
+      <span class="text-sm text-black font-semibold">Spese condominiali</span>
+      <span class="text-sm text-black">{{ 'Nessuna' }}</span>
+    </div>
+  </div>
+</div>

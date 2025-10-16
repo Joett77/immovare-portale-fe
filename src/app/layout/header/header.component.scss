@@ -1,0 +1,28 @@
+@media (max-width: 1023px) {
+  .mobile-user-menu {
+    ::ng-deep {
+      .user-name,
+      .username,
+      span:not(.sr-only) {
+        display: none !important;
+      }
+
+      button {
+        padding: 0.25rem !important;
+        min-width: auto !important;
+
+        .text-sm,
+        .text-xs,
+        .text-base {
+          display: none !important;
+        }
+      }
+
+      .dropdown-menu,
+      .user-dropdown {
+        right: 0 !important;
+        left: auto !important;
+      }
+    }
+  }
+}

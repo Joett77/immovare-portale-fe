@@ -1,0 +1,85 @@
+// payment-method-manager.component.scss
+.payment-method-manager {
+  .payment-method-card {
+    transition: all 0.2s ease;
+
+    &:hover {
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+  }
+
+  #payment-element-setup {
+    min-height: 120px;
+
+    .StripeElement {
+      border: 1px solid #e5e7eb;
+      border-radius: 4px;
+      padding: 12px;
+      background-color: white;
+    }
+
+    .StripeElement--focus {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 1px #3b82f6;
+    }
+
+    .StripeElement--invalid {
+      border-color: #ef4444;
+    }
+  }
+
+  .modal-backdrop {
+    backdrop-filter: blur(2px);
+  }
+
+  .payment-method-item {
+    border-left: 4px solid transparent;
+
+    &.is-default {
+      border-left-color: #10b981;
+      background-color: #f0fdf4;
+    }
+  }
+
+  .brand-icon {
+    &.visa {
+      color: #1a1f71;
+    }
+
+    &.mastercard {
+      color: #eb001b;
+    }
+
+    &.amex {
+      color: #006fcf;
+    }
+  }
+
+  .setup-form {
+    .loading-spinner {
+      animation: spin 1s linear infinite;
+    }
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// Dark mode support
+@media (prefers-color-scheme: dark) {
+  .payment-method-manager {
+    #payment-element-setup {
+      .StripeElement {
+        background-color: #1f2937;
+        border-color: #374151;
+        color: white;
+      }
+    }
+  }
+}

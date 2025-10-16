@@ -1,0 +1,104 @@
+<div class="container mx-auto pt-8 px-0 lg:px-8">
+  <!-- Bottone Torna alla Ricerca -->
+  <div class="mb-1 flex justify-start">
+    <app-button
+      [size]="'md'"
+      type="withoutBorder"
+      [hasBorder]="false"
+      (click)="goToVoglioAcquistare()"
+    >
+      <span class="mr-1">←</span> Torna alla ricerca
+    </app-button>
+  </div>
+
+  <!-- Tabs di Navigazione -->
+  <div class="mt-2 flex border-b border-[#97999B] mb-4 text-[#97999B]">
+    <button
+      class="px-6 py-3 font-bold w-1/2 lg:w-fit"
+      (click)="goToSavedSearches()"
+    >
+      Ricerche salvate
+    </button>
+    <button
+      class="px-6 py-3 font-bold w-1/2 lg:w-fit bg-[#ECE81A] text-black border-b-2 border-[#3C3D3E]"
+    >
+      Immobili preferiti
+    </button>
+  </div>
+
+  <!-- Loading indicator -->
+  @if (isLoading()) {
+    <div class="flex justify-center py-10">
+      <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-primary"></div>
+    </div>
+  }
+
+  <!-- Error message -->
+  @if (hasError()) {
+    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+      <span class="block sm:inline">{{ errorMessage() }}</span>
+    </div>
+  }
+
+  @if (showDeleteAll() && !isLoading()) {
+    <!-- Pulsante Elimina Tutto -->
+    <div class="flex justify-end items-end pr-4 lg:pr-2">
+      <app-button
+        type="withoutBorder"
+        [hasBorder]="false"
+        (click)="deleteAll()"
+        size="nopadding"
+      >
+        <div class="px-0 py-6 flex items-center">
+          <app-trash-icon class="h-5 flex items-center w-5 mr-2" /> Elimina tutto
+        </div>
+      </app-button>
+    </div>
+  }
+
+  @if (!isLoading() && allProperties.length === 0) {
+    <!-- Empty state -->
+    <div class="text-center py-10 min-h-[calc(100vh-332px)]">
+      <img
+        src="assets/empty.png"
+        alt="Empty state"
+        class="w-[154px] mx-auto"
+      />
+      <h2 class="text-lg font-bold text-black mt-8 mb-2">Nessun immobile preferito.</h2>
+      <p class="text text-black mb-4">
+        Qui troverai tutti i preferiti che hai salvato. Clicca sul tasto "Aggiungi preferito" per
+        salvare un immobile.
+      </p>
+    </div>
+  }
+
+  @if (!isLoading() && properties.length > 0) {
+    <div class="space-y-4 min-h-[calc(100vh-475px)]">
+      <!-- Lista Immobili Preferiti -->
+      <app-large-property-card
+        [properties]="properties"
+        (delete)="deleteFavoriteProperty($event)"
+      ></app-large-property-card>
+    </div>
+
+    <!-- Paginazione -->
+    <app-pagination
+      [totalPages]="totalPages"
+      [currentPage]="currentPage"
+      (pageChange)="onPageChange($event)"
+    ></app-pagination>
+  }
+</div>
+
+@if (this.modalType) {
+  <app-modal-small
+    [modalType]="modalType"
+    [loading]="false"
+    [params]="{
+      title: 'Sei sicuro di voler eliminare tutti i preferiti?',
+      subtitle: 'I preferiti saranno eliminati definitivamente',
+    }"
+    (onAction)="modalAction()"
+    (onClose)="modalClosed()"
+  ></app-modal-small>
+}

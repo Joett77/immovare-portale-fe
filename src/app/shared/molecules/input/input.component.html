@@ -1,0 +1,114 @@
+<div
+  class="w-full"
+  [class.opacity-60]="isInputDisabled()"
+>
+  <div class="group relative w-full">
+    @if (isTextarea) {
+      <textarea
+        #inputElement
+        [id]="label()"
+        [rows]="rows()"
+        [formControl]="control()!"
+        [value]="innerValue"
+        [placeholder]="label()"
+        [disabled]="isInputDisabled()"
+        (keydown)="onKeyDown($event)"
+        (input)="onInputChange($event)"
+        (focus)="onFocus()"
+        (blur)="onBlur()"
+        class="text-gray-900 focus:border-primary-500 focus:ring-primary-500 peer min-h-[100px] w-full resize-none rounded-md border border-gray-300 px-4 py-4 text-base placeholder-transparent outline-none transition-all duration-200 focus:pt-6 focus:ring-1 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500"
+      >
+      </textarea>
+    } @else {
+      <input
+        #inputElement
+        [type]="inputType"
+        [id]="label()"
+        [formControl]="control()!"
+        [(ngModel)]="innerValue"
+        [placeholder]="label()"
+        [disabled]="isInputDisabled()"
+        [min]="min()"
+        [max]="max()"
+        [step]="step()"
+        (input)="onInputChange($event)"
+        (focus)="onFocus()"
+        (blur)="onBlur()"
+        class="text-gray-900 focus:border-primary-500 focus:ring-primary-500 peer h-14 w-full rounded-md border border-gray-300 px-4 text-base placeholder-transparent outline-none transition-all duration-200 focus:pb-2 focus:pt-6 focus:ring-1 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500 [&:not(:placeholder-shown)]:pb-2 [&:not(:placeholder-shown)]:pt-6 [&[type=number]]:appearance-none [&[type=password]]:tracking-widest"
+        [class.border-red-500]="isInvalid"
+        [class.focus:border-red-500]="isInvalid"
+        [class.focus:ring-red-500]="isInvalid"
+      />
+    }
+
+    <!-- Label for textarea -->
+    @if (isTextarea) {
+      <label
+        [for]="label()"
+        [class.text-gray-500]="!isInputDisabled()"
+        [class.text-gray-400]="isInputDisabled()"
+        [class.peer-focus:text-primary-500]="!isInputDisabled()"
+        [class.text-red-500]="isInvalid"
+        class="pointer-events-none absolute left-4 top-2 text-xs transition-all duration-200 ease-in-out"
+        [ngClass]="{
+          'text-xs': true,
+          'top-2': true,
+        }"
+      >
+        {{ label() }}
+      </label>
+    } @else {
+      <!-- Label for regular input -->
+      <label
+        [for]="label()"
+        [class.text-gray-500]="!isInputDisabled()"
+        [class.text-gray-400]="isInputDisabled()"
+        [class.peer-focus:text-primary-500]="!isInputDisabled()"
+        [class.text-red-500]="isInvalid"
+        [class.text-xs]="focused || innerValue"
+        [class.top-2]="focused || innerValue"
+        class="pointer-events-none absolute left-4 transition-all duration-200 ease-in-out"
+        [ngStyle]="{
+          top: focused || innerValue ? '8px' : '50%',
+          transform: focused || innerValue ? 'none' : 'translateY(-50%)',
+          'font-size': focused || innerValue ? '12px' : '16px',
+        }"
+      >
+        {{ label() }}
+      </label>
+    }
+
+    @if (type() === 'password' && !isInputDisabled()) {
+      <button
+        type="button"
+        class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+        (click)="togglePasswordVisibility($event)"
+      >
+        @if (showPassword) {
+          <app-eye-icon class="h-5 w-5" />
+        } @else {
+          <app-eye-slash-icon class="h-5 w-5" />
+        }
+      </button>
+    }
+  </div>
+
+  @if (isInvalid) {
+    <div class="ml-1 mt-1 text-xs text-red-500">
+      @if (control()?.errors?.['required']) {
+        Questo campo è obbligatorio
+      } @else if (control()?.errors?.['min']) {
+        Il valore deve essere almeno {{ min() }}
+      } @else if (control()?.errors?.['max']) {
+        Il valore deve essere al massimo {{ max() }}
+      } @else if (control()?.errors?.['email']) {
+        Inserisci un indirizzo email valido
+      } @else if (control()?.errors?.['minlength']) {
+        Il valore deve contenere almeno
+        {{ control()?.errors?.['minlength']?.requiredLength }} caratteri
+      } @else {
+        {{ errorMessage() }}
+      }
+    </div>
+  }
+</div>

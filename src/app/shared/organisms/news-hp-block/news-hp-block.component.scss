@@ -1,0 +1,16 @@
+
+swiper-container::part(bullet-active) {
+    background-color: white;
+    width: 16px;
+    height: 16px;
+    border: 2px solid white;
+  }
+
+
+swiper-container::part(bullet) {
+    background-color: transparent;
+    width: 16px;
+    height: 16px;
+    border: 2px solid white;
+  }
+

@@ -1,0 +1,607 @@
+<div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+  @if (this.loading) {
+    <div class="bg-black/50 w-full h-full flex justify-center items-center z-50">
+      <div class="w-10 h-10 animate-spin rounded-full border-b-2 border-primary"></div>
+    </div>
+  }
+  <div class="bg-white rounded-s modal-small mx-auto top-44 h-fit fixed">
+    @if (modalType === 'delete-request') {
+      <h2 class="heading-sm align-middle font-bold font-montserrat text-primary-dark pb-6"
+        >Confermi di voler eliminare il tuo account?</h2
+      >
+      <div class="alert w-max font-bold px-1 py-0.5 mb-4"
+        >Il tuo account verrà eliminato tra 15 giorni.</div
+      >
+      <p
+        >In caso di ripensamento in questo periodo di tempo, potrai mantenere attivo l’account
+        revocando l’eliminazione.</p
+      >
+
+      <div class="mt-10 flex justify-between gap-3">
+        <div class="max-w-fit">
+          <app-button
+            type="danger"
+            size="nopadding"
+            (click)="action()"
+          >
+            <span class="px-6 py-3">Confermo eliminazione</span>
+          </app-button>
+        </div>
+
+        <div class="max-w-fit">
+          <app-button
+            type="primary"
+            size="nopadding"
+            (click)="close()"
+          >
+            <span class="px-6 py-3">Mantieni account e relativi servizi</span>
+          </app-button>
+        </div>
+      </div>
+    } @else if (modalType === 'restore') {
+      <h2 class="heading-sm align-middle font-bold font-montserrat text-primary-dark pb-6"
+        >Confermi di voler riattivare il tuo account?</h2
+      >
+      <p
+        >Confermando il tuo account e relativi servizi rimarranno attivi e verrà annullata la
+        richiesta di eliminazione.</p
+      >
+
+      <div class="mt-10 flex justify-between gap-3">
+        <div class="max-w-fit">
+          <app-button
+            type="secondary"
+            size="nopadding"
+            (click)="close()"
+          >
+            <span class="px-6 py-3">Annulla</span>
+          </app-button>
+        </div>
+
+        <div class="max-w-fit">
+          <app-button
+            type="primary"
+            size="nopadding"
+            (click)="action()"
+          >
+            <span class="px-6 py-3">Conferma riattivazione</span>
+          </app-button>
+        </div>
+      </div>
+    } @else if (modalType === 'disable') {
+      <h2 class="heading-sm align-middle font-bold font-montserrat text-primary-dark pb-6"
+        >Confermi di voler disattivare l'utente "{{ params.fullName }}"?</h2
+      >
+
+      <div class="mt-10 flex justify-between">
+        <div class="pr-3">
+          <label class="custom-checkbox">
+            <input
+              type="checkbox"
+              [(ngModel)]="params.checkbox"
+            />
+            <span class="checkmark"></span>
+          </label>
+        </div>
+        <div>
+          <p class="text-color-error font-bold mb-8"
+            >Dichiaro di aver compreso che disattivandolo, l’utente non avrà più la possibilità di
+            accedere al portale.</p
+          >
+          <p class="font-bold mb-8"
+            >Gli eventuali immobili e i piani ad essi associati verranno tuttavia mantenuti attivi,
+            senza la possibilità di essere gestiti dall’utente.</p
+          >
+          <p class="font-bold">L’azione è reversibile.</p>
+        </div>
+      </div>
+
+      <div class="mt-10 flex justify-between gap-3">
+        <div class="max-w-fit">
+          <app-button
+            type="secondary"
+            size="nopadding"
+            (click)="close()"
+          >
+            <span class="px-6 py-3">Annulla</span>
+          </app-button>
+        </div>
+
+        <div class="max-w-fit">
+          <app-button
+            type="primary"
+            size="nopadding"
+            [isDisabled]="!params.checkbox"
+            (click)="action()"
+          >
+            <span class="px-6 py-3">Conferma disattivazione utente</span>
+          </app-button>
+        </div>
+      </div>
+    } @else if (modalType === 'enable') {
+      <h2 class="heading-sm align-middle font-bold font-montserrat text-primary-dark pb-6"
+        >Confermi di voler riattivare l'utente "{{ params.fullName }}"?</h2
+      >
+      <p class="font-bold"
+        >L’utente potrà accedere nuovamente al portale e gestire i suoi eventuali piani e
+        immobili.</p
+      >
+
+      <div class="mt-20 flex justify-between gap-3">
+        <div class="max-w-fit">
+          <app-button
+            type="secondary"
+            size="nopadding"
+            (click)="close()"
+          >
+            <span class="px-6 py-3">Annulla</span>
+          </app-button>
+        </div>
+
+        <div class="max-w-fit">
+          <app-button
+            type="primary"
+            size="nopadding"
+            (click)="action()"
+          >
+            <span class="px-6 py-3">Conferma riattivazione utente</span>
+          </app-button>
+        </div>
+      </div>
+    } @else if (modalType === 'delete') {
+      <h2 class="heading-sm align-middle font-bold font-montserrat text-primary-dark pb-6"
+        >Confermi di voler eliminare l'utente "{{ params.fullName }}" cancellando i suoi immobili
+        pubblicati?</h2
+      >
+
+      <div class="mt-10 flex justify-between">
+        <div class="pr-3">
+          <label class="custom-checkbox">
+            <input
+              type="checkbox"
+              [(ngModel)]="params.checkbox"
+            />
+            <span class="checkmark"></span>
+          </label>
+        </div>
+        <div>
+          <p class="text-color-error font-bold mb-8"
+            >Dichiaro di aver compreso che eliminandolo, l’utente non avrà più la possibilità di
+            accedere al portale.</p
+          >
+          <p class="font-bold">L'azione non è reversibile.</p>
+        </div>
+      </div>
+
+      <div class="mt-10 flex justify-between gap-3">
+        <div class="max-w-fit">
+          <app-button
+            type="secondary"
+            size="nopadding"
+            (click)="close()"
+          >
+            <span class="px-6 py-3">Annulla</span>
+          </app-button>
+        </div>
+
+        <div class="max-w-fit">
+          <app-button
+            type="primary"
+            size="nopadding"
+            [isDisabled]="!params.checkbox"
+            (click)="action()"
+          >
+            <span class="px-6 py-3">Conferma eliminazione utente</span>
+          </app-button>
+        </div>
+      </div>
+    } @else if (modalType === 'reset-password') {
+      <h2 class="heading-sm align-middle font-bold font-montserrat text-primary-dark pb-6"
+        >Confermi di voler inviare il reimposta password all’utente?</h2
+      >
+      <p
+        >L'utente riceverà un'email tramite la quale potrà avviare il processo per impostare una
+        nuova password.</p
+      >
+
+      <div class="mt-20 flex justify-between gap-3">
+        <div class="max-w-fit">
+          <app-button
+            type="secondary"
+            size="nopadding"
+            (click)="close()"
+          >
+            <span class="px-6 py-3">Annulla</span>
+          </app-button>
+        </div>
+
+        <div class="max-w-fit">
+          <app-button
+            type="primary"
+            size="nopadding"
+            (click)="action()"
+          >
+            <span class="px-6 py-3">Conferma</span>
+          </app-button>
+        </div>
+      </div>
+    } @else if (modalType === 'delete-subscription') {
+      <h2
+        class="whitespace-normal text-left heading-sm align-middle font-bold font-montserrat text-primary-dark pb-6"
+      >
+        Confermi di voler disattivare il piano “{{ params.planName }}” per l’annuncio #ID-{{
+          params.propertyId
+        }}
+        ed effettuare il downgrade al piano gratuito?</h2
+      >
+
+      <div class="whitespace-normal text-left mt-10 flex justify-between">
+        <div class="pr-3">
+          <label class="custom-checkbox">
+            <input
+              type="checkbox"
+              [(ngModel)]="params.checkbox"
+            />
+            <span class="checkmark"></span>
+          </label>
+        </div>
+        <div>
+          <p class="text-color-error font-bold mb-8"
+            >Dichiaro di aver compreso che disattivando il piano “{{ params.planName }}” il cliente
+            perderà la possibilità di usufruire di alcuni servizi esclusivi di tale piano.</p
+          >
+        </div>
+      </div>
+
+      <div class="mt-10 flex justify-between gap-3">
+        <div class="max-w-fit">
+          <app-button
+            type="secondary"
+            size="nopadding"
+            (click)="close()"
+          >
+            <span class="px-6 py-3">Annulla</span>
+          </app-button>
+        </div>
+
+        <div class="max-w-fit">
+          <app-button
+            type="primary"
+            size="nopadding"
+            [isDisabled]="!params.checkbox"
+            (click)="action()"
+          >
+            <span class="px-6 py-3">Conferma disattivazione piano</span>
+          </app-button>
+        </div>
+      </div>
+    } @else if (modalType === 'restore-subscription') {
+      <h2
+        class="whitespace-normal text-left heading-sm align-middle font-bold font-montserrat text-primary-dark pb-6"
+      >
+        Confermi di voler riattivare il piano “{{ params.planName }}” per l’annuncio #ID-{{
+          params.propertyId
+        }}?</h2
+      >
+
+      <p class="whitespace-normal text-left"
+        >Riattivando il piano riprenderà la fatturazione automatica dell'utente</p
+      >
+
+      <div class="mt-20 flex justify-between gap-3">
+        <div class="max-w-fit">
+          <app-button
+            type="secondary"
+            size="nopadding"
+            (click)="close()"
+          >
+            <span class="px-6 py-3">Annulla</span>
+          </app-button>
+        </div>
+
+        <div class="max-w-fit">
+          <app-button
+            type="primary"
+            size="nopadding"
+            (click)="action()"
+          >
+            <span class="px-6 py-3">Conferma riattivazione piano</span>
+          </app-button>
+        </div>
+      </div>
+    } @else if (modalType === 'update-profile') {
+      <h2 class="heading-sm align-middle font-bold font-montserrat text-primary-dark pb-6"
+        >Confermi di voler salvare le modifiche al tuo account?</h2
+      >
+      <p>Le modifiche apportate al tuo profilo verranno salvate definitivamente.</p>
+
+      <div class="mt-10 flex justify-between gap-3">
+        <div class="max-w-fit">
+          <app-button
+            type="secondary"
+            size="nopadding"
+            (click)="close()"
+          >
+            <span class="px-6 py-3">Annulla</span>
+          </app-button>
+        </div>
+
+        <div class="max-w-fit">
+          <app-button
+            type="primary"
+            size="nopadding"
+            (click)="action()"
+          >
+            <span class="px-6 py-3">Salva</span>
+          </app-button>
+        </div>
+      </div>
+    } @else if (modalType === 'update-password') {
+      <h2 class="heading-sm align-middle font-bold font-montserrat text-primary-dark pb-6"
+        >Confermi di voler aggiornare la password del tuo account?</h2
+      >
+      <p
+        >La tua password verrà cambiata immediatamente. Assicurati di ricordarla o salvarla in un
+        luogo sicuro.</p
+      >
+
+      <div class="mt-10 flex justify-between gap-3">
+        <div class="max-w-fit">
+          <app-button
+            type="secondary"
+            size="nopadding"
+            (click)="close()"
+          >
+            <span class="px-6 py-3">Annulla</span>
+          </app-button>
+        </div>
+
+        <div class="max-w-fit">
+          <app-button
+            type="primary"
+            size="nopadding"
+            (click)="action()"
+          >
+            <span class="px-6 py-3">Conferma</span>
+          </app-button>
+        </div>
+      </div>
+    } @else if (modalType === 'delete-element') {
+      <h2
+        class="text-left heading-sm align-middle font-bold font-montserrat text-primary-dark pb-6"
+        >{{ params.title }}</h2
+      >
+      <p class="text-left">{{ params.subtitle }}</p>
+
+      <div class="mt-10 flex justify-between gap-3">
+        <div class="max-w-fit">
+          <app-button
+            type="secondary"
+            size="nopadding"
+            (click)="close()"
+          >
+            <span class="px-6 py-3">Annulla</span>
+          </app-button>
+        </div>
+
+        <div class="max-w-fit">
+          <app-button
+            type="primary"
+            size="nopadding"
+            (click)="action(params.elementId)"
+          >
+            <span class="px-6 py-3">Conferma</span>
+          </app-button>
+        </div>
+      </div>
+    } @else if (modalType === 'disable-plan') {
+      <h2
+        class="whitespace-normal text-left heading-sm align-middle font-bold font-montserrat text-primary-dark pb-6"
+        >Confermi di voler disabilitare il piano {{ params.planName }}?</h2
+      >
+      <p class="whitespace-normal text-left font-bold"
+        >Tutti gli abbonamenti associati a questo piano non saranno più rinnovati</p
+      >
+
+      <div class="mt-10 flex justify-between gap-3">
+        <div class="max-w-fit">
+          <app-button
+            type="danger"
+            size="nopadding"
+            (click)="action()"
+          >
+            <span class="px-6 py-3">Disabilita</span>
+          </app-button>
+        </div>
+
+        <div class="max-w-fit">
+          <app-button
+            type="primary"
+            size="nopadding"
+            (click)="close()"
+          >
+            <span class="px-6 py-3">Mantieni Piano</span>
+          </app-button>
+        </div>
+      </div>
+    } @else if (modalType === 'enable-plan') {
+      <h2
+        class="whitespace-normal text-left heading-sm align-middle font-bold font-montserrat text-primary-dark pb-6"
+        >Confermi di voler attivare il piano {{ params.planName }}?</h2
+      >
+      <p class="whitespace-normal text-left font-bold"
+        >Il piano sarà disponibile alla sottoscrizione da parte degli utenti</p
+      >
+
+      <div class="mt-10 flex justify-between gap-3">
+        <div class="max-w-fit">
+          <app-button
+            type="secondary"
+            size="nopadding"
+            (click)="close()"
+          >
+            <span class="px-6 py-3">Annulla</span>
+          </app-button>
+        </div>
+
+        <div class="max-w-fit">
+          <app-button
+            type="primary"
+            size="nopadding"
+            (click)="action()"
+          >
+            <span class="px-6 py-3">Conferma</span>
+          </app-button>
+        </div>
+      </div>
+    } @else if (modalType === 'update-plan') {
+      <h2
+        class="whitespace-normal text-left heading-sm align-middle font-bold font-montserrat text-primary-dark pb-6"
+        >Confermi di voler salvare le modifiche al piano?</h2
+      >
+      <p class="whitespace-normal text-left font-bold"
+        >Le modifiche apportate al piano verranno salvate definitivamente</p
+      >
+
+      <div class="mt-10 flex justify-between gap-3">
+        <div class="max-w-fit">
+          <app-button
+            type="secondary"
+            size="nopadding"
+            (click)="close()"
+          >
+            <span class="px-6 py-3">Annulla</span>
+          </app-button>
+        </div>
+
+        <div class="max-w-fit">
+          <app-button
+            type="primary"
+            size="nopadding"
+            (click)="action()"
+          >
+            <span class="px-6 py-3">Conferma</span>
+          </app-button>
+        </div>
+      </div>
+    } @else if (modalType === 'update-service') {
+      <h2
+        class="whitespace-normal text-left heading-sm align-middle font-bold font-montserrat text-primary-dark pb-6"
+        >Confermi di voler salvare le modifiche al servizio?</h2
+      >
+      <p class="whitespace-normal text-left font-bold"
+        >Le modifiche apportate al servizio verranno salvate definitivamente</p
+      >
+
+      <div class="mt-10 flex justify-between gap-3">
+        <div class="max-w-fit">
+          <app-button
+            type="secondary"
+            size="nopadding"
+            (click)="close()"
+          >
+            <span class="px-6 py-3">Annulla</span>
+          </app-button>
+        </div>
+
+        <div class="max-w-fit">
+          <app-button
+            type="primary"
+            size="nopadding"
+            (click)="action()"
+          >
+            <span class="px-6 py-3">Conferma</span>
+          </app-button>
+        </div>
+      </div>
+    } @else if (modalType === 'delete-service') {
+      <h2
+        class="whitespace-normal text-left heading-sm align-middle font-bold font-montserrat text-primary-dark pb-6"
+        >Confermi di voler eliminare il servizio?</h2
+      >
+      <p class="whitespace-normal text-left font-bold"
+        >Il servizio verrà eliminato definitivamente</p
+      >
+
+      <div class="mt-10 flex justify-between gap-3">
+        <div class="max-w-fit">
+          <app-button
+            type="secondary"
+            size="nopadding"
+            (click)="close()"
+          >
+            <span class="px-6 py-3">Annulla</span>
+          </app-button>
+        </div>
+
+        <div class="max-w-fit">
+          <app-button
+            type="primary"
+            size="nopadding"
+            (click)="action()"
+          >
+            <span class="px-6 py-3">Conferma</span>
+          </app-button>
+        </div>
+      </div>
+    } @else if (modalType === 'delete-plan') {
+      <h2
+        class="whitespace-normal text-left heading-sm align-middle font-bold font-montserrat text-primary-dark pb-6"
+        >Confermi di voler eliminare il piano?</h2
+      >
+      <p class="whitespace-normal text-left font-bold">Il piano verrà eliminato definitivamente</p>
+
+      <div class="mt-10 flex justify-between gap-3">
+        <div class="max-w-fit">
+          <app-button
+            type="secondary"
+            size="nopadding"
+            (click)="close()"
+          >
+            <span class="px-6 py-3">Annulla</span>
+          </app-button>
+        </div>
+        <div class="max-w-fit">
+          <app-button
+            type="primary"
+            size="nopadding"
+            (click)="action()"
+          >
+            <span class="px-6 py-3">Conferma</span>
+          </app-button>
+        </div>
+      </div>
+    } @else if (modalType === 'create-bpm') {
+      <h2
+        class="whitespace-normal text-left heading-sm align-middle font-bold font-montserrat text-primary-dark pb-6"
+        >Confermi di voler avviare una pratica per questo annuncio?</h2
+      >
+      <p class="whitespace-normal text-left font-bold"
+        >Una volta avviata una pratica non sarà possibile attivare ulteriori pratiche finché la
+        precedente non sarà archiviata.</p
+      >
+
+      <div class="mt-10 flex justify-between gap-3">
+        <div class="max-w-fit">
+          <app-button
+            type="secondary"
+            size="nopadding"
+            (click)="close()"
+          >
+            <span class="px-6 py-3">Annulla</span>
+          </app-button>
+        </div>
+
+        <div class="max-w-fit">
+          <app-button
+            type="primary"
+            size="nopadding"
+            (click)="action()"
+          >
+            <span class="px-6 py-3">Conferma</span>
+          </app-button>
+        </div>
+      </div>
+    }
+  </div>
+</div>

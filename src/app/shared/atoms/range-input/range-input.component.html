@@ -1,0 +1,50 @@
+<div class="w-full max-w-xl py-4 px-2">
+  <div class="flex items-center gap-4 mb-6 p-4">
+    <span class="text-black text-md">Da</span>
+    <input
+      type="text"
+      [value]="minValue || resetMin"
+      (input)="onMinValueChange($event)"
+      class="w-24 p-2 border border-gray-300 rounded focus:outline-none"
+      placeholder="--"
+    />
+
+    <span class="text-black ml-4">a</span>
+    <input
+      type="text"
+      [value]="maxValue || resetMax"
+      (input)="onMaxValueChange($event)"
+      class="w-24 p-2 border border-gray-300 rounded focus:outline-none"
+      placeholder="--"
+    />
+  </div>
+
+  <div class="slider-container relative w-full h-6">
+    <div class="track absolute w-full h-0.5 bg-gray-300 top-1/2 -translate-y-1/2"></div>
+
+    <div
+      class="track-selected absolute h-0.5 bg-black"
+      [style.left]="getLeftPosition()"
+      [style.right]="getRightPosition()"
+      style="top: 50%; transform: translateY(-50%)"
+    ></div>
+
+    <input
+      type="range"
+      [min]="resetMin"
+      [max]="resetMax"
+      [value]="maxValue || resetMax"
+      (input)="onMaxInput($event)"
+      class="range-input range-input-max absolute appearance-none w-full bg-transparent top-1/2 -translate-y-1/2"
+    />
+
+    <input
+      type="range"
+      [min]="resetMin"
+      [max]="resetMax"
+      [value]="minValue || resetMin"
+      (input)="onMinInput($event)"
+      class="range-input range-input-min absolute appearance-none w-full bg-transparent top-1/2 -translate-y-1/2"
+    />
+  </div>
+</div>

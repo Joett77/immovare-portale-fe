@@ -1,0 +1,196 @@
+<div class="container mx-auto px-4 py-8 min-h-[calc(100vh-178px)]">
+  <h1 class="text-2xl lg:text-3xl font-bold text-primary-dark mb-6 lg:mb-8">Conferma l'acquisto</h1>
+
+  <!-- Mobile First Layout: Stack vertically on mobile, side by side on desktop -->
+  <div class="flex flex-col lg:grid lg:grid-cols-2 gap-6 lg:gap-8">
+    <!-- Payment Method Section - Order 2 on mobile, 1 on desktop -->
+    <div class="bg-white p-4 lg:p-6 rounded border border-[#CBCCCD] order-2 lg:order-1">
+      @if (
+        this.paymentService.settings()?.planId && this.paymentService.settings()?.advertismentId
+      ) {
+        <h3 class="text-lg font-bold text-gray-800 mb-4">Metodo di pagamento</h3>
+        <form id="payment-form">
+          <div
+            id="payment-element"
+            class="mb-6"
+          >
+            <!-- Stripe Elements will create form elements here -->
+          </div>
+          <div
+            id="error-message"
+            class="text-red-600 text-sm mb-4"
+          >
+            <!-- Display error message to your customers here -->
+          </div>
+          <div id="billing-address-element">
+            <!-- Stripe billing address element -->
+          </div>
+        </form>
+      }
+    </div>
+
+    <!-- Order Summary Section - Order 1 on mobile, 2 on desktop -->
+    <div class="bg-gray-100 p-4 lg:p-6 rounded border border-[#CBCCCD] order-1 lg:order-2">
+      <h2 class="text-xl font-semibold mb-6 text-gray-800">Riepilogo Ordine</h2>
+
+      @if (
+        this.paymentService.settings()?.planId && this.paymentService.settings()?.advertismentId
+      ) {
+        @let product = this.paymentService.settings()?.planId! | planData | async;
+
+        <div class="space-y-6">
+          <!-- Product Information -->
+          <div class="border-b border-gray-300 pb-4">
+            <div class="mb-3">
+              <h3 class="font-bold text-sm mb-2 text-gray-700">Prodotto</h3>
+              <span class="text-gray-800">
+                @if (!product?.plan?.isService) {
+                  Abbonamento mensile Piano
+                }
+                {{ product?.plan?.title }}
+              </span>
+            </div>
+
+            <div class="mb-3">
+              <h3 class="font-bold text-sm mb-2 text-gray-700">Data attivazione / Data scadenza</h3>
+              <span class="text-gray-800"
+                >{{ today | date: 'dd/MM/yyyy' }} - {{ nextMonth | date: 'dd/MM/yyyy' }}</span
+              >
+            </div>
+
+            <div class="mb-3">
+              <h3 class="font-bold text-sm mb-2 text-gray-700">Prezzo</h3>
+              <span class="text-gray-800 font-semibold">{{
+                product?.plan?.price | currency: 'EUR' : 'symbol' : '1.2-2'
+              }}</span>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="flex gap-y-1 flex-col">
+            <!-- Contract Button -->
+            <app-button
+              (click)="modalOpen = true"
+              [size]="'md'"
+              class="w-full mb-4"
+              [type]="submitDisabled ? 'secondary' : 'primary'"
+            >
+              @if (submitDisabled) {
+                <app-square-light-icon class="mr-2"></app-square-light-icon>
+              } @else {
+                <fa-icon
+                  [icon]="faSqauareCheck"
+                  class="w-4 h-4 mr-2"
+                ></fa-icon>
+              }
+              <span class="text-sm">Visualizza e conferma visione del contratto</span>
+            </app-button>
+
+            <!-- Payment Button -->
+            <app-button
+              [isDisabled]="submitDisabled || isProcessingPayment"
+              (click)="handleSubmit($event)"
+              [text]="
+                isProcessingPayment
+                  ? 'Elaborazione pagamento...'
+                  : 'Conferma ed effettua il pagamento'
+              "
+              [size]="'md'"
+              class="w-full"
+              [type]="'primary'"
+            >
+              @if (isProcessingPayment) {
+                <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+              }
+            </app-button>
+          </div>
+
+          <!-- Footer Text -->
+          <div class="text-sm text-gray-600 text-center mt-6">
+            <p>
+              Il tuo annuncio verrà revisionato da un nostro operatore prima della pubblicazione.
+            </p>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</div>
+
+<!-- Modal with responsive layout -->
+@if (modalOpen) {
+  <app-modal-full-screen class="modal-full-screen">
+    <div class="container mx-auto px-4">
+      <div class="flex justify-between items-center mb-4 mt-4">
+        <h2 class="text-xl lg:text-2xl font-bold text-primary-dark">
+          Visualizza e conferma visione del contratto
+        </h2>
+        <button
+          class="text-gray-500 hover:text-gray-700"
+          (click)="modalOpen = false"
+        >
+          <fa-icon
+            [icon]="exitIcon"
+            class="text-xl"
+          ></fa-icon>
+        </button>
+      </div>
+
+      <!-- Responsive Modal Content -->
+      <div class="flex flex-col lg:grid lg:grid-cols-10 lg:gap-4 py-2 mx-auto">
+        <div
+          class="lg:col-span-7 p-4 overflow-y-auto h-96 lg:h-[500px] border border-[#CBCCCD] rounded bg-white mb-4 lg:mb-0"
+        >
+          <h3 class="text-lg font-bold mb-4">Contratto di acquisto</h3>
+          <div class="space-y-4 text-sm text-gray-700 leading-relaxed">
+            <p
+              >Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vestibulum, orci ut
+              hendrerit scelerisque, lectus est egestas justo, ut mollis sapien lectus et libero</p
+            >
+            <p
+              >Donec feugiat nec erat id efficitur. In hac habitasse platea dictumst. Morbi sed
+              felis ut sapien gravida aliquet non vitae ligula. Etiam ut lorem vehicula, tristique
+              ex non, vestibulum orci. Sed vestibulum, orci ut hendrerit scelerisque, lectus est
+              egestas justo, ut mollis sapien lectus et libero. Fusce auctor erat et metus
+              tincidunt, in sagittis ligula accumsan. Nullam blandit dui in eros congue, id pharetra
+              lectus consequat</p
+            >
+            <p
+              >Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis
+              egestas. Nulla facilisi. Praesent eget venenatis nisi. Donec feugiat nec erat id
+              efficitur. In hac habitasse platea dictumst. Morbi sed felis ut sapien gravida aliquet
+              non vitae ligula. Etiam ut lorem vehicula, tristique ex non, vestibulum orci. Sed
+              vestibulum, orci ut hendrerit scelerisque, lectus est egestas justo, ut mollis sapien
+              lectus et libero</p
+            >
+            <p
+              >consectetur adipiscing elit. Vestibulum fermentum mauris non nulla faucibus, nec
+              cursus libero vestibulum. Fusce elementum ac massa eget congue. Pellentesque habitant
+              morbi tristique senectus et netus et malesuada fames ac turpis egestas. Nulla
+              facilisi. Praesent eget venenatis nisi</p
+            >
+            <p
+              >vehicula, tristique ex non, vestibulum orci. Sed vestibulum, orci ut hendrerit
+              scelerisque, lectus est egestas justo, ut mollis sapien lectus et libero. Fusce auctor
+              erat et metus tincidunt, in sagittis ligula accumsan. Nullamblandit dui in eros
+              congue, id pharetra lectus consequat.</p
+            >
+          </div>
+        </div>
+
+        <div class="lg:col-span-3 bg-gray-100 p-4 rounded">
+          <div class="flex flex-col justify-center h-full">
+            <app-button
+              size="md"
+              (click)="submitDisabled = false; modalOpen = false"
+              class="w-full"
+              [type]="'primary'"
+            >
+              Conferma contratto
+            </app-button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </app-modal-full-screen>
+}

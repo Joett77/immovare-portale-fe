@@ -1,0 +1,100 @@
+<div class="relative">
+  <button
+    (click)="toggleMenu()"
+    class="flex items-center gap-x-2 text-[#2E5D63]"
+  >
+    <app-user-circle-icon class="w-5 h-5 text-primary-dark" />
+    <span class="font-bold z-10 hidden lg:block">{{ userData?.firstName }}</span>
+    <div
+      *ngIf="unreadTicketList.length > 0"
+      class="circle bg-secondary text-primary-dark text-center w-4 h-4 m-auto font-bold text-xs z-1 absolute -top-1 -right-3"
+    >
+      {{ unreadTicketList.length }}
+    </div>
+  </button>
+
+  <div
+    *ngIf="isOpen"
+    class="absolute z-40 right-0 mt-2 w-56 rounded-sm shadow-lg bg-white ring-1 ring-black divide-y divide-[#CBCCCD]"
+  >
+    <div class="py-1">
+      <!-- CMS link for admin users -->
+      @if (isAdmin) {
+        <a
+          (click)="goToCms()"
+          class="px-4 py-2 text-sm cursor-pointer flex items-center gap-x-3"
+        >
+          <app-user-icon class="h-4 w-4" />
+          Backoffice
+        </a>
+      }
+      <a
+        routerLink="/annunci"
+        class="px-4 py-2 text-sm cursor-pointer flex items-center gap-x-3"
+      >
+        <app-list-icon class="h-4 w-4" />
+        I tuoi annunci
+      </a>
+      <a
+        (click)="goToFreePublish()"
+        class="px-4 py-2 text-sm cursor-pointer flex items-center gap-x-3"
+      >
+        <app-plus-icon class="h-4 w-4" />
+        Annuncio gratuito
+      </a>
+      <a
+        routerLink="/immobili-preferiti"
+        class="px-4 py-2 text-sm cursor-pointer flex items-center gap-x-3"
+      >
+        <app-heart-icon class="h-4 w-4" />
+        Immobili preferiti
+      </a>
+      <a
+        routerLink="/ricerche-salvate"
+        class="px-4 py-2 text-sm cursor-pointer flex items-center gap-x-3"
+      >
+        <app-magnifying-glass-location-icon class="h-4 w-4" />
+        Ricerche salvate
+      </a>
+    </div>
+    <div class="py-1">
+      <a
+        routerLink="/dashboard/assistenza"
+        class="px-4 py-2 text-sm cursor-pointer flex items-center gap-x-3"
+      >
+        <app-question-circle-icon class="h-4 w-4" />
+        Assistenza
+      </a>
+      <a
+        routerLink="/dashboard/messaggi"
+        class="px-4 py-2 text-sm cursor-pointer flex items-center gap-x-3"
+      >
+        <app-message-lines-icon class="h-4 w-4" />
+        Centro messaggi
+        @if (unreadTicketList.length > 0) {
+          <div
+            class="circle bg-secondary text-primary-dark text-center font-bold text-xs w-4 h-4 m-auto"
+          >
+            {{ unreadTicketList.length }}
+          </div>
+        }
+      </a>
+      <a
+        routerLink="/dashboard/profilo"
+        class="px-4 py-2 text-sm cursor-pointer flex items-center gap-x-3"
+      >
+        <app-user-icon class="h-4 w-4" />
+        Profilo utente
+      </a>
+    </div>
+    <div class="py-1">
+      <button
+        (click)="logout()"
+        class="w-full text-left px-4 py-2 text-sm text-red-600 cursor-pointer flex items-center gap-x-3"
+      >
+        <app-logout-icon class="h-4 w-4" />
+        Esci dal profilo
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,138 @@
+<div
+  class="relative inline-block text-left w-full"
+  [ngClass]="{
+    'text-md bg-secondary hover:bg-secondary-dark py-2 border-[1px] border-black': type === 'bg',
+  }"
+>
+  <button
+    (click)="toggleMenu()"
+    [class.bg-[#ECE81A]]="isOpen"
+    [ngClass]="{
+      'bg-white hover:bg-[#FCFBD9] text-sm': type === '',
+      'w-full justify-center': type === 'bg',
+    }"
+    class="text-[#3C3D3E] font-bold px-4 py-2 rounded flex items-center space-x-2"
+  >
+    <div class="flex items-center space-x-2">
+      <app-settings-icon class="w-4 h-4"></app-settings-icon>
+      <span>Azioni</span>
+    </div>
+  </button>
+
+  <!-- Desktop Menu -->
+  <div
+    *ngIf="isOpen"
+    class="absolute right-0 mt-2 w-56 shadow-xl origin-top-right bg-white ring-1 ring-black ring-opacity-5 z-20 border-black border hidden lg:block"
+  >
+    <div class="py-1">
+      @if (enableModify) {
+        <a
+          (click)="onEditPropertySteps()"
+          class="block px-4 py-2 text-sm text-[#3C3D3E] hover:bg-[#FCFBD9] font-semibold cursor-pointer"
+        >
+          {{ propertyStatus === 'draft' ? 'Modifica annuncio' : 'Visualizza annuncio' }}
+        </a>
+        <div class="border-t border-gray-300 my-1"></div>
+      }
+      <a
+        (click)="onOpenPlanModal()"
+        class="block px-4 py-2 text-sm text-[#3C3D3E] hover:bg-[#FCFBD9] font-semibold cursor-pointer"
+      >
+        Piani e servizi
+      </a>
+      <div class="border-t border-gray-300 my-1"></div>
+      <a
+        (click)="onGoToTicket()"
+        class="block px-4 py-2 text-sm text-[#3C3D3E] hover:bg-[#FCFBD9] font-semibold cursor-pointer"
+      >
+        Richiedi assistenza
+      </a>
+      <a
+        (click)="propertyStatus === 'draft' && onDeleteProperty()"
+        [class]="
+          propertyStatus === 'draft'
+            ? 'block px-4 py-2 text-sm text-[#3C3D3E] hover:bg-[#FCFBD9] font-semibold cursor-pointer'
+            : 'block px-4 py-2 text-sm text-gray-300 cursor-not-allowed'
+        "
+      >
+        Elimina annuncio
+      </a>
+    </div>
+  </div>
+
+  <!-- Mobile Half-Screen Menu -->
+  <div
+    *ngIf="isOpen"
+    class="fixed inset-0 z-50 lg:hidden"
+  >
+    <!-- Background overlay -->
+    <div
+      class="absolute inset-0 bg-black bg-opacity-50"
+      (click)="toggleMenu()"
+    ></div>
+
+    <!-- Half-screen modal -->
+    <div
+      class="absolute bottom-0 left-0 right-0 bg-[#F6F6F6] shadow-xl max-h-[50vh] overflow-y-auto"
+    >
+      <!-- Close button -->
+      <div class="flex justify-end p-4">
+        <button
+          (click)="toggleMenu()"
+          class="text-gray-500 hover:text-gray-700"
+        >
+          <svg
+            class="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"
+            ></path>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Menu items -->
+      <div class="px-6 py-2">
+        @if (enableModify) {
+          <a
+            (click)="onEditPropertySteps()"
+            class="block py-4 text-base text-[#3C3D3E] font-semibold cursor-pointer border-b border-gray-300"
+          >
+            {{ propertyStatus === 'draft' ? 'Modifica annuncio' : 'Visualizza annuncio' }}
+          </a>
+        }
+
+        <a
+          (click)="onOpenPlanModal()"
+          class="block py-4 text-base text-[#3C3D3E] font-semibold cursor-pointer border-b border-gray-300"
+        >
+          Piani e servizi
+        </a>
+
+        <a
+          (click)="onGoToTicket()"
+          class="block py-4 text-base text-[#3C3D3E] font-semibold cursor-pointer border-b border-gray-300"
+        >
+          Richiedi assistenza
+        </a>
+
+        <a
+          (click)="propertyStatus === 'draft' && onDeleteProperty()"
+          [class]="
+            propertyStatus === 'draft'
+              ? 'block py-4 text-base text-[#3C3D3E] font-semibold cursor-pointer'
+              : 'block py-4 text-base text-gray-300 cursor-not-allowed'
+          "
+        >
+          Elimina annuncio
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

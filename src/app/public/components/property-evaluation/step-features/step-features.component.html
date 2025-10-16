@@ -1,0 +1,44 @@
+<div class="container mx-auto p-6">
+  <div class="flex flex-col md:flex-row">
+    <div class="w-full mb-24 md:mb-0 md:w-2/5 p-6">
+      <h2 class="text-2xl font-bold text-primary-dark mb-3 font-montserrat">
+        {{ title() }}
+      </h2>
+      <h3 class="text-xl text-primary-dark mb-6 font-montserrat">Tipologia immobile</h3>
+      <form class="space-y-2 mb-8" [formGroup]="propertyDestinationsForm">
+        @for (destination of propertyDestinations; track destination.id) {
+          <app-feature-button
+            [id]="destination.id"
+            [icon]="destination.icon"
+            [label]="destination.label"
+            [(selectedItemId)]="selectedDestinationId"
+            (click)="toggleDestination(destination, 'type')"
+          ></app-feature-button>
+        }
+      </form>
+      <form [formGroup]="propertyFeatureForm">
+        @if (propertyDestinationsForm.get('destinationType')?.value) {
+          <div class="space-y-2 mb-8" id="type">
+            @for (property of propertyTypeList; track property.id) {
+              <app-feature-button
+                [id]="property.id"
+                [icon]="property.icon"
+                [label]="property.label"
+                [(selectedItemId)]="selectedFeatureId"
+                (click)="toggleProperty(property, 'property_feature')"
+              ></app-feature-button>
+            }
+          </div>
+        }
+        @if (propertyFeatureForm.get('propertyType')?.value) {
+          <div id="property_feature">
+            <app-property-features
+              (formUpdated)="updatePropertyFeatures($event)"
+              [isFreePublishing]="isFreePublishing()"
+            ></app-property-features>
+          </div>
+        }
+      </form>
+    </div>
+  </div>
+</div>

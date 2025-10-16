@@ -1,0 +1,401 @@
+<div class="container mx-auto">
+  @if (!customerData()) {
+    <h1 class="heading-md font-bold text-primary-dark mb-6"> Nuovo utente </h1>
+  } @else {
+    <div class="flex flex-col mb-6">
+      <h1 class="heading-md font-bold text-primary-dark">
+        {{ customerData().firstName }} {{ customerData().lastName }}</h1
+      >
+      <div class="flex items-center flex-wrap gap-3 mb-6">
+        <span class="text-primary-dark font-thin"
+          >ID: {{ customerData().id }} - iscitto il
+          {{ customerData().createdAt | date: 'dd/MM/yyyy' }}</span
+        >
+
+        @if (customerData().enabled) {
+          <span
+            class="bg-[#CCFCD4] w-fit rounded-lg px-3 py-[1px] font-semibold text-sm capitalize"
+          >
+            Attivo
+          </span>
+        } @else {
+          <span
+            class="bg-[#FFD2CE] w-fit rounded-lg px-3 py-[1px] font-semibold text-sm capitalize"
+          >
+            Disattivo
+          </span>
+        }
+      </div>
+    </div>
+  }
+
+  <div class="flex mb-4 border-b border-[#CBCCCD]">
+    <div
+      class="px-6 py-3 cursor-pointer flex items-center gap-2 text-[#97999B] font-bold border-[#CBCCCD]"
+      (click)="setActiveTab('info')"
+      [ngClass]="{
+        'border-b-2 border-black -mb-[2px] bg-secondary text-black font-bold ':
+          activeTab() === 'info',
+      }"
+    >
+      <span
+        class="inline-flex items-center justify-center rounded-full bg-gray-200 w-5 h-5 text-sm font-bold"
+        >1</span
+      >
+      Informazioni utente
+    </div>
+    <div
+      class="px-6 py-3 cursor-pointer flex items-center gap-2 text-[#97999B] font-bold border-[#CBCCCD]"
+      [ngClass]="{
+        'border-b-2 border-black -mb-[2px] bg-secondary text-black font-bold':
+          activeTab() === 'service',
+      }"
+      (click)="setActiveTab('service')"
+    >
+      <span
+        class="inline-flex items-center justify-center rounded-full bg-gray-200 w-5 h-5 text-sm font-bold"
+        >2</span
+      >
+      Piani e servizi
+    </div>
+  </div>
+  <form
+    [formGroup]="userForm"
+    class="space-y-6"
+  >
+    @switch (activeTab()) {
+      @case ('info') {
+        <div
+          class="grid grid-cols-1 md:grid-cols-12 gap-6"
+          [ngClass]="{ 'pb-8': !customer() }"
+        >
+          <div class="md:col-span-8">
+            <div>
+              <app-input
+                label="Nome*"
+                [control]="getControl('firstName')"
+              ></app-input>
+            </div>
+          </div>
+          <div class="md:col-span-8">
+            <div>
+              <app-input
+                label="Cognome*"
+                [control]="getControl('lastName')"
+              ></app-input>
+            </div>
+          </div>
+          <div class="md:col-span-8">
+            <div>
+              <app-input
+                label="Email*"
+                [control]="getControl('email')"
+              ></app-input>
+            </div>
+          </div>
+          <div class="md:col-span-8">
+            <div>
+              <app-input
+                label="Numero cellulare*"
+                [control]="getControl('phone')"
+              ></app-input>
+            </div>
+          </div>
+        </div>
+        @if (customerData()) {
+          <div
+            class="pb-6 text-left flex row gap-3 items-center cursor-pointer w-fit"
+            (click)="sendResetPassword()"
+          >
+            <fa-icon
+              [icon]="faLock"
+              class="text-primary-dark text-sm"
+            ></fa-icon>
+            Invia reimpostazione password
+          </div>
+
+          <!-- Action buttons -->
+          <div class="flex justify-between mt-8 mb-8">
+            <div class="flex gap-3">
+              <app-button
+                type="danger"
+                [text]="'Elimina utente'"
+                [size]="'md'"
+                (buttonClick)="deleteUser()"
+              ></app-button>
+
+              @if (customerData().enabled) {
+                <app-button
+                  type="secondary"
+                  [text]="'Disattiva utente'"
+                  [size]="'md'"
+                  (buttonClick)="disableUser()"
+                ></app-button>
+              } @else if (!customerData().enabled) {
+                <app-button
+                  type="secondary"
+                  [text]="'Riattiva utente'"
+                  [size]="'md'"
+                  (buttonClick)="enableUser()"
+                ></app-button>
+              }
+
+              <app-button
+                type="primary"
+                [text]="'Salva modifiche'"
+                [size]="'md'"
+                [icon]="true"
+                [iconType]="'floppy'"
+                [iconPosition]="'left'"
+                (buttonClick)="saveUser()"
+                [isDisabled]="!userForm.valid || !userForm.touched"
+              ></app-button>
+            </div>
+          </div>
+        }
+      }
+      @case ('service') {
+        <div class="p-5 pb-0 text-left flex row gap-3 items-center">
+          <h5 class="heading-md text-primary-dark font-bold font-montserrat">
+            Abbonamenti attivi
+          </h5>
+        </div>
+
+        <div class="p-6 rounded-lg bg-[#F6F6F6]">
+          @if (customerData()) {
+            @let filtered = getApartmentsWithSubscriptions(customerData()?.apartment);
+            @if (filtered.length > 0) {
+              @for (apt of filtered; track $index) {
+                @for (item of apt.subscription; track $index) {
+                  <div>
+                    <div
+                      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 bg-[#F6F6F6] p-4 rounded-lg pt-0 pb-2"
+                    >
+                      <div class="flex flex-col">
+                        <p class="font-semibold">Immobile</p>
+                        <span class="font-thin text-sm">{{ item.advertisementsId }}</span>
+                      </div>
+                      <div class="flex flex-col">
+                        <!-- <p class="font-semibold"
+                          >Piano {{ item.status === 'active' ? 'Attivo' : 'Disattivo' }}</p
+                        > -->
+                        <p class="font-semibold">Piano Attivo</p>
+                        <span class="font-semibold text-sm">{{
+                          item.status === 'active' ? item.planTitele : 'Free'
+                        }}</span>
+                        <!-- @if (item.status === 'canceled') {
+                          <fa-icon
+                            [icon]="faExclamationTriangle"
+                            class="text-red-600 text-sm"
+                          ></fa-icon>
+                        } -->
+
+                        @if (item.status !== 'canceled' && item.cancel_at_period_end === true) {
+                          <app-tooltip
+                            [text]="
+                              'Il piano verra disattivato il ' +
+                              (item.cancel_at | date: 'dd/MM/yyyy')
+                            "
+                            position="right"
+                          >
+                            <fa-icon
+                              [icon]="faExclamationTriangle"
+                              class="text-red-600 text-sm"
+                            ></fa-icon>
+                          </app-tooltip>
+                        }
+                      </div>
+                      <div class="flex flex-col">
+                        <p class="font-semibold">Attivazione</p>
+                        <span class="font-thin text-sm">
+                          {{ item.created * 1000 | date: 'dd/MM/yyyy' }}
+                        </span>
+                      </div>
+                      <div class="flex flex-col">
+                        <p class="font-semibold">Data fine</p>
+                        <span class="font-thin text-sm">
+                          {{ (item.endDate | date: 'dd/MM/yyyy') ?? 'Data mancante' }}
+                        </span>
+                        <!-- <div class="flex inline-flex">
+                          <span class="text-xs mr-1">Rinnovo Automatico: </span>
+                          @if (isDeactive[$index]?.value === true) {
+                            <span class="text-xs">No</span>
+                            <fa-icon
+                              [icon]="faExclamationTriangle"
+                              class="text-red-600 text-xs ml-1"
+                            ></fa-icon>
+                          } @else {
+                            <span class="text-xs">Si</span>
+                          }
+                        </div> -->
+                      </div>
+                      <div class="flex flex-col">
+                        <p class="font-semibold mb-2">Fattura</p>
+                        <span class="font-thin w-fit">
+                          <app-button
+                            type="secondary"
+                            [text]="'Scarica'"
+                            [icon]="true"
+                            [iconType]="'download'"
+                            iconPosition="left"
+                            [size]="'xs'"
+                            (click)="downloadInvoice(item.stripeHostedInvoice)"
+                          ></app-button>
+                        </span>
+                      </div>
+                      <div class="flex flex-col">
+                        <div class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                          @if (item.status !== 'canceled' && !isPlanFree(item.stripeProductId)) {
+                            <app-subscription-actions-dropdown
+                              [subscriptionId]="item?.stripeSubscriptionId"
+                              [planName]="item.planTitele"
+                              [propertyId]="item.advertisementsId"
+                              [id]="customer().keycloakId"
+                              [cancel_at_period_end]="item.cancel_at_period_end"
+                              [index]="$index"
+                              (subscriptionChanged)="onSubscriptionChanged($event)"
+                            ></app-subscription-actions-dropdown>
+                          }
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                }
+              }
+            }
+
+            @if (filtered.length === 0) {
+              @for (item of customerData()?.apartment; track $index) {
+                <div class="flex flex-col py-10">
+                  <div>
+                    <div
+                      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 bg-[#F6F6F6] p-4 rounded-lg pt-0 pb-2"
+                    >
+                      <div class="flex flex-col">
+                        <p class="font-semibold">Immobile</p>
+                        <span class="font-thin text-sm">{{ item.id }}</span>
+                      </div>
+                      <div class="flex flex-col">
+                        <p class="font-semibold">Tipo piano</p>
+                        <span class="font-thin text-sm">Free</span>
+                      </div>
+                      <div class="flex flex-col">
+                        <p class="font-semibold">Data attivazione</p>
+                        <span class="font-thin text-sm">-</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              }
+            }
+          } @else {
+            <div class="flex flex-col items-center justify-center py-10">
+              <p>Nessun abbonamento attivato</p>
+            </div>
+          }
+        </div>
+
+        <div class="p-5 pb-0 text-left flex row gap-3 items-center">
+          <h5 class="heading-md text-primary-dark font-bold font-montserrat">
+            Servizi singoli acquistati
+          </h5>
+        </div>
+
+        <div class="p-6 rounded-lg bg-[#F6F6F6]">
+          @if (payment()) {
+            @if (payment().length > 0) {
+              <div>
+                <div
+                  class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 bg-[#F6F6F6] p-4 pb-0 rounded-lg"
+                >
+                  <div class="flex flex-col">
+                    <p class="font-semibold mb-2">Immobile</p>
+                  </div>
+                  <div class="flex flex-col">
+                    <p class="font-semibold mb-2">Nome servizio</p>
+                  </div>
+                  <div class="flex flex-col">
+                    <p class="font-semibold mb-2">Acquistato</p>
+                  </div>
+                  <div class="flex flex-col">
+                    <p class="font-semibold mb-2">Fattura</p>
+                  </div>
+                </div>
+              </div>
+            } @else {
+              <div class="flex flex-col items-center justify-center py-10">
+                <p>Nessun servizio acquistato</p>
+              </div>
+            }
+            @for (item of payment(); track $index) {
+              <div>
+                <div
+                  class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 bg-[#F6F6F6] p-4 pb-0 rounded-lg"
+                >
+                  <div class="flex flex-col">
+                    <span class="font-thin text-sm">{{ item.advertisementsId }}</span>
+                  </div>
+                  <div class="flex flex-col">
+                    <span class="font-semibold text-sm">{{ item.planName }}</span>
+                  </div>
+                  <div class="flex flex-col">
+                    <span class="font-thin text-sm">
+                      {{ (item.createdAt | date: 'dd/MM/yyyy') ?? 'Data mancante' }}
+                    </span>
+                  </div>
+                  <div class="flex flex-col">
+                    <span class="font-thin w-fit">
+                      <app-button
+                        type="secondary"
+                        [text]="'Scarica'"
+                        [icon]="true"
+                        [iconType]="'download'"
+                        iconPosition="left"
+                        [size]="'xs'"
+                        (click)="downloadInvoice(item.stripeHostedInvoice)"
+                      ></app-button>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            }
+          } @else {
+            <div class="flex flex-col items-center justify-center py-10">
+              <p>Nessun servizio acquistato</p>
+            </div>
+          }
+        </div>
+      }
+    }
+  </form>
+</div>
+@if (isLoading()) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-50">
+    <app-spinner></app-spinner>
+  </div>
+}
+
+@if (modalOpen()) {
+  <app-modal-full-screen
+    class="modal-full-screen"
+    [open]="modalOpen()"
+  >
+    <app-subscription-invoice
+      [userId]="customer().keycloakId"
+      [onClose]="closeModalInvoice"
+    ></app-subscription-invoice>
+  </app-modal-full-screen>
+}
+
+@if (this.modalType) {
+  <app-modal-small
+    [modalType]="modalType"
+    [loading]="false"
+    [params]="{
+      fullName: customerData().firstName + ' ' + customerData().lastName,
+      checkbox: false,
+    }"
+    (onAction)="modalAction()"
+    (onClose)="modalClosed()"
+  ></app-modal-small>
+}

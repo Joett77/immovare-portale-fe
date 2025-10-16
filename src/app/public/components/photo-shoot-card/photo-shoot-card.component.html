@@ -1,0 +1,41 @@
+<div class="bg-[#F5F5F5] p-4 mt:0 md:mt-7 w-full md:w-fit">
+  <h2
+    class="text-[16px] font-montserrat font-bold text-[#3C3D3E] mb-3"
+    [innerHTML]="cardTitle()"
+  >
+    >
+  </h2>
+  <p
+    class="text-[14px] font-open-sans font-normal text-[#3C3D3E] mb-3"
+    [innerHTML]="cardDescription()"
+  >
+  </p>
+  <app-accordion
+    class="mb-2"
+    [title]="accordionTitle"
+    [content]="accordionContent"
+  ></app-accordion>
+  <div class="w-full mt-2 md:w-2/3">
+    <app-button
+      (click)="handleClick()"
+      size="md"
+      class="text-primary-dark text-xs font-bold mb-4"
+      text="Acquista servizio fotografico"
+      iconPosition="right"
+    ></app-button>
+  </div>
+</div>
+@if (modalOpen()) {
+  <app-modal-full-screen
+    class="modal-full-screen"
+    [open]="modalOpen()"
+  >
+    <app-choose-a-plan
+      [propertyId]="propertyId()"
+      [listService]="true"
+      [activePlan]="activePlan()"
+      [shouldScrollToServices]="shouldScrollToServices()"
+      (onModalClose)="modalOpen.set(false)"
+    ></app-choose-a-plan>
+  </app-modal-full-screen>
+}

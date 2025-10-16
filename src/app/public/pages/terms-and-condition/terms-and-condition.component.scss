@@ -1,0 +1,27 @@
+.container-title,
+.container-content {
+  margin: 2rem 4rem 2rem 4rem;
+
+  .accordion-content {
+    margin-right: 20%;
+
+    .bold {
+      font-weight: bold;
+    }
+
+    p .link,
+    .link {
+      color: #1a73e8;
+      text-decoration: none;
+
+      :hover {
+        color: #174ea6;
+      }
+    }
+  }
+}
+
+hr {
+  color: #cbcccd;
+  margin-top: 3rem;
+}

@@ -1,0 +1,59 @@
+<h2 class="text-lg font-bold text-black mb-4">Calcola rata del mutuo</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-[#F6F6F6] p-6">
+
+    <form [formGroup]="calculateMortgage" class="space-y-4">
+        <div class="flex items-center">
+            <app-input class="w-full" [control]="getControl('price')" label="Prezzo dell'immobile" type="number"
+                placeholder="Inserisci il prezzo"></app-input>
+        </div>
+
+        <div class="flex items-center">
+            <app-input class="w-full" [control]="getControl('advance')" label="Anticipo" type="number"
+                placeholder="Inserisci l'anticipo"></app-input>
+        </div>
+
+        <div class="flex items-center">
+            <app-input class="w-full" [control]="getControl('interest')" label="Tasso di interesse" type="number"
+                placeholder="Inserisci il tasso"></app-input>
+        </div>
+
+        <div class="flex items-center">
+            <app-select [withBorder]="true" class="w-full" [control]="getControl('years')" [options]="calculateMortgageOptions"
+                label="Durata del mutuo"></app-select>
+        </div>
+    </form>
+
+    <div class="flex flex-col items-center justify-between">
+        <div class="flex items-center justify-between">
+            <div class="relative w-40 h-40">
+                <svg class="w-full h-full" viewBox="0 0 36 36">
+                    <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none"
+                        stroke="#2E5D63" stroke-width="3" />
+                    <!-- Progress circle -->
+                    <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none"
+                        stroke="#ECE81A" stroke-width="3" [attr.stroke-dasharray]="circleProgress + ', 100'"
+                        class="animate-draw-circle" />
+                </svg>
+                <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
+                    <span class="heading-sm font-montserrat text-black font-semibold">
+                        {{ monthlyPayment | currency:'EUR':'symbol':'1.2-2' }}
+                    </span>
+                    <span class="text-xs">Rata mensile</span>
+                </div>
+            </div>
+            <div class="ml-4">
+                <div class="flex items-center mb-2">
+                    <div class="w-4 h-4 bg-secondary mr-2"></div>
+                    <span class="text-sm">Anticipo {{ circleProgress | number:'1.0-0' }}%</span>
+                </div>
+                <div class="flex items-center">
+                    <div class="w-4 h-4 bg-primary-dark mr-2"></div>
+                    <span class="text-sm">Mutuo {{ 100 - circleProgress | number:'1.0-0' }}%</span>
+                </div>
+            </div>
+        </div>
+        <app-button class="w-full mt-4" [text]="'Calcola rata'" [type]="'primary'" size="md"
+            (click)="calculateMonthlyPayment()" [isDisabled]="!calculateMortgage.valid"></app-button>
+    </div>
+
+</div>

@@ -1,0 +1,609 @@
+<!-- src/app/cms/pages/property/property-details/property-details.component.html -->
+<div class="container mx-auto py-6">
+  <div class="mb-8">
+    <h1 class="heading-md font-bold text-primary-dark mb-2">
+      Annuncio
+      {{
+        property()?.adStatus === 'draft' || property()?.adStatus === 'sent'
+          ? 'in approvazione'
+          : property()?.title
+      }}
+    </h1>
+  </div>
+
+  <!-- Loading state -->
+  @if (isLoading()) {
+    <div class="flex justify-center py-10">
+      <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-primary"></div>
+    </div>
+  }
+
+  <!-- Error message -->
+  @if (error()) {
+    <div
+      [class]="
+        error() === 'Proprietà salvata con successo' ||
+        error() === 'Proprietà inviata per approvazione'
+          ? 'bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4'
+          : 'bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4'
+      "
+    >
+      <span class="block sm:inline">{{ error() }}</span>
+      <button
+        class="absolute top-0 bottom-0 right-0 px-4 py-3"
+        (click)="error.set(null)"
+      >
+        <span class="sr-only">Chiudi</span>
+      </button>
+    </div>
+  }
+
+  <!-- Property data tab content -->
+  @if (!isLoading()) {
+    <div class="grid grid-cols-12 gap-6">
+      <div class="col-span-12 md:col-span-8">
+        <!-- Main tabs -->
+        <div class="mt-2 flex border-b border-[#97999B] mb-4">
+          <div
+            class="cursor-pointer px-6 py-3 font-bold w-1/2 lg:w-fit mb-[-1px]"
+            [ngClass]="
+              activeTab() === 'property'
+                ? 'bg-[#ECE81A] text-black border-b-2 border-[##CBCCCD]'
+                : 'bg-transparent text-[#97999B]'
+            "
+            (click)="setActiveTab('property')"
+          >
+            Dati immobile
+          </div>
+          @if (canSeeAll) {
+            <div
+              class="cursor-pointer px-6 py-3 font-bold w-1/2 lg:w-fit mb-[-1px]"
+              [ngClass]="
+                activeTab() === 'plans'
+                  ? 'bg-[#ECE81A] text-black border-b-2 border-[##CBCCCD]'
+                  : 'bg-transparent text-[#97999B]'
+              "
+              (click)="setActiveTab('plans')"
+            >
+              Piani e servizi
+            </div>
+          }
+        </div>
+        @if (activeTab() === 'property') {
+          <form [formGroup]="propertyForm">
+            <!-- Left side property data content -->
+            <div>
+              <!-- Property title section -->
+              <div class="mb-8 flex items-center">
+                @if (canSeeAll) {
+                  <h3 class="text-sm font-bold mb-2 min-w-[280px]"
+                    >Inserisci il titolo dell'annuncio</h3
+                  >
+                  <input
+                    type="text"
+                    formControlName="title"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-sm"
+                    placeholder="Inserisci testo"
+                  />
+                }
+              </div>
+
+              <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8 px-4 lg:px-0">
+                <div class="p-4 bg-[#F6F6F6]">
+                  <h3 class="font-semibold text-black text-xs mb-2">Tipologia</h3>
+                  <p class="text-base font-semibold text-black flex items-center gap-x-2">
+                    <app-apartment-icon class="h-5 w-5 inline-block" />
+                    {{ property()?.type || '-' }}
+                  </p>
+                </div>
+                <div class="p-4 bg-[#F6F6F6]">
+                  <h3 class="font-semibold text-black text-xs mb-2">Locali</h3>
+                  <p class="text-base font-semibold text-black flex items-center gap-x-2">
+                    <app-floorplan-icon class="h-5 w-5 inline-block" />
+                    {{ property()?.numberRooms || '-' }}
+                  </p>
+                </div>
+                <div class="p-4 bg-[#F6F6F6]">
+                  <h3 class="font-semibold text-black text-xs mb-2">Superficie</h3>
+                  <p class="text-base font-semibold text-black flex items-center gap-x-2">
+                    <app-measure-icon class="h-5 w-5 inline-block" />
+                    {{ property()?.squareMetres || '-' }} m²
+                  </p>
+                </div>
+                <div class="p-4 bg-[#F6F6F6]">
+                  <h3 class="font-semibold text-black text-xs mb-2">Piano</h3>
+                  <p class="text-base font-semibold text-black flex items-center gap-x-2">
+                    <app-floor-icon class="h-5 w-5 inline-block" />
+                    {{ property()?.floor || '-' }}
+                  </p>
+                </div>
+                <div class="p-4 bg-[#F6F6F6]">
+                  <h3 class="font-semibold text-black text-xs mb-2">Bagni</h3>
+                  <p class="text-base font-semibold text-black flex items-center gap-x-2">
+                    <app-bath-icon class="h-5 w-5 inline-block" />
+                    {{ property()?.numberBaths || '-' }}
+                  </p>
+                </div>
+                <div class="p-4 bg-[#F6F6F6]">
+                  <h3 class="font-semibold text-black text-xs mb-2">Stato immobile</h3>
+                  <p class="text-base font-semibold text-black">
+                    {{ property()?.propertyCondition || '-' }}
+                  </p>
+                </div>
+              </div>
+
+              <!-- Address section -->
+              <app-property-address-section
+                [property]="property()"
+                [readonly]="!canSeeAll"
+              ></app-property-address-section>
+
+              <!-- Description and Extra Features sections -->
+              <app-property-extra-features-section
+                [property]="property()"
+                [readonly]="!canSeeAll"
+              ></app-property-extra-features-section>
+
+              <!-- Property features section with the modal -->
+              <app-property-features-section
+                [property]="property()"
+                (propertyUpdated)="onPropertyUpdated($event)"
+                [readonly]="!canSeeAll"
+              ></app-property-features-section>
+
+              <app-property-price-section
+                [property]="property()"
+                (propertyUpdated)="onPropertyUpdated($event)"
+                [readonly]="!canSeeAll"
+              >
+              </app-property-price-section>
+
+              <!-- Map section -->
+              <div class="mb-8">
+                <h2 class="text-lg font-bold text-black mb-4">Mappa</h2>
+                <div class="h-64 bg-gray-200 rounded-sm overflow-hidden">
+                  <app-leaflet-map-lite
+                    [latitude]="getControl('latitude').value"
+                    [longitude]="getControl('longitude').value"
+                    [height]="'100%'"
+                  ></app-leaflet-map-lite>
+                </div>
+              </div>
+
+              <!-- Photos section -->
+              <div class="mb-8">
+                <div class="flex justify-between items-center mb-4">
+                  <h2 class="text-lg font-bold text-black mb-4">Fotografie</h2>
+                  @if (canSeeAll) {
+                    <button
+                      type="button"
+                      class="px-3 py-1 border border-gray-300 rounded-sm text-xs"
+                      (click)="openImagesModal()"
+                    >
+                      Modifica
+                    </button>
+                  }
+                </div>
+
+                <!-- Photos gallery -->
+                <div class="grid grid-cols-3 gap-4">
+                  @if (uploadedImages && uploadedImages.length > 0) {
+                    @for (image of uploadedImages.slice(0, 3); track image.id) {
+                      <div class="relative h-40 bg-gray-200 rounded-sm overflow-hidden">
+                        <img
+                          [src]="image.url"
+                          alt="Property photo"
+                          class="h-full w-full object-cover"
+                        />
+                        @if (image.id === uploadedImages[0].id) {
+                          <div class="absolute bottom-0 left-0 bg-yellow-400 text-xs py-1 px-2">
+                            Principale
+                          </div>
+                        }
+                      </div>
+                    }
+                  } @else {
+                    <div
+                      class="col-span-3 h-40 bg-gray-200 rounded-sm flex items-center justify-center"
+                    >
+                      <span class="text-gray-500">Nessuna foto caricata</span>
+                    </div>
+                  }
+                </div>
+              </div>
+
+              <!-- Floorplan section -->
+              <div class="mb-8">
+                <div class="flex justify-between items-center mb-4">
+                  <h2 class="text-lg font-bold text-black mb-4">Planimetria</h2>
+                  @if (canSeeAll) {
+                    <button
+                      type="button"
+                      class="px-3 py-1 border border-gray-300 rounded-sm text-xs"
+                      (click)="openFloorplanModal()"
+                    >
+                      Modifica
+                    </button>
+                  }
+                </div>
+
+                <div class="h-64 bg-gray-200 rounded-sm overflow-hidden">
+                  @if (uploadedFloorplan) {
+                    <img
+                      [src]="uploadedFloorplan.url"
+                      alt="Floorplan"
+                      class="h-full w-full object-contain"
+                    />
+                  } @else {
+                    <div class="h-full w-full flex items-center justify-center">
+                      <span class="text-gray-500">Nessuna planimetria caricata</span>
+                    </div>
+                  }
+                </div>
+              </div>
+
+              <!-- Virtual Tour section -->
+              <app-property-virtual-tour-section
+                [property]="property()"
+                [readonly]="!canSeeAll"
+              ></app-property-virtual-tour-section>
+
+              <!-- Photos modal -->
+              <app-property-images-modal
+                [isOpen]="isImagesModalOpen()"
+                [propertyId]="propertyId"
+                [initialImages]="uploadedImages"
+                (close)="closeImagesModal()"
+                (save)="saveImages($event)"
+                (error)="handleUploadError($event)"
+              ></app-property-images-modal>
+
+              <!-- Floorplan modal -->
+              <app-property-floorplan-modal
+                [isOpen]="isFloorplanModalOpen()"
+                [propertyId]="propertyId"
+                [initialFloorplan]="uploadedFloorplan"
+                (close)="closeFloorplanModal()"
+                (save)="saveFloorplan($event)"
+                (error)="handleUploadError($event)"
+              ></app-property-floorplan-modal>
+            </div>
+          </form>
+        }
+
+        <!-- Plans and services tab content -->
+        @if (activeTab() === 'plans') {
+          <div class="px-6 py-6">
+            <h2 class="text-lg font-bold mb-6">Abbonamenti attivi</h2>
+
+            @for (item of subscription(); track $index) {
+              @let planData = item.stripeProductId | planData | async;
+              <div class="bg-gray-50 p-6 mb-8 rounded-sm bg-[#F6F6F6]">
+                <div class="grid grid-cols-5 gap-4 mb-4">
+                  <div class="col-span-2">
+                    <h4 class="font-semibold">Piano attuale</h4>
+                    <div class="mt-2">
+                      <p class="text-lg font-bold">{{ planData?.plan.title }}</p>
+                      @if (item.cancel_at_period_end) {
+                        <p class="text-sm text-red-500"
+                          >⚠ Non più disponibile al rinnovo. Cancellata il
+                          {{ item.canceled_at | date: 'dd/MM/YYYY' }}</p
+                        >
+                      }
+                    </div>
+                  </div>
+                  <div class="col-span-1">
+                    <h4 class="font-semibold">Attivazione</h4>
+                    <p class="mt-2">{{ item.createdAt | date: 'dd/MM/YYYY' }}</p>
+                  </div>
+                  <div class="col-span-1">
+                    <h4 class="font-semibold">Data fine/Rinnovo</h4>
+                    <p class="mt-2">{{ item.endDate | date: 'dd/MM/YYYY' }}</p>
+                  </div>
+                  <div class="col-span-1">
+                    <h4 class="font-semibold">Fattura</h4
+                    ><a
+                      target="_blank"
+                      href="{{ item.stripeHostedInvoice }}"
+                    >
+                      <button
+                        class="mt-2 flex items-center px-3 py-1 border border-black rounded-sm text-[10px]"
+                      >
+                        <fa-icon
+                          [icon]="faDownload"
+                          class="mr-1"
+                        ></fa-icon>
+
+                        Scarica
+                      </button></a
+                    >
+                  </div>
+                </div>
+              </div>
+            }
+
+            <h2 class="text-lg font-bold mb-6">Servizi singoli acquistati</h2>
+            <div class="bg-gray-50 p-6 rounded-sm bg-[#F6F6F6]">
+              <div class="grid grid-cols-5 gap-4">
+                <div class="col-span-3">
+                  <h4 class="font-semibold">Nome servizio</h4>
+                </div>
+                <div class="col-span-1">
+                  <h4 class="font-semibold">Acquistato il</h4>
+                </div>
+                <div class="col-span-1">
+                  <h4 class="font-semibold">Fattura</h4>
+                </div>
+              </div>
+              @for (item of payment(); track $index) {
+                @let serviceData = item.stripeProductId | planData | async;
+                <div class="grid grid-cols-5 gap-4">
+                  <div class="col-span-3">
+                    <p class="mt-4 mb-4">{{ serviceData?.plan.title }}</p>
+                  </div>
+                  <div class="col-span-1">
+                    <p class="mt-4 mb-4">{{ item.createdAt | date }}</p>
+                  </div>
+                  <div class="col-span-1">
+                    <a
+                      class="mt-4 mb-4"
+                      target="_blank"
+                      href="{{ item.stripeHostedInvoice }}"
+                    >
+                      <button
+                        class="flex items-center px-3 py-1 border border-black rounded-sm text-[10px]"
+                      >
+                        <fa-icon
+                          [icon]="faDownload"
+                          class="mr-1"
+                        ></fa-icon>
+                        Scarica
+                      </button></a
+                    >
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Right side info panel -->
+      <div class="col-span-12 md:col-span-4">
+        <div class="bg-gray-100 p-6 rounded-lg shadow-sm">
+          <h2 class="font-bold text-lg mb-4">Info annuncio</h2>
+
+          <div class="mb-4 grid grid-cols-2 gap-4">
+            <p class="text-sm font-semibold">ID:</p>
+            <p class="text-sm font-mono">{{ propertyId || 'Nuovo annuncio' }}</p>
+          </div>
+
+          <div class="mb-4 grid grid-cols-2 gap-4">
+            <p class="text-sm font-semibold">Stato annuncio:</p>
+            <span
+              class="px-2 py-1 rounded-sm text-xs font-bold w-fit"
+              [ngClass]="{
+                'bg-white': property()?.adStatus === 'draft',
+                'bg-secondary-light':
+                  property()?.adStatus === 'sent' || property()?.adStatus === 'negotiation',
+                'bg-[#CCFCD4]': property()?.adStatus === 'published',
+                'bg-red-100':
+                  property()?.adStatus === 'rejected' ||
+                  property()?.adStatus === 'hidden' ||
+                  property()?.adStatus === 'archived',
+                'bg-green-100': property()?.adStatus === 'sold',
+              }"
+            >
+              {{ statusText() }}
+            </span>
+          </div>
+
+          <div class="mb-4 grid grid-cols-2 gap-4">
+            <p class="text-sm font-semibold">Piano abbonamento:</p>
+            <p class="text-sm">{{
+              getLastSubscriptionActive().stripeProductId
+                ? (getLastSubscriptionActive().stripeProductId | planData | async).plan.title
+                : 'Free'
+            }}</p>
+          </div>
+
+          <div class="mb-4 grid grid-cols-2 gap-4">
+            <p class="text-sm font-semibold">Caricato dall'utente:</p>
+            <div class="text-sm flex items-center justify-start relative">
+              @if (isLoadingCustomer()) {
+                <span class="flex items-center">
+                  <div
+                    class="animate-spin rounded-full h-4 w-4 border-b-2 border-primary mr-2"
+                  ></div>
+                  Caricamento...
+                </span>
+              } @else if (customer()) {
+                <span
+                  class="cursor-pointer"
+                  (click)="toggleEmailDisplay()"
+                >
+                  {{ customer()?.firstName }} {{ customer()?.lastName }}
+                </span>
+                <!-- Email popup that appears on click -->
+                @if (showEmail()) {
+                  <div
+                    class="absolute top-6 right-0 z-50 bg-[#2F4F4F] text-white p-4 rounded shadow-md min-w-[300px]"
+                  >
+                    {{ customer()?.email }}
+                  </div>
+                }
+              } @else {
+                <span>Utente sconosciuto</span>
+              }
+              <fa-icon
+                [icon]="faEnvelope"
+                class="w-5 h-5 ml-2 cursor-pointer"
+                (click)="toggleEmailDisplay()"
+              ></fa-icon>
+            </div>
+          </div>
+
+          <div class="mb-4 grid grid-cols-2 gap-4">
+            <p class="text-sm font-semibold">Data caricamento:</p>
+            <p class="text-sm">{{ formatCreationDate(property()?.creation) }}</p>
+          </div>
+
+          @if (property()?.bpmId) {
+            <div class="mb-4 grid grid-cols-2 gap-4">
+              <p class="text-sm font-semibold">ID Pratica:</p>
+              <p class="text-sm font-mono">{{ property()?.bpmId }}</p>
+            </div>
+          }
+
+          <div class="mb-6 grid grid-cols-2 gap-4">
+            <p class="text-sm font-semibold">Agente associato:</p>
+            <div>
+              @if (isLoadingAgents()) {
+                <div class="flex items-center">
+                  <div
+                    class="animate-spin rounded-full h-4 w-4 border-b-2 border-primary mr-2"
+                  ></div>
+                  <span class="text-sm">Caricamento...</span>
+                </div>
+              } @else if (canSeeAll) {
+                <select
+                  title="Seleziona agente"
+                  class="p-2 border border-gray-300 rounded-sm text-sm bg-secondary-light w-fit"
+                  [value]="selectedAgentId()"
+                  (change)="updatePropertyAgent($any($event.target).value)"
+                >
+                  <option value="">Seleziona agente</option>
+                  @for (agent of agents(); track agent.id) {
+                    <option
+                      [value]="agent.id"
+                      [selected]="selectedAgentId() === agent.id"
+                    >
+                      {{ agent.firstName }} {{ agent.lastName }}
+                    </option>
+                  }
+                </select>
+              } @else {
+                <p class="text-sm">{{ getAgentName(selectedAgentId()) }}</p>
+              }
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 gap-3">
+            @if (canSeeAll) {
+              <app-button
+                [isDisabled]="!canPublishOrApprove()"
+                [class.opacity-50]="!canPublishOrApprove()"
+                [class.cursor-not-allowed]="!canPublishOrApprove()"
+                type="primary"
+                size="nopadding"
+                (click)="publishStatus('published')"
+                [title]="
+                  !isAgentSelected()
+                    ? 'Seleziona un agente per abilitare la pubblicazione'
+                    : 'Approva e pubblica'
+                "
+              >
+                <div class="flex justify-center w-full px-6 py-3 text-black">
+                  <fa-icon
+                    [icon]="faCheck"
+                    class="w-5 h-5 mr-2"
+                  ></fa-icon>
+                  Approva e pubblica
+                </div>
+              </app-button>
+
+              @if (property()?.adStatus === 'published' || property()?.adStatus === 'negotiation') {
+                @if (property()?.bpmId) {
+                  <app-button
+                    type="secondary"
+                    size="nopadding"
+                    (click)="navigateToBpm(property()?.bpmId)"
+                  >
+                    <div class="flex justify-center w-full px-6 py-3 text-black">
+                      <fa-icon [icon]="faArrowRight" class="w-5 h-5 mr-2"></fa-icon>
+                      Vai alla pratica
+                    </div>
+                  </app-button>
+                } @else {
+                  <app-button
+                    type="primary"
+                    size="nopadding"
+                    (click)="createDraftBspTransaction()"
+                  >
+                    <div class="flex justify-center w-full px-6 py-3 text-black">
+                      <fa-icon [icon]="faClipboardList" class="w-5 h-5 mr-2"></fa-icon>
+                    Avvia pratica
+                  </div>
+                  </app-button>
+                }
+              }
+
+              @if (property()?.adStatus !== 'published') {
+                <app-button
+                  type="secondary"
+                  size="nopadding"
+                  (click)="publishStatus('rejected')"
+                >
+                  <div class="flex justify-center w-full px-6 py-3 bg-transparent text-black">
+                    <fa-icon
+                      [icon]="faTimes"
+                      class="w-5 h-5 mr-2"
+                    ></fa-icon>
+                    Rifiuta
+                  </div>
+                </app-button>
+              }
+
+              @if (property()?.adStatus === 'draft') {
+                <app-button
+                  [isDisabled]="!canPublishOrApprove()"
+                  [class.opacity-50]="!canPublishOrApprove()"
+                  [class.cursor-not-allowed]="!canPublishOrApprove()"
+                  type="secondary"
+                  size="nopadding"
+                  (click)="publishStatus('sent')"
+                  [title]="
+                    !isAgentSelected()
+                      ? 'Seleziona un agente per inviare in approvazione'
+                      : 'Invia per approvazione'
+                  "
+                >
+                  <div class="flex justify-center w-full px-6 py-3 bg-transparent text-black">
+                    <fa-icon
+                      [icon]="faEnvelope"
+                      class="w-5 h-5 mr-2"
+                    ></fa-icon>
+                    Invia per approvazione
+                  </div>
+                </app-button>
+              }
+
+              @if (
+                property()?.adStatus === 'published' ||
+                property()?.adStatus === 'negotiation' ||
+                property()?.adStatus === 'sold' ||
+                property()?.adStatus === 'hidden' ||
+                property()?.adStatus === 'archived'
+              ) {
+                <app-property-details-actions-dropdown
+                  [propertyId]="propertyId || ''"
+                  (actionSelected)="handlePropertyAction($event)"
+                ></app-property-details-actions-dropdown>
+              }
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div>
+
+@if (modalType) {
+  <app-modal-small
+    [modalType]="modalType"
+    [loading]="isSaving()"
+    (onAction)="modalAction()"
+    (onClose)="modalClosed()">
+  </app-modal-small>
+
+}

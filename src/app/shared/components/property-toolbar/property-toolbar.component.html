@@ -1,0 +1,333 @@
+@if (property()?.adStatus === 'draft') {
+  <div
+    class="container mx-auto max-w-6xl py-4 flex justify-between items-center p-4 bg-[#F6F6F6] m-0 lg:my-6"
+  >
+    <div>
+      <h2 class="text-lg font-bold">Anteprima del tuo annuncio</h2>
+      <p class="text-xs">Salvato come bozza</p>
+    </div>
+    <div class="lg:flex gap-4 hidden">
+      <app-button
+        (click)="goToEdit()"
+        [text]="'Modifica'"
+        type="secondary"
+        [icon]="true"
+        [iconType]="'edit'"
+        iconPosition="left"
+        size="md"
+      ></app-button>
+      @if ((property().draftPlanSelected && subscription()) || !property().draftPlanSelected) {
+        <app-button
+          (click)="publishListing()"
+          [text]="'Pubblica annuncio'"
+          [icon]="false"
+          size="md"
+        ></app-button>
+      } @else {
+        <app-button
+          (click)="payListing()"
+          [text]="'Pubblica annuncio'"
+          [icon]="false"
+          size="md"
+        ></app-button>
+      }
+    </div>
+  </div>
+  <div
+    class="w-full flex items-center justify-between px-2 lg:hidden fixed bottom-0 h-24 z-50 bg-[#F6F6F6] z-50"
+  >
+    <app-button
+      (click)="goToEdit()"
+      [text]="'Modifica'"
+      type="secondary"
+      [icon]="true"
+      [iconType]="'edit'"
+      iconPosition="left"
+      size="md"
+    ></app-button>
+    @if ((property().draftPlanSelected && subscription()) || !property().draftPlanSelected) {
+      <app-button
+        (click)="publishListing()"
+        [text]="'Pubblica annuncio'"
+        [icon]="false"
+        size="md"
+      ></app-button>
+    } @else {
+      <app-button
+        (click)="payListing()"
+        [text]="'Pubblica annuncio'"
+        [icon]="false"
+        size="md"
+      ></app-button>
+    }
+  </div>
+}
+
+@if (property()?.adStatus === 'sent') {
+  <!-- Desktop version -->
+  <div
+    class="container mx-auto max-w-6xl py-4 flex justify-between items-center p-4 my-6 bg-[#FCFBD9] hidden lg:flex z-50"
+  >
+    <div>
+      <h2 class="text-lg font-bold">Annuncio in revisione</h2>
+      @if (subscription()) {
+        <a
+          href="#"
+          class="bg-[#F6F6F6] text-black text-xs font-semibold px-2.5 py-0.5 rounded hover:bg-secondary-dark"
+          >Piano {{ (subscription().stripeProductId | planData | async)?.plan.title }}
+        </a>
+      } @else {
+        <a
+          href="#"
+          class="bg-[#F6F6F6] text-black text-xs font-semibold px-2.5 py-0.5 rounded hover:bg-secondary-dark"
+          >Piano FREE</a
+        >
+      }
+    </div>
+    <div class="flex gap-4">
+      <app-button
+        (click)="goToMyAds()"
+        [text]="'I tuoi annunci'"
+        type="secondary"
+        [icon]="true"
+        [iconType]="'list'"
+        iconPosition="left"
+        size="md"
+      ></app-button>
+      <app-button
+        (click)="editPropertySettings(property().id!)"
+        type="secondary"
+        [icon]="false"
+        size="md"
+      >
+        <fa-icon
+          [icon]="faScrewdriverWrench"
+          class="h-4 w-4 px-1 flex items-center justify-center mr-2"
+        />
+        Impostazioni
+      </app-button>
+      <app-actions-dropdown
+        [propertyId]="property()?.id || ''"
+        [propertyStatus]="property()?.adStatus || ''"
+        [enableModify]="false"
+        [type]="'bg'"
+        (goToTicket)="goToTicket()"
+        (deleteProperty)="deleteProperty($event)"
+        (openPlanModal)="openPlanModal(property())"
+      ></app-actions-dropdown>
+    </div>
+  </div>
+
+  <!-- Mobile version -->
+  <div class="container mx-auto max-w-6xl py-4 p-4 bg-[#FCFBD9] m-0 lg:hidden">
+    <div>
+      <h2 class="text-lg font-bold">Annuncio in revisione</h2>
+      @if (subscription()) {
+        <a
+          href="#"
+          class="bg-[#F6F6F6] text-black text-xs font-semibold px-2.5 py-0.5 rounded hover:bg-secondary-dark"
+          >Piano {{ (subscription().stripeProductId | planData | async)?.plan.title }}
+        </a>
+      } @else {
+        <a
+          href="#"
+          class="bg-[#F6F6F6] text-black text-xs font-semibold px-2.5 py-0.5 rounded hover:bg-secondary-dark"
+          >Piano FREE</a
+        >
+      }
+    </div>
+  </div>
+  <div class="w-full flex items-center gap-2 px-4 py-3 lg:hidden fixed bottom-0 z-50 bg-[#FCFBD9]">
+    <app-button
+      [routerLink]="['/annunci']"
+      [text]="''"
+      type="secondary"
+      [icon]="true"
+      [iconType]="'list'"
+      iconPosition="left"
+      size="sm"
+      class="flex-shrink-0 w-12 h-14 !p-0"
+    ></app-button>
+    <app-button
+      (click)="editPropertySettings(property().id!)"
+      type="secondary"
+      [icon]="false"
+      size="sm"
+      class="flex-shrink-0 w-12 h-14 !p-0"
+    >
+      <fa-icon
+        [icon]="faScrewdriverWrench"
+        class="h-4 w-4 px-1 flex items-center justify-center"
+      />
+    </app-button>
+    <app-actions-dropdown
+      [propertyId]="property()?.id || ''"
+      [propertyStatus]="property()?.adStatus || ''"
+      [enableModify]="false"
+      [type]="'bg'"
+      (goToTicket)="goToTicket()"
+      (deleteProperty)="deleteProperty($event)"
+      (openPlanModal)="openPlanModal(property())"
+      class="w-full"
+    ></app-actions-dropdown>
+  </div>
+}
+
+@if (property()?.adStatus === 'published') {
+  <!-- Desktop version -->
+  <div
+    class="container mx-auto max-w-6xl py-4 flex justify-between items-center p-4 my-6 bg-[#FCFBD9] hidden lg:flex"
+  >
+    <div>
+      <h2 class="text-lg font-bold">Annuncio pubblicato</h2>
+      @if (subscription()) {
+        <a
+          href="#"
+          class="bg-[#F6F6F6] text-black text-xs font-semibold px-2.5 py-0.5 rounded hover:bg-secondary-dark"
+          >Piano {{ (subscription().stripeProductId | planData | async)?.plan.title }}
+        </a>
+      } @else {
+        <a
+          href="#"
+          class="bg-[#F6F6F6] text-black text-xs font-semibold px-2.5 py-0.5 rounded hover:bg-secondary-dark"
+          >Piano FREE</a
+        >
+      }
+    </div>
+    <div class="flex items-center space-x-2 text-xs px-4 py-2 rounded-md">
+      <span class="text-[12px] font-bold">{{ property()?.visitCount || 0 }}</span>
+      <span class="text-[12px]">Visite</span>
+      <span class="mx-2">|</span>
+      <span class="text-[12px] font-bold">{{ property()?.requestCount || 0 }}</span>
+      <span class="text-[12px]">Richiesta di informazioni</span>
+      <span class="mx-2">|</span>
+      <span class="text-[12px] font-bold">{{ property()?.appointmentCount || 0 }}</span>
+      <span class="text-[12px]">Appuntamento fissato</span>
+    </div>
+    <div class="flex gap-4">
+      <app-button
+        [routerLink]="['/annunci']"
+        [text]="'I tuoi annunci'"
+        type="secondary"
+        [icon]="true"
+        [iconType]="'list'"
+        iconPosition="left"
+        size="md"
+      ></app-button>
+      <app-button
+        (click)="editPropertySettings(property().id!)"
+        type="secondary"
+        [icon]="false"
+        size="md"
+      >
+        <fa-icon
+          [icon]="faScrewdriverWrench"
+          class="h-4 w-4 px-1 flex items-center justify-center mr-2"
+        />
+        Impostazioni
+      </app-button>
+      <app-actions-dropdown
+        [propertyId]="property()?.id || ''"
+        [propertyStatus]="property()?.adStatus || ''"
+        [enableModify]="false"
+        [type]="'bg'"
+        (goToTicket)="goToTicket()"
+        (deleteProperty)="deleteProperty($event)"
+        (openPlanModal)="openPlanModal(property())"
+      ></app-actions-dropdown>
+    </div>
+  </div>
+
+  <!-- Mobile version -->
+  <div class="container mx-auto max-w-6xl py-4 p-4 bg-[#FCFBD9] m-0 lg:hidden">
+    <div>
+      <h2 class="text-lg font-bold">Annuncio pubblicato</h2>
+      @if (subscription()) {
+        <a
+          href="#"
+          class="bg-[#F6F6F6] text-black text-xs font-semibold px-2.5 py-0.5 rounded hover:bg-secondary-dark"
+          >Piano {{ (subscription().stripeProductId | planData | async)?.plan.title }}
+        </a>
+      } @else {
+        <a
+          href="#"
+          class="bg-[#F6F6F6] text-black text-xs font-semibold px-2.5 py-0.5 rounded hover:bg-secondary-dark"
+          >Piano FREE</a
+        >
+      }
+    </div>
+    <!-- Mobile stats -->
+    <div class="flex items-center space-x-2 text-xs mt-2">
+      <span class="text-[12px] font-bold">{{ property()?.visitCount || 0 }}</span>
+      <span class="text-[12px]">Visite</span>
+      <span class="mx-2">|</span>
+      <span class="text-[12px] font-bold">{{ property()?.requestCount || 0 }}</span>
+      <span class="text-[12px]">Richieste</span>
+      <span class="mx-2">|</span>
+      <span class="text-[12px] font-bold">{{ property()?.appointmentCount || 0 }}</span>
+      <span class="text-[12px]">Appuntamenti</span>
+    </div>
+  </div>
+  <div class="w-full flex items-center gap-2 px-4 py-3 lg:hidden fixed bottom-0 z-50 bg-[#FCFBD9]">
+    <app-button
+      [routerLink]="['/annunci']"
+      [text]="''"
+      type="secondary"
+      [icon]="true"
+      [iconType]="'list'"
+      iconPosition="left"
+      size="sm"
+      class="flex-shrink-0 w-12 h-14 !p-0"
+    ></app-button>
+    <app-button
+      (click)="editPropertySettings(property().id!)"
+      type="secondary"
+      [icon]="false"
+      size="sm"
+      class="flex-shrink-0 w-12 h-14 !p-0"
+    >
+      <fa-icon
+        [icon]="faScrewdriverWrench"
+        class="h-4 w-4 px-1 flex items-center justify-center"
+      />
+    </app-button>
+    <app-actions-dropdown
+      [propertyId]="property()?.id || ''"
+      [propertyStatus]="property()?.adStatus || ''"
+      [enableModify]="false"
+      [type]="'bg'"
+      (goToTicket)="goToTicket()"
+      (deleteProperty)="deleteProperty($event)"
+      (openPlanModal)="openPlanModal(property())"
+      class="w-full"
+    ></app-actions-dropdown>
+  </div>
+}
+
+@if (modalOpen()) {
+  <app-modal-full-screen
+    class="modal-full-screen"
+    [open]="modalOpen()"
+  >
+    <app-choose-a-plan
+      [propertyId]="propertyId()"
+      [listService]="true"
+      [activePlan]="activePlan()"
+      (onModalClose)="modalOpen.set(false)"
+    ></app-choose-a-plan>
+  </app-modal-full-screen>
+}
+
+@if (this.modalType) {
+  <app-modal-small
+    [modalType]="modalType"
+    [loading]="isLoading"
+    [params]="{
+      title: 'Sei sicuro di voler eliminare questo annuncio?',
+      subtitle: 'L\'annuncio sarà eliminato definitivamente',
+      elementId: propertyToDelete,
+    }"
+    (onAction)="modalAction($event)"
+    (onClose)="modalClosed()"
+  ></app-modal-small>
+}

@@ -1,0 +1,180 @@
+<div class="flex flex-col container mx-auto p-2 gap-y-4">
+  @for (property of properties(); track property.id) {
+    <div class="relative">
+      <!-- Entire property card as a link -->
+      <a
+        [routerLink]="['/property', property.id]"
+        class="block"
+      >
+        <div
+          class="property-card flex flex-col lg:flex-row border border-gray-300 bg-white overflow-hidden mb-2 w-full hover:shadow-md transition-shadow duration-200"
+        >
+          <!-- Immagine della proprietà -->
+          <div class="w-full lg:w-[240px] lg:h-auto flex-shrink-0 relative overflow-hidden">
+            @if (property?.images && property.images.length > 0) {
+              <img
+                [src]="property?.images[0]?.url"
+                alt="Property Image"
+                class="w-full h-[175px] object-cover lg:min-h-[180px]"
+              />
+            } @else {
+              <div class="w-full h-[175px] bg-gray-200 flex items-center justify-center">
+                <span class="text-gray-500">Nessuna immagine</span>
+              </div>
+            }
+          </div>
+
+          <!-- Dettagli della proprietà -->
+          <div class="flex flex-col flex-grow justify-between px-6 py-6 gap-y-2 lg:gap-y-0">
+            <!-- Località e Titolo -->
+            <div>
+              <span class="text-[10px] lg:text-xs text-[#97999B] uppercase font-open-sans">
+                {{ property.city || 'N/A' }} - {{ property.district || '' }} -
+                {{ property.region || '' }}</span
+              >
+              <h2 class="font-bold text-primary-dark heading-xs">
+                {{ property.type || 'Immobile' }} in {{ property.address || 'N/A' }},
+                {{ property.house_number || '' }} - {{ property.city || 'N/A' }}
+                {{ property.district || '' }} {{ property.region || '' }},
+                {{ property.country || 'Italia' }}</h2
+              >
+            </div>
+
+            <!-- Info della proprietà (Locali, Dimensione, Bagni) e Prezzo -->
+            <div class="flex items-center justify-between mt-2 text-black">
+              <div class="flex space-x-4 text-sm">
+                <div class="flex items-center gap-x-2">
+                  <app-floorplan-icon class="w-4 h-4"></app-floorplan-icon>
+                  <span>{{ property.number_rooms || '0' }} {{ property.type || 'locali' }}</span>
+                </div>
+
+                <div class="flex items-center gap-x-2">
+                  <app-measure-icon class="w-4 h-4"></app-measure-icon>
+                  <span>{{ property.square_metres || '0' }} m²</span>
+                </div>
+
+                <div class="flex items-center gap-x-2">
+                  <app-bath-icon class="w-4 h-4"></app-bath-icon>
+                  <span>{{ property.number_baths || '0' }} bagni</span>
+                </div>
+
+                <!-- Prezzo accanto ai dettagli -->
+                <div class="hidden lg:block text-lg font-bold lg:pl-8">
+                  <span class="mr-1">€</span>
+                  {{ property.price }}
+                </div>
+              </div>
+            </div>
+            <div class="w-full flex justify-end lg:hidden text-sm font-bold lg:pl-8 pt-4">
+              <span class="mr-1">€</span>
+              {{ property.price }}
+            </div>
+          </div>
+        </div>
+      </a>
+
+      <div
+        class="absolute bottom-0 right-0 top-0 flex items-center px-2 lg:px-4 bg-opacity-90 rounded-tl"
+      >
+        <div class="flex items-center gap-x-3 lg:gap-x-6 mb-2 lg:mb-0 mx-auto">
+          <!-- Share button with tooltip -->
+          <div class="relative share-tooltip-container">
+            <app-button
+              [size]="'nopadding'"
+              type="withoutBorder"
+              [hasBorder]="false"
+              (click)="toggleShareTooltip($event, property)"
+              class="flex items-center"
+            >
+              <app-share-icon class="w-4 h-3 mr-1 flex items-center"></app-share-icon>
+            </app-button>
+
+            <!-- Share tooltip -->
+            <div
+              *ngIf="activeShareTooltip === property.id"
+              class="absolute top-full right-0 mt-2 bg-white ring-1 ring-opacity-5 z-50 border-black border rounded-sm"
+            >
+              <!-- Tooltip arrow -->
+              <div
+                class="absolute bottom-full right-6 w-0 h-0 border-l-4 border-r-4 border-b-4 border-transparent border-b-black"
+              ></div>
+
+              <div class="p-2">
+                <div class="flex items-center space-x-3">
+                  <!-- Copy URL -->
+                  <button
+                    (click)="copyUrl($event, property)"
+                    class="p-2 text-gray-600 hover:text-gray-800 hover:bg-secondary-light rounded transition-colors"
+                    title="Copia link"
+                  >
+                    <fa-icon
+                      [icon]="faCopy"
+                      class="w-4 h-4"
+                    ></fa-icon>
+                  </button>
+
+                  <!-- Email -->
+                  <button
+                    (click)="shareViaEmail($event, property)"
+                    class="p-2 text-gray-600 hover:text-gray-800 hover:bg-secondary-light rounded transition-colors"
+                    title="Condividi via email"
+                  >
+                    <fa-icon
+                      [icon]="faEnvelope"
+                      class="w-4 h-4"
+                    ></fa-icon>
+                  </button>
+
+                  <!-- WhatsApp -->
+                  <button
+                    (click)="shareViaWhatsApp($event, property)"
+                    class="p-2 text-green-500 hover:text-green-600 hover:bg-secondary-light rounded transition-colors"
+                    title="Condividi su WhatsApp"
+                  >
+                    <fa-icon
+                      [icon]="faWhatsapp"
+                      class="w-4 h-4"
+                    ></fa-icon>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <app-button
+            [size]="'nopadding'"
+            type="withoutBorder"
+            [hasBorder]="false"
+            (click)="contactProperty(property)"
+          >
+            <div class="text-xs flex items-center py-2">
+              <app-mail-icon class="w-4 h-3 items-center flex mr-1"></app-mail-icon> Contatta
+            </div>
+          </app-button>
+
+          <app-button
+            [size]="'nopadding'"
+            type="withoutBorder"
+            [hasBorder]="false"
+            (click)="scheduleAppointment(property)"
+          >
+            <div class="text-xs flex items-center py-2">
+              <app-calendar-icon class="w-4 h-3 items-center flex mr-1"></app-calendar-icon>
+              Appuntamento
+            </div>
+          </app-button>
+          <app-button
+            [size]="'nopadding'"
+            type="withoutBorder"
+            [hasBorder]="false"
+            (click)="deleteProperty(property)"
+          >
+            <div class="text-xs flex items-center py-2">
+              <app-trash-icon class="w-4 h-3 items-center flex mr-1"></app-trash-icon> Elimina
+            </div>
+          </app-button>
+        </div>
+      </div>
+    </div>
+  }
+</div>

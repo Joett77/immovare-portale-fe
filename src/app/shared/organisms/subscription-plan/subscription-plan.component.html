@@ -1,0 +1,68 @@
+<div class="w-80 min-h-[770px] md:w-[30rem] p-4 rounded bg-[#F6F6F6]">
+  <div class="w-full flex flex-row justify-between">
+    <h1 class="text-2xl font-montserrat font-bold">{{ plan().title }}</h1>
+    @if (plan().tag) {
+      <div class="px-2 py-1 bg-secondary">
+        <span class="text-xs font-montserrat font-bold text-[#3C3D3E] uppercase md:text-base">{{
+          plan().tag
+        }}</span>
+      </div>
+    }
+  </div>
+  <div class="w-[180px] min-h-[32px]">
+    <p class="text-xs font-montserrat font-light"> {{ plan().description }}</p>
+  </div>
+  <app-break-line [marginY]="'my-4'"></app-break-line>
+  <div class="relative">
+    <div class="w-full flex flex-row justify-between max-h-7">
+      <span class="text-xl font-montserrat font-semibold">{{ plan().price }}/mese</span>
+      <!-- @if (type() === 'exclusive') {
+        <div class="w-[150px]">
+          <app-toggle-button></app-toggle-button>
+        </div>
+      } -->
+    </div>
+  </div>
+  <div class="min-h-10">
+    <p
+      class="text-xs font-montserrat font-light"
+      [innerHTML]="plan().priceDescription"
+    ></p>
+  </div>
+  <app-break-line [marginY]="'my-4'"></app-break-line>
+  <div class="mb-4">
+    <div class="w-2/3">
+      @if (disableButton()) {
+        <div
+          class="bg-secondary text-black font-bold rounded-sm flex items-center w-full h-full border-[1px] border-black text-xs py-3 justify-between gap-3 px-4"
+        >
+          <div>Seleziona</div>
+          <fa-icon
+            [size]="'lg'"
+            [icon]="faArrowRight"
+          ></fa-icon>
+        </div>
+      } @else {
+        <app-button
+          (click)="handleClick()"
+          class="text-primary-dark text-xs font-bold mb-4"
+          text="Seleziona"
+          [iconType]="'arrow-right'"
+          size="md"
+          [icon]="true"
+          iconPosition="right"
+        ></app-button>
+      }
+    </div>
+  </div>
+  @for (feature of plan().serviceList; track feature) {
+    <div class="flex items-center gap-x-3 mb-4">
+      <app-check-icon></app-check-icon>
+
+      <p class="text-xs font-montserrat font-normal flex-grow">{{ feature.name }}</p>
+      <app-info-circle-icon [infoText]="feature.description"></app-info-circle-icon>
+    </div>
+  } @empty {
+    nessun servizio
+  }
+</div>

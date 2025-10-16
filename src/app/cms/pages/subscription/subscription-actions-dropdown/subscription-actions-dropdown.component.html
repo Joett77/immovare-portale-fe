@@ -1,0 +1,59 @@
+<div class="relative inline-block text-left">
+  <button
+    (click)="toggleMenu()"
+    [class.bg-[#ECE81A]]="isOpen"
+    class="hover:bg-[#FCFBD9] text-[#3C3D3E] text-sm font-bold px-4 py-2 rounded flex items-center space-x-2"
+    [class]="!subscriptionId ? 'bg-white ' : ''"
+  >
+    <app-settings-icon class="w-4 h-4"></app-settings-icon>
+    <span>Azioni</span>
+  </button>
+
+  <div
+    *ngIf="isOpen"
+    class="absolute right-0 mt-2 w-70 shadow-xl origin-top-right bg-white ring-1 ring-black ring-opacity-5 z-20 border-black border"
+  >
+    <div class="py-1">
+      @if (subscriptionId) {
+        <a
+          (click)="onDeactivateSubscriptionRenewal(index)"
+          class="block px-4 py-2 text-sm text-[#3C3D3E] hover:bg-[#FCFBD9] font-semibold cursor-pointer"
+        >
+          {{ cancel_at_period_end ? 'Riattiva abbonamento' : 'Disattiva abbonamento' }}
+        </a>
+        <!-- <a
+          (click)="onDeactivateSubscription()"
+          class="block px-4 py-2 text-sm text-red-600 hover:bg-red-100 font-semibold cursor-pointer"
+        >
+          <div class="flex-col">
+            <p> Disattiva abbonamento </p>
+            <span>(Ripristino piano gratuito)</span>
+          </div>
+        </a> -->
+      } @else {
+        <a
+          (click)="onEditViewUserSubscription()"
+          class="block px-4 py-2 text-sm text-[#3C3D3E] hover:bg-[#FCFBD9] font-semibold cursor-pointer"
+        >
+          Visualizza / Modifica abbonamento
+        </a>
+        <!-- <a
+          (click)="onDeactivateUserSubscription()"
+          class="block px-4 py-2 text-sm text-red-600 hover:bg-red-100 font-semibold cursor-pointer"
+        >
+          Disattiva abbonamento
+        </a> -->
+      }
+    </div>
+  </div>
+</div>
+
+@if (this.modalType) {
+  <app-modal-small
+    [modalType]="modalType"
+    [loading]="false"
+    [params]="{propertyId: propertyId, planName: planName, checkbox: false}"
+    (onAction)="modalAction()"
+    (onClose)="modalClosed()"></app-modal-small>
+
+}

@@ -1,0 +1,79 @@
+<div class="container mx-auto pt-8 px-0 lg:px-8">
+  <!-- Bottone Torna alla Ricerca -->
+  <div class="mb-1 flex justify-start">
+    <app-button
+      [size]="'md'"
+      type="withoutBorder"
+      [hasBorder]="false"
+    >
+      <span class="mr-1">←</span> Torna alla ricerca
+    </app-button>
+  </div>
+
+  <!-- Tabs di Navigazione -->
+  <div class="mt-2 flex border-b border-[#97999B] mb-4">
+    <button
+      class="px-6 py-3 font-bold w-1/2 lg:w-fit"
+      [ngClass]="{
+        'bg-[#ECE81A] text-black border-b-2 border-[#3C3D3E]': activeTab() === 'saved',
+        'text-[#97999B]': activeTab() !== 'saved',
+      }"
+      (click)="switchTab('saved')"
+    >
+      Ricerche salvate
+    </button>
+    <button
+      class="px-6 py-3 font-bold w-1/2 lg:w-fit"
+      [ngClass]="{
+        'bg-[#ECE81A] text-black border-b-2 border-[#3C3D3E]': activeTab() === 'favorite-realestate',
+        'text-[#97999B]': activeTab() !== 'favorite-realestate',
+      }"
+      (click)="switchTab('favorite-realestate')"
+    >
+      Immobili preferiti
+    </button>
+  </div>
+</div>
+
+<div class="container mx-auto pb-8 px-4 sm:px-6 lg:px-8">
+
+  @if(showDeleteAll()){
+    <!-- Pulsante Elimina Tutto -->
+    <div class="flex justify-end items-center mb-4 pr-4 lg:pr-2">
+      <app-button
+        type="withoutBorder"
+        [hasBorder]="false"
+        (click)="deleteAll()"
+        size="nopadding"
+      >
+        <div class="px-0 py-6 flex items-center">
+          <app-trash-icon class="h-5 flex items-center w-5" /> Elimina tutto
+        </div>
+      </app-button>
+    </div>
+  }
+
+  <div class="space-y-4">
+    @if (activeTab() === 'saved') {
+      <!-- Lista Ricerche Salvate -->
+      <app-saved-search-card></app-saved-search-card>
+    } @else {
+      <!-- Lista Immobili Preferiti -->
+      <app-favorite-property-card></app-favorite-property-card>
+    }
+  </div>
+
+  <!-- Paginazione -->
+  <div
+    class="flex items-center justify-center mt-10 space-x-2 text-gray-500"
+    style="margin-bottom: 80px"
+  >
+    <button class="hover:text-black">←</button>
+    <span class="font-semibold text-black">1</span>
+    <span class="text-gray-400">2</span>
+    <span class="text-gray-400">3</span>
+    <span class="text-gray-400">...</span>
+    <span class="text-gray-400">20</span>
+    <button class="hover:text-black">→</button>
+  </div>
+</div>

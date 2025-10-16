@@ -1,0 +1,38 @@
+<!-- step-extra-features.component.html -->
+<div class="container mx-auto p-6">
+  <div class="flex flex-col md:flex-row">
+    <div class="w-full mb-6 md:mb-0 md:w-2/5 p-6">
+      <h2 class="text-2xl font-bold text-primary-dark mb-4 font-montserrat">{{ title() }}</h2>
+
+      <form [formGroup]="propertyExtraFeatureForm">
+        <h3 class="text-xl text-primary-dark mb-6 font-montserrat">
+          Inserisci una descrizione<br />(Opzionale)
+        </h3>
+        <app-input
+          class="w-full mb-6"
+          label="Descrizione"
+          [control]="getControl('optionalDescription')"
+          type="textarea"
+          [rows]="4"
+        ></app-input>
+
+        <!-- Extra features selection -->
+        <div class="space-y-2 mb-8">
+          <h3 class="text-xl text-primary-dark mb-6 mt-6 font-montserrat">
+            Caratteristiche aggiuntive<br />(Opzionale)
+          </h3>
+
+          @for (feature of extraFeatures; track feature.id) {
+            <app-feature-button
+              [id]="feature.id"
+              [icon]="feature.icon"
+              [label]="feature.label"
+              [isSelected]="isSelected(feature.id)"
+              (click)="toggleProperty(feature)"
+            ></app-feature-button>
+          }
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,13 @@
+// Hide scrollbar for plan selection
+.overflow-x-auto {
+  &::-webkit-scrollbar {
+    display: none; // Safari and Chrome
+  }
+  -ms-overflow-style: none; // IE and Edge
+  scrollbar-width: none; // Firefox
+}
+
+// Smooth scrolling behavior
+.overflow-x-auto {
+  scroll-behavior: smooth;
+}

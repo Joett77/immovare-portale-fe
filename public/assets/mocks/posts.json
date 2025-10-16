@@ -1,0 +1,77 @@
+{
+    "posts": [
+        {
+            "id": 1,
+            "image": "/assets/placeholder-post.png",
+            "author": "Redazione",
+            "tags": [
+                "CASA",
+                "ESTATE",
+                "LIFESTYLE"
+            ],
+            "title": "Trasforma il tuo terrazzo in un elegante spazio estivo",
+            "body": "L'estate è la stagione perfetta per sfruttare al massimo il proprio terrazzo o terrazzino. Con pochi accorgimenti e qualche tocco di stile, puoi trasformare il tuo spazio esterno in un luogo accogliente e rilassante, perfetto per goderti il sole e il bel tempo. Ecco alcune idee per trasformare il tuo terrazzo in un elegante spazio estivo.",
+            "excerpt": "L'estate è la stagione perfetta per sfruttare al massimo il proprio terrazzo o terrazzino..."
+        },
+        {
+            "id": 2,
+            "image": "/assets/placeholder-post.png",
+            "author": "Redazione",
+            "tags": [
+                "IMMOBILI",
+                "INVESTIMENTI"
+            ],
+            "title": "Guida completa all'investimento immobiliare",
+            "body": "L'estate è la stagione perfetta per sfruttare al massimo il proprio terrazzo o terrazzino. Con pochi accorgimenti e qualche tocco di stile, puoi trasformare il tuo spazio esterno in un luogo accogliente e rilassante, perfetto per goderti il sole e il bel tempo. Ecco alcune idee per trasformare il tuo terrazzo in un elegante spazio estivo.",
+            "excerpt": "Scopri come iniziare a investire in immobili e quali sono le migliori strategie per massimizzare..."
+        },
+        {
+            "id": 3,
+            "image": "/assets/placeholder-post.png",
+            "author": "Redazione",
+            "tags": [
+                "DECORAZIONE",
+                "INTERNI"
+            ],
+            "title": "10 idee di decorazione per rinnovare la tua casa",
+            "body": "L'estate è la stagione perfetta per sfruttare al massimo il proprio terrazzo o terrazzino. Con pochi accorgimenti e qualche tocco di stile, puoi trasformare il tuo spazio esterno in un luogo accogliente e rilassante, perfetto per goderti il sole e il bel tempo. Ecco alcune idee per trasformare il tuo terrazzo in un elegante spazio estivo.",
+            "excerpt": "Cambia il look della tua casa con queste semplici ma efficaci idee di decorazione che puoi fare da solo..."
+        },
+        {
+            "id": 4,
+            "image": "/assets/placeholder-post.png",
+            "author": "Redazione",
+            "tags": [
+                "MERCATO",
+                "TREND"
+            ],
+            "title": "Tendenze del mercato immobiliare nel 2024",
+            "body": "L'estate è la stagione perfetta per sfruttare al massimo il proprio terrazzo o terrazzino. Con pochi accorgimenti e qualche tocco di stile, puoi trasformare il tuo spazio esterno in un luogo accogliente e rilassante, perfetto per goderti il sole e il bel tempo. Ecco alcune idee per trasformare il tuo terrazzo in un elegante spazio estivo.",
+            "excerpt": "Un'analisi delle tendenze attuali del mercato immobiliare e previsioni per il 2024..."
+        },
+        {
+            "id": 5,
+            "image": "/assets/placeholder-post.png",
+            "author": "Redazione",
+            "tags": [
+                "MERCATO",
+                "TREND"
+            ],
+            "title": "5 Tendenze del mercato immobiliare nel 2024",
+            "body": "L'estate è la stagione perfetta per sfruttare al massimo il proprio terrazzo o terrazzino. Con pochi accorgimenti e qualche tocco di stile, puoi trasformare il tuo spazio esterno in un luogo accogliente e rilassante, perfetto per goderti il sole e il bel tempo. Ecco alcune idee per trasformare il tuo terrazzo in un elegante spazio estivo.",
+            "excerpt": "Un'analisi delle tendenze attuali del mercato immobiliare e previsioni per il 2024..."
+        },
+        {
+            "id": 6,
+            "image": "/assets/placeholder-post.png",
+            "author": "Redazione",
+            "tags": [
+                "MERCATO",
+                "TREND"
+            ],
+            "title": "6 Tendenze del mercato immobiliare nel 2024",
+            "body": "L'estate è la stagione perfetta per sfruttare al massimo il proprio terrazzo o terrazzino. Con pochi accorgimenti e qualche tocco di stile, puoi trasformare il tuo spazio esterno in un luogo accogliente e rilassante, perfetto per goderti il sole e il bel tempo. Ecco alcune idee per trasformare il tuo terrazzo in un elegante spazio estivo.",
+            "excerpt": "Un'analisi delle tendenze attuali del mercato immobiliare e previsioni per il 2024..."
+        }
+    ]
+}

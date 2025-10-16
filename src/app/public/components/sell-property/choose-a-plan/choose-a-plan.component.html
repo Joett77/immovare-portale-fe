@@ -1,0 +1,70 @@
+<div class="container overflow-y-auto mx-auto px-4 sm:px-6 lg:px-8 py-12">
+  @if (listService) {
+    <button
+      class="text-gray-500 hover:text-gray-700"
+      (click)="onModalClose.emit()"
+    >
+      <fa-icon [icon]="exitIcon"></fa-icon>
+    </button>
+  }
+
+  @if (hasHeader()) {
+    <h2 class="heading-lg font-montserrat font-bold text-primary-dark mb-4"
+      >Scegli il piano più giusto per te</h2
+    >
+    <p class="text-black text-lg mb-8">
+      Più servizi aggiungi, più diventa semplice vendere casa. Scegli uno dei seguenti piani di
+      abbonamento
+    </p>
+  }
+
+  @if (listService) {
+    <div class="inline-flex gap-x-2">
+      <p class="text-black text-lg mb-8">
+        In alternativa, puoi anche acquistare <b>i servizi singolarmente.</b>
+      </p>
+      <app-button
+        type="primary"
+        size="nopadding"
+        class="w-fit flex h-fit"
+        (click)="scrollToServices()"
+      >
+        <div class="px-5 py-3 flex items-center text-xs font-bold gap-x-2 w-fit">
+          Servizi singoli <fa-icon [icon]="faLink"></fa-icon>
+        </div>
+      </app-button>
+    </div>
+  }
+
+  <div class="flex flex-row flex-nowrap gap-x-8 item-end mt-4">
+    <div class="flex flex-row flex-nowrap gap-x-2 overflow-x-scroll">
+      @for (plan of plans(); track $index) {
+        @if (activePlan() !== plan.stripeProductId) {
+          <app-subscription-plan
+            [plan]="plan"
+            [propertyStatus]="propertyStatus()"
+            [propertyId]="propertyId()"
+            [withEvaluation]="withEvaluation()"
+          ></app-subscription-plan>
+        }
+      }
+    </div>
+  </div>
+
+  @if (listService) {
+    <hr />
+    <!-- Added ID and class for better targeting -->
+    <div
+      id="servizi-singoli-section"
+      class="servizi-singoli-section mt-8"
+    >
+      <h1 class="mt-4 text-2xl font-bold">Servizi singoli</h1>
+      @for (service of service(); track $index) {
+        <app-single-service-row
+          [service]="service"
+          [propertyId]="propertyId()!"
+        ></app-single-service-row>
+      }
+    </div>
+  }
+</div>

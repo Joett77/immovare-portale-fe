@@ -1,0 +1,191 @@
+<!-- step-evaluation-result.component.html -->
+<div class="container mx-auto mb-20 py-8 md:py-24 px-6">
+  <!-- Error message when evaluation data is missing -->
+  @if (showDataMissingError) {
+    <div
+      class="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded relative mb-4"
+      role="alert"
+    >
+      <strong class="font-bold">Dati di valutazione non trovati!</strong>
+      <span class="block sm:inline">
+        Sembra che i dati della valutazione siano andati persi. Ti stiamo reindirizzando all'inizio
+        del processo di valutazione.
+      </span>
+      <div class="mt-3">
+        <button
+          (click)="restartEvaluation()"
+          class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+        >
+          Ricomincia Valutazione
+        </button>
+      </div>
+    </div>
+  } @else {
+    <!-- Normal evaluation results -->
+    <div class="flex flex-col md:flex-row md:gap-x-20">
+      <div class="price-section-container">
+        <div class="w-full">
+          <h2 class="text-2xl font-bold text-primary-dark mb-3 font-montserrat"
+            >Ecco quanto vale la tua casa</h2
+          >
+          <h3 class="text-xl text-primary-dark mb-3 font-montserrat"
+            >Di seguito il riassunto del tuo report di mercato, basato sulle caratteristiche
+            dell'immobile che hai selezionato.</h3
+          >
+        </div>
+
+        <!-- Loading State -->
+        @if (isLoadingValuation) {
+          <div class="flex flex-col items-center justify-center py-8">
+            <div
+              class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-dark mb-4"
+            ></div>
+            <p class="text-lg font-montserrat text-primary-dark"
+              >Stiamo calcolando il valore della tua casa...</p
+            >
+            <p class="text-sm text-gray-600 mt-2">Questo potrebbe richiedere alcuni secondi</p>
+          </div>
+        } @else {
+          <!-- Valuation Error State -->
+          @if (valuationError) {
+            <div
+              class="bg-yellow-50 border border-yellow-200 text-yellow-800 px-4 py-3 rounded relative mb-4"
+              role="alert"
+            >
+              <strong class="font-bold">Problema nel calcolo della valutazione</strong>
+              <span class="block sm:inline">
+                Abbiamo riscontrato un problema nel calcolare il valore. Stiamo mostrando una stima
+                approssimativa.
+              </span>
+              <div class="mt-3">
+                <button
+                  (click)="retryValuation()"
+                  class="bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-1 px-3 rounded text-sm"
+                >
+                  Riprova Calcolo
+                </button>
+              </div>
+            </div>
+          }
+
+          <!-- Price Display -->
+          <app-price-label
+            type="large"
+            [label]="priceLabel"
+            [price]="suggestedPrice"
+          ></app-price-label>
+          <div
+            class="flex flex-col justify-start items-baseline md:flex-row flex-wrap gap-x-8 md:items-center"
+          >
+            <app-price-label
+              type="small"
+              [label]="agencyLabel"
+              [price]="agencyFee"
+            ></app-price-label>
+            <div
+              class="relative left-[15%] top-4 flex flex-row flex-nowrap md:left-0 md:top-0 items-center rotate-90 md:rotate-180"
+            >
+              <div
+                class="rotate-180"
+                style="padding-top: 23px"
+              >
+                <app-arrow-left-icon
+                  [width]="20"
+                  [height]="20"
+                  class="mr-2"
+                />
+              </div>
+              <app-arrow-left-icon
+                [width]="20"
+                [height]="20"
+                class="mr-2"
+              />
+            </div>
+            <app-price-label
+              type="bgColor"
+              [label]="immoLabel"
+              [price]="immoFee"
+            ></app-price-label>
+          </div>
+        }
+      </div>
+      @if (!isMobile) {
+        <div class="w-full h-full md:w-1/2">
+          <div class="h-64 md:h-full">
+            <p class="text-left text-base font-montserrat font-bold">la tua casa</p>
+
+            @if (isLoadingValuation) {
+              <!-- Loading skeleton for map -->
+              <div class="bg-gray-200 animate-pulse rounded-lg h-[300px] mb-4"></div>
+              <div class="bg-gray-200 animate-pulse rounded-lg h-24"></div>
+            } @else {
+              <app-leaflet-map-lite
+                *ngIf="isBrowser"
+                [height]="'300px'"
+                [latitude]="latitude"
+                [longitude]="longitude"
+              ></app-leaflet-map-lite>
+              <app-properties-map-details
+                [street]="street"
+                [street_number]="street_number"
+                [city]="city"
+                [rooms]="rooms"
+                [bathrooms]="bathrooms"
+                [squareMeters]="squareMeters"
+                [sellingPrice]="suggestedPrice"
+              ></app-properties-map-details>
+            }
+          </div>
+        </div>
+      }
+    </div>
+    <app-break-line [marginY]="'my-12'"></app-break-line>
+    <div>
+      <p class="text-left text-base font-montserrat font-bold mb-4">Il prossimo passo?</p>
+      <p class="text-left text-base font-montserrat font-normal mb-4"
+        >Crea l'annuncio della tua casa scegliendo uno dei <b>piani</b> in abbonamento.</p
+      >
+      <div class="price-label-info-container flex flex-row flex-nowrap gap-x-2 justify-start mt-1">
+        <app-info-circle-icon [fillColor]="'#ABAAAC'"></app-info-circle-icon>
+        <div class="price-label__price text-xs font-normal text-[#ABAAAC]"
+          >Utilizzeremo le informazioni già inserite per creare la bozza del tuo annuncio.</div
+        >
+      </div>
+      <app-choose-a-plan
+        [hasHeader]="false"
+        [withEvaluation]="true"
+      />
+      @if (isMobile) {
+        <div class="w-full h-full md:w-1/2 mt-8 mb-[300px]">
+          <div class="h-64 md:h-full">
+            <p class="text-left text-base font-montserrat font-bold">La tua casa</p>
+
+            @if (isLoadingValuation) {
+              <!-- Loading skeleton for mobile map -->
+              <div class="bg-gray-200 animate-pulse rounded-lg h-[300px] mb-4"></div>
+              <div class="bg-gray-200 animate-pulse rounded-lg h-24"></div>
+            } @else {
+              <app-leaflet-map-lite
+                *ngIf="isBrowser"
+                [height]="'300px'"
+                [latitude]="latitude"
+                [longitude]="longitude"
+              ></app-leaflet-map-lite>
+              <app-properties-map-details
+                [street]="street"
+                [street_number]="street_number"
+                [city]="city"
+                [rooms]="rooms"
+                [bathrooms]="bathrooms"
+                [squareMeters]="squareMeters"
+                [sellingPrice]="suggestedPrice"
+              ></app-properties-map-details>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>
+
+<app-footer type="slim"></app-footer>

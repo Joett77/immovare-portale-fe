@@ -1,0 +1,32 @@
+<div class="relative inline-block text-left w-full">
+  <app-button
+    (click)="toggleMenu($event)"
+    type="secondary"
+    size="nopadding"
+    [class.bg-[#ECE81A]]="isOpen"
+  >
+    <div class="flex justify-center w-full px-6 py-3 text-black items-center">
+      <app-settings-icon class="w-4 h-4 mr-2"></app-settings-icon>
+      <span>Altre azioni</span>
+    </div>
+  </app-button>
+
+  <!-- Dropdown menu -->
+  <div
+    *ngIf="isOpen"
+    class="absolute right-0 mt-2 w-56 shadow-xl origin-top-right bg-white ring-1 ring-black ring-opacity-5 z-20 border-black border"
+  >
+    <div class="py-1">
+      <a
+        *ngFor="let action of actions"
+        (click)="handleAction(action)"
+        class="block px-4 py-2 text-sm cursor-pointer font-semibold"
+        [ngClass]="
+          action.isDanger ? 'text-red-600 hover:bg-red-50' : 'text-[#3C3D3E] hover:bg-[#FCFBD9]'
+        "
+      >
+        {{ action.label }}
+      </a>
+    </div>
+  </div>
+</div>

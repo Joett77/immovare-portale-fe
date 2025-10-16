@@ -1,0 +1,16 @@
+@import '../../../styles/variables.scss';
+swiper-container::part(bullet-active) {
+    background-color: $brand-darker-color;
+    width: 16px;
+    height: 16px;
+    border: 2px solid $brand-darker-color;
+  }
+
+
+swiper-container::part(bullet) {
+    background-color: transparent;
+    width: 16px;
+    height: 16px;
+    border: 2px solid $brand-darker-color;
+  }
+

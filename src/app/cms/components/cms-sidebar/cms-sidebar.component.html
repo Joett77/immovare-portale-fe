@@ -1,0 +1,98 @@
+<!-- src/app/cms/components/cms-sidebar/cms-sidebar.component.html - Updated -->
+<aside class="h-full bg-[#F6F6F6] shadow-lg">
+  <!-- Logo -->
+  <div class="p-4">
+    <a
+      href="/"
+      class="flex items-center"
+    >
+      <app-logo
+        fillColor="#2E5D63"
+        class="w-[128px] h-auto"
+      />
+    </a>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="mt-4 px-4">
+    <ul>
+      @for (item of navItems; track item.route) {
+        @if (item.active) {
+          <li class="mb-1 text-primary-dark font-bold">
+            <a
+              [routerLink]="item.route"
+              routerLinkActive="bg-primary-dark text-white"
+              class="flex items-center px-2 py-3 text-sm text-primary-dark hover:text-white hover:bg-primary-dark transition-colors"
+            >
+              <!-- Icon based on item type -->
+              @switch (item.icon) {
+                @case ('dashboard') {
+                  <fa-icon
+                    [icon]="faHome"
+                    class="w-5 h-5 mr-2"
+                  ></fa-icon>
+                }
+                @case ('gestione-annunci') {
+                  <fa-icon
+                    [icon]="faList"
+                    class="w-5 h-5 mr-2"
+                  ></fa-icon>
+                }
+                @case ('gestione-blog') {
+                  <fa-icon
+                    [icon]="faNewspaper"
+                    class="w-5 h-5 mr-2"
+                  ></fa-icon>
+                }
+                @case ('gestione-library') {
+                  <fa-icon
+                    [icon]="faBookOpen"
+                    class="w-5 h-5 mr-2"
+                  ></fa-icon>
+                }
+                @case ('ticket-manager') {
+                  <fa-icon
+                    [icon]="faMessage"
+                    class="w-5 h-5 mr-2"
+                  ></fa-icon>
+                }
+                @case ('gestione-tags') {
+                  <fa-icon
+                    [icon]="faTags"
+                    class="w-5 h-5 mr-1"
+                  ></fa-icon>
+                }
+                @case ('iscrizioni') {
+                  <fa-icon
+                    [icon]="faUserTag"
+                    class="w-5 h-5 mr-2"
+                  ></fa-icon>
+                }
+                @case ('analytics') {
+                  <fa-icon
+                    [icon]="faChartLine"
+                    class="w-5 h-5 mr-2"
+                  ></fa-icon>
+                }
+                @default {
+                  <fa-icon
+                    [icon]="faHome"
+                    class="w-5 h-5 mr-2"
+                  ></fa-icon>
+                }
+              }
+              {{ item.label }}
+              @if (item.icon === 'ticket-manager' && unreadTicketList.length > 0) {
+                <div
+                  class="circle bg-secondary text-primary-dark text-center font-bold  w-5 h-5 m-auto"
+                >
+                  {{ unreadTicketList.length }}
+                </div>
+              }
+            </a>
+          </li>
+        }
+      }
+    </ul>
+  </nav>
+</aside>

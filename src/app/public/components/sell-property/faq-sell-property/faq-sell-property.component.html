@@ -1,0 +1,34 @@
+<div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+  <h2 class="heading-lg font-montserrat font-bold text-primary-dark mb-12"> FAQ</h2>
+
+  @for (item of faqItems(); track item.question) {
+    <div class="mb-4">
+      <button
+        (click)="toggleItem(item)"
+        class="w-full flex justify-between items-center py-4 text-left focus:outline-none"
+      >
+        <span class="font-semibold text-primary-dark heading-sm font-montserrat">{{
+          item.question
+        }}</span>
+        <svg
+          [class.rotate-180]="item.isOpen"
+          class="w-5 h-5 transform transition-transform duration-200"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+
+      @if (item.isOpen) {
+        <div class="mt-2 text-black transition-all duration-200 ease-in-out">
+          <p class="pb-4 text-lg">{{ item.answer }}</p>
+        </div>
+      }
+
+      <div class="border-b border-[#CBCCCD]"></div>
+    </div>
+  }
+</div>

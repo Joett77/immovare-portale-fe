@@ -1,0 +1,135 @@
+// Improved markdown-editor.component.scss
+.markdown-editor {
+  font-family: 'Montserrat', sans-serif;
+
+  .icon-undo::before {
+    content: '↩';
+  }
+  .icon-redo::before {
+    content: '↪';
+  }
+  .icon-bold::before {
+    content: 'B';
+    font-weight: bold;
+  }
+  .icon-italic::before {
+    content: 'I';
+    font-style: italic;
+  }
+  .icon-underline::before {
+    content: 'U';
+    text-decoration: underline;
+  }
+  .icon-strikethrough::before {
+    content: 'S';
+    text-decoration: line-through;
+  }
+  .icon-code::before {
+    content: '</>';
+    font-family: monospace;
+  }
+  .icon-list-ol::before {
+    content: '1.';
+  }
+  .icon-list-ul::before {
+    content: '•';
+  }
+  .icon-code-block::before {
+    content: '{ }';
+  }
+  .icon-quote-right::before {
+    content: "'";
+  }
+
+  [contenteditable='true'] {
+    &:focus {
+      outline: none;
+    }
+
+    &:empty:before {
+      content: "Scrivi qui il contenuto dell'articolo...";
+      color: #999;
+    }
+  }
+
+  button[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+// Preview mode styling
+.prose {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-weight: 600;
+    margin-top: 1.5em;
+    margin-bottom: 0.5em;
+  }
+
+  h1 {
+    font-size: 2em;
+  }
+  h2 {
+    font-size: 1.5em;
+  }
+  h3 {
+    font-size: 1.25em;
+  }
+
+  p {
+    margin-bottom: 1em;
+    line-height: 1.6;
+  }
+
+  ul,
+  ol {
+    margin-left: 1.5em;
+    margin-bottom: 1em;
+  }
+
+  ul {
+    list-style-type: disc;
+  }
+  ol {
+    list-style-type: decimal;
+  }
+
+  blockquote {
+    border-left: 4px solid #eee;
+    padding-left: 1em;
+    font-style: italic;
+    color: #555;
+  }
+
+  pre {
+    background: #f4f4f4;
+    padding: 1em;
+    border-radius: 4px;
+    font-family: monospace;
+    overflow-x: auto;
+  }
+
+  code {
+    font-family: monospace;
+    background: #f4f4f4;
+    padding: 0.2em 0.4em;
+    border-radius: 3px;
+  }
+
+  a {
+    color: #0066cc;
+    text-decoration: underline;
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 1em 0;
+  }
+}

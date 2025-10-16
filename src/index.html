@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Immovare.it</title>
+    <base href="/" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1"
+    />
+    <script
+      src="https://accounts.google.com/gsi/client"
+      async
+      defer
+    ></script>
+
+    <!-- Favicon and App Icons -->
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="assets/favicon/apple-touch-icon.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="assets/favicon/favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="assets/favicon/favicon-16x16.png"
+    />
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="assets/favicon/favicon.ico"
+    />
+    <link
+      rel="manifest"
+      href="assets/favicon/site.webmanifest"
+    />
+
+    <!-- Google Tag Manager / Google Ads -->
+    <script src="https://www.googletagmanager.com/gtag/js?id=AW-11034962049"></script>
+    <script
+      type="text/plain"
+      data-cookie-consent="strictly-necessary"
+      defer
+    >
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+      gtag('config', 'AW-11034962049');
+    </script>
+
+    <!-- Meta Pixel Code -->
+    <script
+      type="text/plain"
+      data-cookie-consent="targeting"
+      defer
+    >
+      !function(f,b,e,v,n,t,s) {
+        if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+        n.queue=[];t=b.createElement(e);t.async=!0;
+        t.src=v;s=b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t,s)
+      }(window, document,'script',
+      'https://connect.facebook.net/en_US/fbevents.js');
+      fbq('init', '1275136883080784');
+      fbq('track', 'PageView');
+    </script>
+
+    <script
+      async
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDRNhFakaV14UMrI3Q9etrOTbW7cKc_ujU&loading=async&libraries=places,marker"
+    ></script>
+    <script src="https://cdn.jsdelivr.net/gh/tomickigrzegorz/autocomplete@2.0.2/dist/js/autocomplete.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/tomickigrzegorz/autocomplete@2.0.2/dist/css/autocomplete.min.css"
+    />
+    <!-- Load Leaflet core (must come first) -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.2/leaflet.draw.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.2/leaflet.draw.js"></script>
+  </head>
+
+  <body>
+    <noscript>
+      <img
+        height="1"
+        width="1"
+        style="display: none"
+        src="https://www.facebook.com/tr?id=1275136883080784&ev=PageView&noscript=1"
+      />
+    </noscript>
+    <app-root></app-root>
+  </body>
+</html>

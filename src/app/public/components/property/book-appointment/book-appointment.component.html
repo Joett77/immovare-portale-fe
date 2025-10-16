@@ -1,0 +1,108 @@
+<!-- book-appointment.component.html - Fixed version with mobile scrolling -->
+<div class="h-full overflow-y-auto">
+  <div class="p-6 pb-24 min-h-full">
+    <div class="mb-8">
+      <h3 class="text-base font-semibold mb-4">Tipo di appuntamento</h3>
+      <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
+        <button
+          (click)="setAppointmentType('physical')"
+          class="px-4 py-2 border rounded transition-colors"
+          [class.bg-secondary]="appointmentType === 'physical'"
+          [class.border-gray-300]="appointmentType !== 'physical'"
+        >
+          Visita fisica
+        </button>
+        <button
+          (click)="setAppointmentType('virtual')"
+          class="px-4 py-2 border rounded transition-colors"
+          [class.bg-secondary]="appointmentType === 'virtual'"
+          [class.border-gray-300]="appointmentType !== 'virtual'"
+        >
+          Visita virtuale
+        </button>
+      </div>
+    </div>
+
+    <!-- Calendar -->
+    <div class="mb-8">
+      <h3 class="text-base font-semibold mb-4">Seleziona la data</h3>
+      <div class="bg-white border border-gray-300 rounded p-4 w-full max-w-md mx-auto sm:mx-0">
+        <div class="flex items-center justify-between p-2 mb-4">
+          <button
+            (click)="previousMonth()"
+            class="p-1 h-6 w-6 rounded transition-colors"
+            [class.bg-[#F6F6F6]]="!isPreviousMonthDisabled()"
+            [class.bg-gray-200]="isPreviousMonthDisabled()"
+            [class.cursor-not-allowed]="isPreviousMonthDisabled()"
+            [class.opacity-50]="isPreviousMonthDisabled()"
+            [disabled]="isPreviousMonthDisabled()"
+          >
+            <app-chevron-left-icon />
+          </button>
+          <span class="font-bold heading-sm text-primary-dark font-montserrat text-center flex-1">
+            {{ currentMonth | date: 'MMMM yyyy' }}
+          </span>
+          <button
+            (click)="nextMonth()"
+            class="p-1 h-6 w-6 bg-[#F6F6F6] rounded"
+          >
+            <app-chevron-right-icon />
+          </button>
+        </div>
+        <div class="grid grid-cols-7 gap-1 p-2">
+          @for (day of weekDays; track day) {
+            <div class="text-center text-xs sm:text-sm font-semibold py-1">{{ day }}</div>
+          }
+          @for (
+            date of getDaysInMonth(currentMonth.getFullYear(), currentMonth.getMonth());
+            track date
+          ) {
+            <button
+              (click)="selectDate(date)"
+              class="text-center p-1 sm:p-2 rounded transition-colors text-xs sm:text-sm aspect-square flex items-center justify-center"
+              [class.bg-secondary]="isSelected(date)"
+              [class.border]="isSelected(date)"
+              [class.text-gray-300]="date.getMonth() !== currentMonth.getMonth()"
+              [class.text-gray-400]="
+                isPastDate(date) && date.getMonth() === currentMonth.getMonth()
+              "
+              [class.cursor-not-allowed]="isPastDate(date)"
+              [class.opacity-50]="isPastDate(date)"
+              [class.hover:bg-gray-100]="
+                !isPastDate(date) &&
+                date.getMonth() === currentMonth.getMonth() &&
+                !isSelected(date)
+              "
+              [disabled]="isPastDate(date)"
+              [attr.aria-disabled]="isPastDate(date)"
+              [title]="isPastDate(date) ? 'Data non selezionabile (passata)' : ''"
+            >
+              {{ date.getDate() }}
+            </button>
+          }
+        </div>
+      </div>
+
+      <!-- Optional: Add a helper text -->
+      <p class="text-sm text-gray-500 mt-2 text-center sm:text-left">
+        * Le date passate non sono selezionabili
+      </p>
+    </div>
+
+    <div class="mb-8">
+      <h3 class="text-base font-semibold mb-4">Seleziona l'ora</h3>
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+        @for (time of timeSlots; track time) {
+          <button
+            (click)="selectTime(time)"
+            class="p-2 text-sm rounded border transition-colors"
+            [class.bg-secondary]="selectedTime === time"
+            [class.border-gray-300]="selectedTime !== time"
+          >
+            {{ time }}
+          </button>
+        }
+      </div>
+    </div>
+  </div>
+</div>

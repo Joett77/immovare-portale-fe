@@ -1,0 +1,53 @@
+<!-- Hero Block -->
+<app-hero-block
+  [title]="'Diventa un Agente Immovare.it'"
+  [subtitle]="
+    'Entra a far parte della squadra di Immovare.it e scopri tutti i vantaggi della nostra azienda!'
+  "
+  [hasImage]="true"
+  [bgHero]="'assets/hero-become-agent.png'"
+  [theme]="'grey'"
+  class="w-full h-auto"
+></app-hero-block>
+<hr class="section-divider text-[#CBCCCD]" />
+
+<app-immovatori />
+<hr class="section-divider text-[#CBCCCD]" />
+
+<app-immovare-guarantees />
+<hr class="section-divider text-[#CBCCCD]" />
+
+<div class="container mx-auto flex flex-col lg:flex-row gap-8 px-4 sm:px-6 lg:px-8 my-16 pb-20">
+  <div class="w-full lg:w-6/12 bg-white">
+    <h2 class="font-montserrat heading-md font-semibold text-primary-dark mb-6">
+      Diventa un Immovatore:
+    </h2>
+    <app-request-info
+      [hasLogginBlock]="false"
+      [title]="'“Diventa agente”'"
+    ></app-request-info>
+  </div>
+
+  <div class="w-full lg:w-6/12">
+    <div class="w-fit h-[140px] bg-[#F6F6F6] rounded-sm flex items-center gap-6 p-6 mx-auto">
+      <div class="flex-shrink-0">
+        <app-assistance-icon class="text-4xl text-gray-700"></app-assistance-icon>
+      </div>
+      <div class="flex flex-col">
+        <p class="text-lg font-semibold text-gray-800 mb-2">
+          Puoi contattarci anche con le seguenti modalità:
+        </p>
+        <div class="flex flex-col lg:flex-row justify-between">
+          <div class="flex items-center gap-2">
+            <app-telephone-icon></app-telephone-icon>
+            <span class="text-gray-700 font-medium">+39 0809958022</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <app-mail-icon></app-mail-icon>
+            <span class="text-gray-700 font-medium">info&#64;immovare.it</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

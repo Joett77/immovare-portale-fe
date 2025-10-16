@@ -1,0 +1,12 @@
+.hero-banner video {
+  object-position: right;
+  -webkit-mask-image: url('/assets/mask-hero.png');
+  mask-image: url('/assets/mask-hero.png');
+  mask-repeat: no-repeat;
+  mask-size: 34%;
+  mask-position: 200px 61px;
+  // just desktop view
+  @media (min-width: 1024px) {
+    mask-position: bottom right;
+  }
+}

@@ -1,0 +1,83 @@
+<div
+  *ngIf="isOpen"
+  class="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+>
+  <div
+    class="bg-white rounded-lg w-full h-screen lg:h-fit lg:max-w-2xl lg:mx-4 relative flex flex-col"
+  >
+    <div class="flex justify-end p-4 flex-shrink-0">
+      <button
+        (click)="onClose.emit()"
+        class="text-gray-500 hover:text-gray-700 p-2 -m-2"
+        aria-label="Close modal"
+      >
+        <svg
+          class="h-6 w-6"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M6 18L18 6M6 6l12 12"
+          />
+        </svg>
+      </button>
+    </div>
+
+    <div class="flex-1 overflow-y-auto">
+      <div class="flex flex-col items-center justify-center min-h-full px-4 pb-6">
+        <div
+          class="p-6 space-y-6 border-[#CBCCCD] w-full max-w-md mx-auto"
+          [class.border-b]="!isLogged"
+        >
+          <div
+            class="w-60 lg:w-fit px-4 lg:px-6 py-4 bg-[#CCFCD4] rounded-sm border border-black mx-auto"
+          >
+            <div class="flex items-center flex-col lg:flex-row text-center lg:text-left gap-y-2">
+              <svg
+                class="h-10 w-10 lg:h-6 lg:w-6 text-green-600 mr-2"
+                viewBox="0 0 46 47"
+                fill="none"
+              >
+                <path
+                  d="M20.5742 30.0391C20.3047 30.3086 19.8555 30.3086 19.5859 30.0391L13.8359 24.2891C13.5664 24.0195 13.5664 23.5703 13.8359 23.3008C14.1055 23.0312 14.5547 23.0312 14.8242 23.3008L20.125 28.5117L31.0859 17.5508C31.3555 17.2812 31.8047 17.2812 32.0742 17.5508C32.3438 17.8203 32.3438 18.2695 32.0742 18.5391L20.5742 30.0391ZM46 23.75C46 36.5078 35.668 46.75 23 46.75C10.2422 46.75 0 36.5078 0 23.75C0 11.082 10.2422 0.75 23 0.75C35.668 0.75 46 11.082 46 23.75ZM23 2.1875C11.0508 2.1875 1.4375 11.8906 1.4375 23.75C1.4375 35.6992 11.0508 45.3125 23 45.3125C34.8594 45.3125 44.5625 35.6992 44.5625 23.75C44.5625 11.8906 34.8594 2.1875 23 2.1875Z"
+                  fill="#3C3D3E"
+                />
+              </svg>
+
+              <span class="text-black font-bold text-base">
+                Appuntamento fissato con successo!
+              </span>
+            </div>
+          </div>
+
+          <p class="text-center text-black font-semibold">
+            A breve riceverai una email con i dettagli dell'appuntamento.
+          </p>
+        </div>
+
+        @if (!isLogged) {
+          <div class="text-center space-y-4 flex flex-col items-center py-8 px-6">
+            <p class="text-black mb-4">
+              Vuoi salvare questo immobile e questa ricerca, rimanere sempre aggiornato sui nuovi
+              immobili e tanto altro ancora?
+            </p>
+
+            <div class="w-fit">
+              <app-button
+                type="primary"
+                size="md"
+                (click)="handleSignup()"
+              >
+                Iscriviti a Immovare
+              </app-button>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>

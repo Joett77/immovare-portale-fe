@@ -1,0 +1,91 @@
+<div class="mt-4 bg-[#F6F6F6] rounded-lg overflow-hidden">
+  <!-- Mobile Layout -->
+  <div class="block lg:hidden">
+    <div class="bg-gray-100 p-4">
+      <h2 class="flex text-base items-center font-bold text-gray-800">
+        <fa-icon
+          class="mr-2 text-gray-600"
+          [icon]="chevronDown"
+        ></fa-icon>
+        {{ service().title }}
+      </h2>
+
+      <div class="mt-4 flex items-center justify-between">
+        <div class="flex flex-col">
+          <div class="text-2xl font-bold text-gray-900">
+            {{ service().price | currency: 'EUR' : 'symbol' : '1.2-2' }}
+          </div>
+          <div class="text-sm text-gray-500"> IVA inclusa </div>
+        </div>
+
+        <div>
+          <app-button
+            (click)="submit()"
+            class="bg-yellow-400 hover:bg-yellow-500 text-black font-bold px-6 py-3 rounded-lg flex items-center space-x-2"
+            text="Acquista"
+            [iconType]="'arrow-right'"
+            size="md"
+            [icon]="true"
+            iconPosition="right"
+          >
+            Acquista
+          </app-button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Desktop Layout (lg and above) -->
+  <div class="hidden lg:grid lg:grid-cols-8 lg:items-center lg:gap-4">
+    <div class="col-span-5 items-center bg-gray-100 p-4">
+      <h2 class="flex text-lg items-center font-bold">
+        @if (chevron()) {
+          <fa-icon
+            class="mr-2"
+            [icon]="chevronUp"
+            (click)="chevron.set(false)"
+          ></fa-icon>
+        } @else {
+          <fa-icon
+            class="mr-2"
+            [icon]="chevronDown"
+            (click)="chevron.set(true)"
+          ></fa-icon>
+        }
+        {{ service().title }}
+      </h2>
+      @if (chevron()) {
+        <p class="ml-7 mt-2">{{ service().description }}</p>
+      }
+    </div>
+
+    <div class="col-span-1 bg-gray-200 p-4 items-center">
+      <h1
+        style="border-left: 1px solid #cbcccd; border-right: 1px solid #cbcccd"
+        class="text-lg font-bold justify-center text-center py-2"
+      >
+        {{ service().price | currency: 'EUR' : 'symbol' : '1.2-2' }}
+      </h1>
+      <p
+        class="justify-center text-center text-xs text-gray-600"
+        style="border-left: 1px solid #cbcccd; border-right: 1px solid #cbcccd"
+      >
+        Iva Inclusa
+      </p>
+    </div>
+
+    <div class="col-span-2 p-4 items-center">
+      <app-button
+        (click)="submit()"
+        class="text-primary-dark text-xs font-bold"
+        text="Acquista"
+        [iconType]="'arrow-right'"
+        size="md"
+        [icon]="true"
+        iconPosition="right"
+      >
+        Acquista
+      </app-button>
+    </div>
+  </div>
+</div>

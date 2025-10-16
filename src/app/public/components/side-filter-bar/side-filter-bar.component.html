@@ -1,0 +1,204 @@
+<div
+  class="fixed inset-0 z-999 transition-opacity duration-300 ease-in-out"
+  [class.opacity-0]="!isOpen"
+  [class.opacity-100]="isOpen"
+  [class.invisible]="!isOpen"
+>
+  <div
+    class="absolute inset-0 bg-black/50 transition-opacity duration-300"
+    (click)="closeSheet.emit()"
+  ></div>
+
+  <div
+    class="absolute inset-y-0 right-0 w-full max-w-2xl bg-white shadow-xl transform transition-transform duration-300 ease-in-out flex flex-col"
+    [class.translate-x-0]="isOpen"
+    [class.translate-x-full]="!isOpen"
+  >
+    <!-- Header -->
+    <div class="flex-shrink-0 bg-white p-6 border-b border-gray-300">
+      <div class="flex justify-between items-center">
+        <h2 class="heading-md font-bold text-primary-dark font-montserrat">Filtri</h2>
+        <button
+          class="text-black font-semibold hover:text-gray-500 transition-colors"
+          (click)="closeSheet.emit()"
+        >
+          Chiudi
+        </button>
+      </div>
+    </div>
+
+    <!-- Scrollable Content -->
+    <div class="flex-1 overflow-y-auto">
+      <form
+        class="container p-6 flex flex-col gap-y-6"
+        [formGroup]="sideBarFilterForm"
+      >
+        <div class="w-full flex flex-col gap-y-2 md:w-[315px]">
+          <h3>Locali</h3>
+          <app-range-input
+            [globalMin]="1"
+            [globalMax]="10"
+            [resetMin]="1"
+            [resetMax]="10"
+            [rangeKey]="'number_rooms'"
+            [isRangeInput]="true"
+            [control]="getControl('number_rooms')"
+            (rangeChange)="onRangeChange('number_rooms', $event)"
+          ></app-range-input>
+        </div>
+        <div class="w-full flex flex-col gap-y-2 md:w-[315px]">
+          <h3>Superficie</h3>
+          <app-range-input
+            [globalMin]="40"
+            [globalMax]="1500"
+            [resetMin]="40"
+            [resetMax]="1500"
+            [rangeKey]="'square_metres'"
+            [isRangeInput]="true"
+            [control]="getControl('square_metres')"
+            (rangeChange)="onRangeChange('square_metres', $event)"
+          ></app-range-input>
+        </div>
+        <div class="w-full flex flex-col gap-y-2 md:w-[315px]">
+          <h3>Prezzo</h3>
+          <app-range-input
+            [globalMin]="50"
+            [globalMax]="4000000"
+            [resetMin]="50"
+            [resetMax]="4000000"
+            [rangeKey]="'price'"
+            [isRangeInput]="true"
+            [control]="getControl('price')"
+            (rangeChange)="onRangeChange('price', $event)"
+          ></app-range-input>
+        </div>
+        <div class="w-full flex flex-col gap-y-2 md:w-[315px]">
+          <h3>Categoria Immobile</h3>
+          <div class="flex flex-row flex-nowrap gap-x-2 justify-between">
+            @for (destination of propertyDestinations; track destination.id) {
+              <app-feature-button
+                [id]="destination.id"
+                [icon]="destination.icon"
+                [label]="destination.label"
+                [(selectedItemId)]="selectedDestinationId"
+                (click)="toggleFeatures(destination, 'category')"
+              ></app-feature-button>
+            }
+          </div>
+        </div>
+        @if (this.sideBarFilterForm.get('category')?.value) {
+          <div class="w-full flex flex-col gap-y-2">
+            <h3>Tipologia Immobile</h3>
+            <div class="w-full flex flex-row flex-wrap gap-x-2 justify-start">
+              @for (property of propertyTypeList; track property.id) {
+                <app-feature-button
+                  [id]="property.id"
+                  [icon]="property.icon"
+                  [label]="property.label"
+                  [(selectedItemId)]="selectedFeatureId"
+                  (click)="toggleFeatures(property, 'type')"
+                ></app-feature-button>
+              }
+            </div>
+          </div>
+        }
+        <div class="w-full flex flex-col gap-y-2">
+          <h3>Stato</h3>
+          <div class="w-full flex flex-row flex-wrap gap-x-2 justify-start">
+            @for (status of propertyStatusList; track status.id) {
+              <app-feature-button
+                [id]="status.id"
+                [label]="status.label"
+                [(selectedItemId)]="selectedStatusId"
+                (click)="toggleFeatures(status, 'property_status')"
+              ></app-feature-button>
+            }
+          </div>
+        </div>
+        <div class="w-full flex flex-col gap-y-2">
+          <h3>Riscaldamento</h3>
+          <div class="w-full flex flex-row flex-wrap gap-x-2 justify-start">
+            @for (heating of propertyHeatingList; track heating.id) {
+              <app-feature-button
+                [id]="heating.id"
+                [label]="heating.label"
+                [(selectedItemId)]="selectedHeatingId"
+                (click)="toggleFeatures(heating, 'property_heating')"
+              ></app-feature-button>
+            }
+          </div>
+        </div>
+        <div class="w-full flex flex-col gap-y-2 md:w-[315px]">
+          <h3>Anno di costruzione</h3>
+          <app-range-input
+            [globalMin]="1920"
+            [globalMax]="currentYear"
+            [resetMin]="1920"
+            [resetMax]="currentYear"
+            [isRangeInput]="true"
+            [control]="getControl('yearOfConstruction')"
+            (rangeChange)="onRangeChange('yearOfConstruction', $event)"
+          ></app-range-input>
+        </div>
+        <div class="w-full flex flex-col gap-y-2 md:w-[315px]">
+          <app-incremental-button
+            label="Bagni"
+            [control]="getControl('number_baths')"
+            (incrementChange)="onIncrementChange($event)"
+          ></app-incremental-button>
+        </div>
+        <div class="w-full flex flex-col gap-y-2">
+          <h3>Piano</h3>
+          <app-range-input
+            [globalMin]="0"
+            [globalMax]="20"
+            [resetMin]="0"
+            [resetMax]="20"
+            [isRangeInput]="true"
+            [control]="getControl('property_floor')"
+            (rangeChange)="onRangeChange('property_floor', $event)"
+          ></app-range-input>
+        </div>
+        <div class="w-full flex flex-col gap-y-2">
+          <h3>Caratteristiche Aggiuntive</h3>
+          <div class="w-full flex flex-row flex-wrap gap-x-2 justify-start">
+            @for (feature of propertyExtraFeatureList; track feature.id) {
+              <app-feature-button
+                [id]="feature.id"
+                [icon]="feature.icon"
+                [label]="feature.label"
+                [(selectedItemId)]="selectedExtraFeatureId"
+                (click)="toggleFeatures(feature, 'property_extraFeatures')"
+              ></app-feature-button>
+            }
+          </div>
+        </div>
+
+        <!-- Add some bottom padding to ensure content doesn't get hidden behind fixed buttons -->
+        <div class="pb-20 md:pb-24"></div>
+      </form>
+    </div>
+
+    <!-- Fixed Bottom Button Bar -->
+    <div class="flex-shrink-0 bg-white p-4 md:p-6 border-t border-gray-300 shadow-lg">
+      <div class="flex flex-row justify-between items-center gap-4">
+        <app-button
+          class="w-full md:w-auto"
+          size="sm"
+          type="withoutBorder"
+          [hasBorder]="false"
+          text="Reset"
+          (click)="onReset()"
+        ></app-button>
+        <app-button
+          class="w-full md:w-auto min-w-[162px]"
+          [isDisabled]="filterCount() == 0"
+          [text]="'Applica ' + (filterCount() ? filterCount() : '') + ' Filtri'"
+          [hasBorder]="true"
+          [size]="'md'"
+          (click)="onApplyFilters()"
+        />
+      </div>
+    </div>
+  </div>
+</div>

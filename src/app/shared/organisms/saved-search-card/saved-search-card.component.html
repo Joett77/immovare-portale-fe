@@ -1,0 +1,140 @@
+@if (savedSearchesList().length > 0) {
+  <div class="space-y-4 min-h-[calc(100vh-420px)] px-4 lg:px-0">
+    @for (search of savedSearchesList(); track search.searchId; let i = $index) {
+      <div
+        class="flex flex-row lg:justify-between items-center border border-gray-300 bg-white overflow-hidden mb-4 relative rounded-[4px] cursor-pointer"
+        (click)="goToSavedSearch(search.url || '')"
+      >
+        <div
+          class="w-[40px] h-[132px] lg:hidden flex-shrink-0 overflow-hidden rounded-l-g border-r-2 border-[#CBCCCD]"
+        >
+          <img
+            [src]="mapImage"
+            alt="Immagine della ricerca"
+            class="w-full h-full object-cover"
+          />
+        </div>
+        <!-- Desktop Immagine e Dettagli della Ricerca -->
+        <div class="hidden lg:flex items-center w-full sm:w-auto">
+          <div
+            class="w-[239px] h-[105px] border border-[#CBCCCD] flex-shrink-0 overflow-hidden rounded-l-lg"
+          >
+            <img
+              [src]="mapImage"
+              alt="Immagine della ricerca"
+              class="w-full h-full object-cover"
+            />
+          </div>
+          <div class="flex flex-col p-4">
+            <h2 class="heading-xs font-bold font-montserrat text-primary-dark"
+              >Ricerca salvata {{ (currentPage - 1) * pageSize + i + 1 }}</h2
+            >
+            <p class="text-black text-sm">{{ search.type }}</p>
+          </div>
+        </div>
+
+        <!-- Mobile Dettagli della Ricerca -->
+        <div class="lg:hidden h-[132px] flex flex-col justify-around">
+          <div class="flex flex-row px-4 gap-x-4 text-xs">
+            @if (search.number_rooms) {
+              <div class="flex gap-x-2 items-center">
+                <app-floorplan-icon class="w-5 h-5" />
+                <span class="text-black"
+                  >da {{ search.number_rooms[0] }} a {{ search.number_rooms[1] }} locali</span
+                >
+              </div>
+            }
+            @if (search.square_metres) {
+              <div class="flex gap-x-2 items-center">
+                <app-measure-icon class="w-5 h-5" />
+                <span class="text-black"
+                  >da {{ search.square_metres[0] }}mq a {{ search.square_metres[1] }}mq</span
+                >
+              </div>
+              @if (search.price) {
+                <div class="flex gap-x-2 items-center">
+                  <span class="text-black"
+                    >€ da {{ search.price[0] }}K a {{ search.price[1] }}K</span
+                  >
+                </div>
+              }
+            }
+          </div>
+          <div class="flex flex-col px-4 gap-y-6">
+            <h2 class="heading-xs font-bold font-montserrat text-primary-dark"
+              >Ricerca salvata {{ (currentPage - 1) * pageSize + i + 1 }}</h2
+            >
+            <p class="text-black text-xs">{{ search.type }}</p>
+          </div>
+        </div>
+
+        <!-- Informazioni sulla Ricerca -->
+        <div class="hidden items-center mt-4 sm:mt-0 space-x-4 lg:flex md:gap-x-10">
+          @if (search.number_rooms) {
+            <div class="flex gap-x-2 items-center">
+              <app-floorplan-icon class="w-5 h-5" />
+              <span class="text-black"
+                >da {{ search.number_rooms[0] }} a {{ search.number_rooms[1] }} locali</span
+              >
+            </div>
+          }
+          @if (search.square_metres) {
+            <div class="flex gap-x-2 items-center">
+              <app-measure-icon class="w-5 h-5" />
+              <span class="text-black"
+                >da {{ search.square_metres[0] }}mq a {{ search.square_metres[1] }}mq</span
+              >
+            </div>
+          }
+          @if (search.price) {
+            <div class="flex gap-x-2 items-center">
+              <span class="text-black">€ da {{ search.price[0] }}K a {{ search.price[1] }}K</span>
+            </div>
+          }
+        </div>
+
+        <!-- Pulsante Elimina per la Ricerca Salvata -->
+        <div class="flex items-center sm:pr-4 pr-0 absolute lg:relative bottom-2 right-2">
+          <app-button
+            [size]="'nopadding'"
+            type="withoutBorder"
+            [hasBorder]="false"
+            class="hidden sm:flex"
+            (click)="deleteUserSearch($event, search.searchId!)"
+          >
+            <div class="px-4 flex items-center">
+              <app-trash-icon class="mr-2 h-4 w-4 items-center flex" /><span
+                class="hidden lg:inline-block"
+              >
+                Elimina</span
+              >
+            </div>
+          </app-button>
+          <app-trash-icon
+            class="sm:hidden"
+            (click)="deleteUserSearch($event, search.searchId!)"
+          />
+        </div>
+      </div>
+    }
+
+    <app-pagination
+      [totalPages]="totalPages"
+      [currentPage]="currentPage"
+      (pageChange)="onPageChange($event)"
+    ></app-pagination>
+  </div>
+} @else {
+  <div class="text-center py-10 min-h-[calc(100vh-332px)]">
+    <img
+      src="assets/empty.png"
+      alt="Empty state"
+      class="w-[154px] mx-auto"
+    />
+    <h2 class="text-lg font-bold text-black mt-8 mb-2">Nessuna ricerca salvata.</h2>
+    <p class="text text-black mb-4">
+      Qui troverai tutte le ricerca che hai salvato. Clicca sul tasto “Salva ricerca” per salvare
+      una ricerca.
+    </p>
+  </div>
+}

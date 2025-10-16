@@ -1,0 +1,50 @@
+<!-- Hero Block -->
+<app-hero-block
+  [title]="'Siamo online ma ci siamo eccome<br><span class=\'font-bold\'>'"
+  [subtitle]="'Scrivici o chiamaci pure. <br/> Siamo felici quando ci vieni a trovare.'"
+  [hasImage]="true"
+  [bgHero]="'assets/hero-chi-siamo.png'"
+  [theme]="'grey'"
+  class="w-full h-auto"
+></app-hero-block>
+
+<div class="container mx-auto flex flex-col lg:flex-row gap-8 px-4 sm:px-6 lg:px-8 my-16 pb-20">
+  <div class="w-full lg:w-6/12 bg-white">
+    <h2 class="font-montserrat heading-md font-semibold text-primary-dark mb-6">
+      Richiedi una consulenza immobiliare gratuita
+    </h2>
+    <app-request-info
+      [hasLogginBlock]="false"
+      [title]="'“Contatti”'"
+    ></app-request-info>
+  </div>
+
+  <div class="w-full lg:w-6/12">
+    <div class="w-fit h-[140px] bg-[#F6F6F6] rounded-sm flex items-center gap-6 p-6 mx-auto">
+      <div class="flex-shrink-0">
+        <app-assistance-icon class="text-4xl text-gray-700"></app-assistance-icon>
+      </div>
+      <div class="flex flex-col">
+        <p class="text-lg font-semibold text-gray-800 mb-2">
+          Puoi contattarci anche con le seguenti modalità:
+        </p>
+        <div class="flex items-center gap-4">
+          <app-telephone-icon></app-telephone-icon>
+          <span class="text-gray-700 font-medium">+39 0809958022</span>
+        </div>
+        <div class="flex items-center gap-4 mt-2">
+          <app-mail-icon></app-mail-icon>
+          <span class="text-gray-700 font-medium">info&#64;immovare.it</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-banner-cta
+  [title]="'Tu scegli il piano, noi ti vendiamo casa.'"
+  [description]="'I nostri agenti saranno al tuo fianco durante tutto il processo di vendita.'"
+  [buttonLabel]="'Scopri i piani'"
+  [icon]="'user'"
+  (buttonClick)="goToVoglioVendere()"
+></app-banner-cta>

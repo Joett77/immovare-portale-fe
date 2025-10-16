@@ -1,0 +1,27 @@
+<div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+  <h2 class="heading-lg font-montserrat font-bold text-primary-dark mb-12">
+    Quello in cui siamo Immovatori:
+  </h2>
+
+  <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8">
+    @for (step of steps; track $index) {
+      <div class="p-6 rounded-sm border-[#CBCCCD] border-[1px] text-black">
+        <div class="h-[80px] flex items-center">
+          <div class="h-full w-full">
+            <component
+              [ngComponentOutlet]="step.icon"
+              class="h-full w-full"
+            />
+          </div>
+        </div>
+
+        <div>
+          <h3 class="text-lg font-semibold mb-2"> {{ step.title }} </h3>
+          <p class="text-sm">
+            {{ step.description }}
+          </p>
+        </div>
+      </div>
+    }
+  </div>
+</div>

@@ -1,0 +1,18 @@
+<div class="relative overflow-hidden bg-[#FFF]">
+  <div class="relative z-10 container mx-auto py-[3rem] lg:pb-[9rem] lg:py-[6rem] px-4 lg:px-8">
+    <h2 class="mb-6 heading-lg font-semibold font-montserrat text-primary-dark"
+      >{{ title() }}
+      <br />
+      <span class="font-extrabold">{{ subtitle() }}</span>
+    </h2>
+    <div class="w-full flex flex-row flex-wrap items-center justify-between">
+      @for (city of cities; track city.id) {
+        <app-city-icon
+          [city]="city"
+          (citySelected)="onCityClick($event)"
+          class="cursor-pointer hover:scale-105 transition-transform duration-200"
+        ></app-city-icon>
+      }
+    </div>
+  </div>
+</div>

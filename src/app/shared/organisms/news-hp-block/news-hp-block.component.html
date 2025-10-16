@@ -1,0 +1,23 @@
+<section class="bg-primary-dark py-16 px-5">
+    <div class="container mx-auto text-center">
+        <h2 class="heading-lg font-extrabold font-montserrat text-white  mb-8"> News dal blog
+        </h2>
+        <p class="text-white text-base mb-12">
+            Cosa contiene un capitolato? Che cos'è un APE? Come si misura il valore di un immobile? Qui trovi tutte le
+            risposte a queste e ad altre domande.
+        </p>
+        <div class="flex flex-wrap justify-between">
+            <swiper-container id="news-hp-block" slides-per-view="1" pagination="true" pagination-clickable="true"
+                space-between="10"
+                breakpoints='{"768": {"slidesPerView": 2}, "1024": {"slidesPerView": 3} ,"1280": {"slidesPerView": 4}}'
+                class="w-full">
+                <swiper-slide *ngFor="let post of posts" class="pb-16">
+                    <a [routerLink]="['/blog', post.id]">
+                        <app-card [post]="post"></app-card>
+                    </a>
+                </swiper-slide>
+            </swiper-container>
+
+        </div>
+    </div>
+</section>

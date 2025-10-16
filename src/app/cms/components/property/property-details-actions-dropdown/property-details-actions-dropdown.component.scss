@@ -1,0 +1,10 @@
+// Optional styling for the dropdown component
+:host {
+  display: block;
+  width: 100%;
+
+  button {
+    width: 100%;
+    justify-content: center;
+  }
+}

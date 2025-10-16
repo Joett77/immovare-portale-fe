@@ -1,0 +1,39 @@
+<div>
+  <div class="mb-8">
+    <h1 class="heading-md font-bold text-primary-dark mb-2">Gestione piani e servizi</h1>
+  </div>
+
+  <!-- List of plans and services section -->
+  <div class="flex mb-4 border-b border-[#CBCCCD]">
+    <div
+      class="px-6 py-3 cursor-pointer flex items-center gap-2 text-[#97999B] font-bold border-[#CBCCCD]"
+      (click)="setActiveTab('plan')"
+      [ngClass]="{
+        'border-b-2 border-black -mb-[2px] bg-secondary text-black font-bold ':
+          activeTab() === 'plan',
+      }"
+    >
+      Piani in abbonamento
+    </div>
+    <div
+      class="px-6 py-3 cursor-pointer flex items-center gap-2 text-[#97999B] font-bold border-[#CBCCCD]"
+      [ngClass]="{
+        'border-b-2 border-black -mb-[2px] bg-secondary text-black font-bold':
+          activeTab() === 'service',
+      }"
+      (click)="setActiveTab('service')"
+    >
+      Servizi singoli
+    </div>
+  </div>
+  <div class="space-y-6">
+    @switch (activeTab()) {
+      @case ('plan') {
+        <app-plan-list [plans]="plans()"></app-plan-list>
+      }
+      @case ('service') {
+        <app-service-list [service]="service()"></app-service-list>
+      }
+    }
+  </div>
+</div>

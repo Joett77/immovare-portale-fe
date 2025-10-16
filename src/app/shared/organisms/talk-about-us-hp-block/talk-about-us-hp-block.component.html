@@ -1,0 +1,54 @@
+<section class="section bg-white py-16 px-4 sm:px-6 lg:px-8">
+  <div class="container mx-auto text-center">
+    <h2 class="heading-lg font-extrabold font-montserrat text-primary-dark mb-12">
+      Parlano di noi
+    </h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      @for (review of reviews; track $index) {
+        <div class="bg-white border border-[#CBCCCD] rounded p-4 md:p-8 text-left relative lg:flex">
+          <!-- Logo and Header Section -->
+          <div class="flex items-center justify-between w-full">
+            <img
+              [src]="review.logoSrc"
+              [alt]="review.logoAlt"
+              class="h-[30px] lg:h-auto lg:mx-auto"
+            />
+
+            <!-- Mobile Toggle Button -->
+            <button
+              class="md:hidden transition-transform duration-300"
+              [class.rotate-180]="review.isOpen"
+              (click)="toggleAccordion($index)"
+            >
+              <svg
+                class="w-6 h-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+            </button>
+          </div>
+
+          <!-- Content Section -->
+          <div
+            class="mt-4 lg:mt-0 transition-all duration-300 ease-in-out overflow-hidden md:overflow-visible md:block"
+            [class.max-h-0]="!review.isOpen"
+            [class.max-h-96]="review.isOpen"
+            [class.opacity-0]="!review.isOpen && !isDesktop"
+            [class.opacity-100]="review.isOpen || isDesktop"
+          >
+            <p class="text-base text-black">{{ review.content }}</p>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</section>

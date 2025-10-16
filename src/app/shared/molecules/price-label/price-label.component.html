@@ -1,0 +1,35 @@
+<div class="price-label-container w-full mt-8">
+  <div class="price-label flex flex-col justify-start">
+    <div class="price-label__label text-base font-normal">{{ label.label }}</div>
+    <div
+      class="price-label-info-container flex flex-row flex-wrap items-center gap-x-2 justify-start mt-1"
+    >
+      @if (type !== 'bgColor' && label.info !== '') {
+        <app-info-circle-icon [fillColor]="'#ABAAAC'"></app-info-circle-icon>
+      }
+      <div
+        class="price-label__price"
+        [ngClass]="{
+          'text-xs font-normal text-[#ABAAAC]': type !== 'bgColor',
+          'text-base font-bold': type === 'bgColor',
+        }"
+        >{{ label.info }}</div
+      >
+    </div>
+  </div>
+  @if (type === 'bgColor') {
+    <div
+      class="price-label__price w-fit mt-3 text-2xl px-4 py-2 bg-[#ADF2F7] border rounded border-[#CBCCCD] font-bold font-montserrat"
+      >{{ price }}</div
+    >
+  } @else {
+    <div
+      class="price-label__price w-fit mt-3 border rounded border-[#CBCCCD] font-bold font-montserrat"
+      [ngClass]="{
+        'text-3xl px-6 py-4': type === 'large',
+        'text-2xl px-4 py-2 mt-4': type === 'small',
+      }"
+      >{{ price | currency: 'EUR' : 'symbol' : '4.2-2' : 'it' }}</div
+    >
+  }
+</div>

@@ -1,0 +1,140 @@
+<div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+  <h2 class="heading-lg font-montserrat font-bold text-primary-dark mb-4">
+    Calcola quanto risparmi con Immovare.it
+  </h2>
+
+  <p class="text-black text-lg mb-8">
+    Avremmo potuto dirtelo, ma abbiamo preferito dimostrartelo!
+  </p>
+
+  <div
+    class="bg-gray-50 p-8 rounded-lg flex flex-col gap-y-4 lg:flex-row justify-between items-center bg-[#F6F6F6]"
+  >
+    <form
+      [formGroup]="calculatorForm"
+      class="flex flex-col gap-8 flex-shrink-0 lg:max-w-2/3 lg:mr-8"
+    >
+      <div>
+        <label class="block text-base font-semibold text-black mb-4">Piano di abbonamento</label>
+        <div class="max-w-[300px] lg:max-w-[680px] overflow-x-auto">
+          <div class="flex flex-row gap-x-3 items-center min-w-max pb-2">
+            @for (plan of plans; track trackByPlan($index, plan)) {
+              <button
+                (click)="selectPlan(plan)"
+                [class]="
+                  'relative min-w-[140px] lg:min-w-[200px] flex-shrink-0 items-center px-2 lg:px-4 rounded-sm border-[1px] transition-all flex justify-between h-11 ' +
+                  (selectedPlanId === plan.id
+                    ? 'bg-secondary border-black'
+                    : 'hover:bg-secondary-light border-[#CBCCCD]')
+                "
+                type="button"
+              >
+                <div class="text-left text-sm flex-grow min-w-0">
+                  <span class="font-bold block lg:inline-block truncate">{{ plan.name }} </span>
+                </div>
+
+                @if (selectedPlanId === plan.id) {
+                  <div class="justify-end items-center flex flex-shrink-0 ml-2">
+                    <div class="bg-black rounded-full p-1 scale-50 lg:scale-75">
+                      <svg
+                        class="w-5 h-5 text-gray-400"
+                        fill="#ffffff"
+                        viewBox="0 0 20 20"
+                      >
+                        <path
+                          fill-rule="evenodd"
+                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                          clip-rule="evenodd"
+                        ></path>
+                      </svg>
+                    </div>
+                  </div>
+                }
+              </button>
+            }
+          </div>
+        </div>
+      </div>
+
+      <div class="w-full flex flex-col gap-y-3 lg:flex-row gap-x-4">
+        <!-- Months Slider -->
+        <app-input-slider
+          label="Mesi abbonamento"
+          formControlName="months"
+          [min]="1"
+          [max]="12"
+          [step]="1"
+        ></app-input-slider>
+
+        <!-- Property Price -->
+        <app-input-slider
+          label="Prezzo immobile"
+          formControlName="propertyPrice"
+          [min]="50000"
+          [max]="1000000"
+          [step]="50000"
+          unit="€"
+        ></app-input-slider>
+
+        <!-- Agency Commission -->
+        <app-input-slider
+          label="Provvigioni agenzia tradizionale (+IVA)"
+          formControlName="commission"
+          [min]="1"
+          [max]="10"
+          [step]="0.5"
+          unit="%"
+        ></app-input-slider>
+      </div>
+    </form>
+
+    <div>
+      <svg
+        class="hidden lg:block"
+        width="23"
+        height="20"
+        viewBox="0 0 23 20"
+        fill="none"
+      >
+        <path
+          d="M22.2422 11.418L14.1172 19.543C13.8125 19.8477 13.4062 20 13 20C12.543 20 12.1367 19.8477 11.832 19.543C11.1719 18.9336 11.1719 17.8672 11.832 17.2578L17.1641 11.875H1.625C0.710938 11.875 0 11.1641 0 10.25C0 9.38672 0.710938 8.625 1.625 8.625H17.1641L11.832 3.29297C11.1719 2.68359 11.1719 1.61719 11.832 1.00781C12.4414 0.347656 13.5078 0.347656 14.1172 1.00781L22.2422 9.13281C22.9023 9.74219 22.9023 10.8086 22.2422 11.418Z"
+          fill="#3C3D3E"
+        />
+      </svg>
+      <svg
+        class="block lg:hidden"
+        width="21"
+        height="24"
+        viewBox="0 0 21 24"
+        fill="none"
+      >
+        <path
+          d="M19.9922 15.043L11.8672 23.168C11.5625 23.4727 11.1562 23.625 10.75 23.625C10.293 23.625 9.88672 23.4727 9.58203 23.168L1.45703 15.043C0.796875 14.4336 0.796875 13.3672 1.45703 12.7578C2.06641 12.0977 3.13281 12.0977 3.74219 12.7578L9.125 18.0898V2.5C9.125 1.63672 9.83594 0.925781 10.6992 0.925781C11.5117 0.925781 12.375 1.63672 12.375 2.5V18.0898L17.707 12.7578C18.3164 12.0977 19.3828 12.0977 19.9922 12.7578C20.6523 13.3672 20.6523 14.4336 19.9922 15.043Z"
+          fill="#3C3D3E"
+        />
+      </svg>
+    </div>
+
+    <!-- Results -->
+    <div class="mt-8 flex justify-between items-center p-6 rounded-lg flex-col gap-y-4">
+      <div>
+        <h3 class="text-lg font-semibold mb-4">Con Immovare risparmi</h3>
+        <p
+          class="text-3xl font-bold text-black font-montserrat bg-primary-light p-6 border-[#CBCCCD] border"
+        >
+          € {{ calculateSavings() | number: '1.2-2' }}
+          <span class="text-sm font-normal">(+IVA)</span>
+        </p>
+      </div>
+
+      <app-button
+        class="w-full"
+        [text]="'Seleziona piano ' + getSelectedPlanName()"
+        size="md"
+        [hasBorder]="true"
+        [icon]="true"
+        (click)="onSelectPlan()"
+      ></app-button>
+    </div>
+  </div>
+</div>

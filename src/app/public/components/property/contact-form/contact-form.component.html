@@ -1,0 +1,117 @@
+<div class="p-6">
+  <h3 class="text-base font-semibold mb-3">Informazione del contatto</h3>
+
+  @if (!isLoggedIn) {
+    <div class="mt-8 bg-[#F5F5F5] flex items-center justify-between px-4 py-5 rounded-sm mb-4">
+      <p class="text-base text-black">
+        <span class="font-semibold">Sei già iscritto?</span> Effettua il login per accedere
+      </p>
+
+      <button
+        (click)="gotoLogin()"
+        class="px-4 py-2 border rounded-sm text-sm font-semibold text-black hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+      >
+        Login
+      </button>
+    </div>
+  }
+
+  <form
+    class="space-y-4"
+    [formGroup]="contactForm"
+  >
+    <div class="flex items-center">
+      <app-input
+        class="w-full"
+        label="Nome"
+        [control]="contactForm.controls.name"
+      >
+        @if (contactForm.controls.lastname.hasError('required')) {
+          <span class="text-red-500 text-sm">Il nome è obbligatorio</span>
+        }
+        @if (contactForm.controls.lastname.hasError('minlength')) {
+          <span class="text-red-500 text-sm">Il nome deve contenere almeno 2 caratteri</span>
+        }
+      </app-input>
+    </div>
+
+    <div class="flex items-center">
+      <app-input
+        class="w-full"
+        label="Cognome"
+        [control]="contactForm.controls.lastname"
+      >
+        @if (contactForm.controls.lastname.hasError('required')) {
+          <span class="text-red-500 text-sm">Il cognome è obbligatorio</span>
+        }
+        @if (contactForm.controls.lastname.hasError('minlength')) {
+          <span class="text-red-500 text-sm">Il cognome deve contenere almeno 2 caratteri</span>
+        }
+      </app-input>
+    </div>
+
+    <div class="flex items-center">
+      <app-input
+        class="w-full"
+        label="Email"
+        [control]="contactForm.controls.email"
+      >
+        @if (contactForm.controls.email.hasError('required')) {
+          <span class="text-red-500 text-sm">L'email è obbligatoria</span>
+        }
+        @if (contactForm.controls.email.hasError('email')) {
+          <span class="text-red-500 text-sm">Inserisci un indirizzo email valido</span>
+        }
+      </app-input>
+    </div>
+
+    <div class="flex items-center">
+      <div class="w-full flex gap-x-4">
+        <div class="relative inline-block w-full max-w-[200px]">
+          <select
+            [formControlName]="'countryCode'"
+            class="appearance-none w-full bg-white border border-gray-300 py-2 pl-3 pr-8 leading-tight focus:outline-none focus:ring focus:border-blue-300 max-h-full px-2.5 pb-2.5 pt-5"
+            name="country"
+          >
+            <option
+              *ngFor="let country of countries"
+              [value]="country.code"
+            >
+              <span class="inline-flex items-center">
+                <span
+                  class="w-6 h-4 mr-2 inline-block"
+                  [ngClass]="country.flag"
+                ></span>
+                {{ country.code }}
+              </span>
+            </option>
+          </select>
+          <div
+            class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700"
+          >
+            <svg
+              class="fill-current h-4 w-4"
+              viewBox="0 0 20 20"
+            >
+              <path
+                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+              />
+            </svg>
+          </div>
+        </div>
+        <app-input
+          class="flex-1"
+          label="Telefono"
+          [control]="contactForm.controls.phone"
+        >
+          @if (contactForm.controls.phone.hasError('required')) {
+            <span class="text-red-500 text-sm">Il telefono è obbligatorio</span>
+          }
+          @if (contactForm.controls.phone.hasError('pattern')) {
+            <span class="text-red-500 text-sm">Inserisci un numero di telefono valido</span>
+          }
+        </app-input>
+      </div>
+    </div>
+  </form>
+</div>

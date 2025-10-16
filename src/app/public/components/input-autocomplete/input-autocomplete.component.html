@@ -1,0 +1,20 @@
+<div class="flex flex-col lg:flex-row gap-2 items-center">
+  <div class="w-full h-full lg:flex-grow">
+    <app-input
+      #inputAutocomplete
+      [label]="label()"
+      [control]="searchControl"
+    ></app-input>
+  </div>
+
+  @if(!isFilterBar()){
+    <div class="w-full lg:w-auto">
+      <app-button
+        (click)="goToPage()"
+        [text]="btnText()"
+        [hasBorder]="true"
+        [size]="'md'"
+      />
+    </div>
+  }
+</div>

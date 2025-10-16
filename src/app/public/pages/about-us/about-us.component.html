@@ -1,0 +1,100 @@
+<div
+  class="relative z-10 lg:h-[calc(100vh-124px)] overflow-hidden bg-cover lg:bg-contain bg-[url('/assets/hero-about-us.png')]"
+>
+  <div class="relative z-10 container mx-auto h-full px-4 sm:px-6 lg:px-8 hero-banner">
+    <div class="relative z-20 flex flex-col items-start justify-center h-full w-full lg:w-1/2 py-6">
+      <h1 class="heading-xl font-bold mb-4 font-montserrat text-white"> Chi siamo </h1>
+
+      <h3 class="md:block mt-4 mb-8 font-montserrat font-semibold heading-md text-white">
+        Abbiamo creato un’agenzia immobiliare online perché quella fisica ci stava stretta.
+      </h3>
+    </div>
+  </div>
+</div>
+
+<!-- Sezione principale -->
+<div class="container mx-auto px-8 grid grid-cols-1 md:grid-cols-2 gap-x-8 items-center">
+  <!-- Colonna sinistra: Testo -->
+  <div class="space-y-6 py-12">
+    <h2 class="text-3xl font-semibold text-[#2E5D63] leading-[39px] font-montserrat">
+      Lavoriamo con gli immobili ma fermi non sappiamo proprio stare.
+    </h2>
+    <h2 class="text-3xl font-bold text-[#2E5D63] leading-[39px] font-montserrat">
+      Per questo abbiamo creato immovare.it
+    </h2>
+    <p class="text-base text-[#3C3D3E] leading-[24.51px] font-open-sans">
+      Anche noi siamo partiti dalla classica agenzia fisica di quartiere, con vetrine ricche di
+      annunci immobiliari, lì dove si fermano tutti a curiosare e a guardare qualche occasione e
+      magari trovare una casa d’interesse.
+    </p>
+    <p class="text-base text-[#3C3D3E] leading-[24.51px] font-open-sans">
+      Annunci dove chi vuole vendere casa si affida, nella speranza di riuscire a farlo il prima
+      possibile, senza avere il minimo controllo su tempo o modalità.
+    </p>
+    <p class="text-base text-[#3C3D3E] leading-[24.51px] font-open-sans">
+      L’idea di vedere le persone affidarsi a qualcuno che non potesse offrire garanzie, non ci è
+      mai piaciuta. Volevamo abbattere questo muro di incertezza: volevamo dare alle persone più
+      strumenti, più controllo e più sicurezze nella vendita del proprio immobile.
+    </p>
+    <p class="text-base text-[#3C3D3E] leading-[24.51px] font-open-sans">
+      Abbiamo creato un’agenzia immobiliare online perché vogliamo esserci per te, in qualsiasi
+      momento tu ne abbia bisogno.
+    </p>
+    <p class="text-base text-[#3C3D3E] leading-[24.51px] font-open-sans">
+      Noi la chiamiamo <span class="font-bold">“democratizzazione immobiliare”.</span>
+    </p>
+  </div>
+
+  <!-- Colonna destra: Immagine -->
+  <div class="flex justify-center">
+    <img
+      src="../../../assets/img-chi-siamo.png"
+      alt="Immagine"
+      class="w-full max-w-[768px] object-cover"
+    />
+  </div>
+</div>
+
+<!-- Linea di separazione -->
+<hr class="section-divider text-[#CBCCCD]" />
+
+<!-- Sezione inferiore -->
+<div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+  <h2 class="heading-lg font-montserrat text-primary-dark mb-12">
+    Ecco cosa facciamo <br />
+    <b class="font-bold">per semplificarti la vita.</b>
+  </h2>
+
+  <div class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-5 gap-8">
+    @for (step of steps; track $index) {
+      <div class="p-6 rounded-sm border-[#CBCCCD] border-[1px] text-black">
+        <div>
+          <h3 class="text-lg font-semibold mb-2">{{ $index + 1 }}. {{ step.title }} </h3>
+          <p class="text-sm">
+            {{ step.description }}
+          </p>
+        </div>
+      </div>
+    }
+  </div>
+</div>
+
+<app-banner-cta
+  [title]="'Tu scegli il piano, noi ti vendiamo casa.'"
+  [description]="'I nostri agenti saranno al tuo fianco durante tutto il processo di vendita.'"
+  [buttonLabel]="'Scopri i piani'"
+  [icon]="'user'"
+  (buttonClick)="goToVoglioVendere()"
+/>
+
+<hr class="section-divider text-[#CBCCCD]" />
+<app-faq-sell-property [faqItems]="faqSellItems" />
+<app-banner-cta
+  [title]="'Non sai quanto può valere il tuo immobile?'"
+  [description]="
+    'Inizia con la valutazione del tuo immobile e scopri quanto puoi risparmiare con immovare.'
+  "
+  [buttonLabel]="'Valuta il tuo immobile'"
+  [icon]="'hands'"
+  (buttonClick)="goToValutazioneImmobile()"
+></app-banner-cta>

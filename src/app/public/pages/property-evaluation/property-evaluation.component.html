@@ -1,0 +1,21 @@
+<!-- property-evaluation.component.html -->
+@if (currentStep === 0) {
+  <app-step-address [title]="title" />
+}
+@if (currentStep === 1) {
+  <app-step-features [title]="title" />
+}
+@if (currentStep === 2) {
+  <app-step-extra-features [title]="title" />
+}
+@if (currentStep === 3) {
+  <app-step-evaluation-result />
+}
+
+<app-evaluation-stepper
+  [steps]="steps"
+  [currentStep]="currentStep"
+  [isStepValid]="isCurrentStepValid()"
+  (stepChange)="onStepChange($event)"
+  (discoverEvaluation)="onDiscoverEvaluation()"
+/>

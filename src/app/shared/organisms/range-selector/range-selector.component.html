@@ -1,0 +1,69 @@
+<div
+  class="relative w-fit h-auto px-4 py-2 flex items-center border cursor-pointer"
+  [ngClass]="{
+    'bg-secondary border-black': rangeSaved,
+    'bg-transparent border-[#CBCCCD]': !rangeSaved,
+    'min-h-[56px]': type === 'md',
+    'min-h-[40px]': type === 'sm',
+  }"
+  (click)="onComponentClick($event)"
+>
+  <label
+    class="flex flex-row flex-nowrap justify-between items-baseline gap-x-4 cursor-pointer w-full"
+  >
+    <span
+      class="font-montserrat text-base text-[#3C3D3E] font-normal"
+      [ngClass]="{ 'font-semibold': rangeSaved }"
+    >
+      {{ rangeSaved ? label : label + ' ' + um }}
+    </span>
+    @if (isDropdownOpen) {
+      <div class="rotate-180 font-montserrat text-base font-bold">
+        <app-arrow-down-icon class="w-3 h-3 text-[#3C3D3E]"></app-arrow-down-icon>
+      </div>
+    } @else {
+      <div class="font-montserrat text-base font-bold">
+        <app-arrow-down-icon class="text-[#3C3D3E] w-3 h-3"></app-arrow-down-icon>
+      </div>
+    }
+  </label>
+
+  @if (isDropdownOpen) {
+    <div
+      style="z-index: 9999"
+      class="absolute left-0 top-full mt-2 bg-white md:border md:border-[#CBCCCD] p-4"
+      (click)="$event.stopPropagation()"
+    >
+      <app-range-input
+        #rangeInput
+        [um]="um"
+        [rangeKey]="range"
+        [globalMin]="min"
+        [globalMax]="max"
+        [resetMin]="resetMin"
+        [resetMax]="resetMax"
+        (minValueChange)="onMinValueChange($event)"
+        (maxValueChange)="onMaxValueChange($event)"
+      ></app-range-input>
+      <div class="w-ful my-4 px-2 flex flex-col md:flex-row md:justify-between md:items-center">
+        <app-button
+          class="w-full md:w-auto mb-2 md:mb-0"
+          size="sm"
+          [hasBorder]="false"
+          type="withoutBorder"
+          [icon]="true"
+          iconPosition="right"
+          [iconType]="'reset'"
+          text="Reset"
+          (click)="onReset()"
+        ></app-button>
+        <app-button
+          (click)="onSaveChoice()"
+          text="Salva"
+          [hasBorder]="true"
+          [size]="'sm'"
+        />
+      </div>
+    </div>
+  }
+</div>

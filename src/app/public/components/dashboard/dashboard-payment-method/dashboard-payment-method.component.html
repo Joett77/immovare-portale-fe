@@ -1,0 +1,187 @@
+<div class="fixed inset-0 bg-white z-50 overflow-y-auto lg:p-8">
+  <div class="container mx-auto bg-white max-w-3xl p-4 min-h-screen lg:min-h-0">
+    <div class="flex justify-between items-center mb-6">
+      <h2 class="heading-sm font-bold font-montserrat text-primary-dark"
+        >Modifica metodo di pagamento</h2
+      >
+      <button
+        (click)="close.emit()"
+        class="text-gray-500"
+      >
+        <svg
+          class="w-6 h-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M6 18L18 6M6 6l12 12"
+          />
+        </svg>
+      </button>
+    </div>
+
+    <form
+      [formGroup]="paymentForm"
+      class="space-y-6"
+    >
+      <!-- Payment Method Selection -->
+      <div>
+        <h3 class="text-lg font-semibold mb-4">Metodo di pagamento</h3>
+
+        <div class="bg-secondary p-4 rounded-sm mb-4 flex justify-between items-center">
+          <div class="flex items-center">
+            <input
+              type="radio"
+              class="mr-3"
+              checked
+            />
+            <span>Carta di credito/debito</span>
+          </div>
+          <div class="flex space-x-2">
+            <app-visa-icon />
+            <app-mastercard-icon />
+          </div>
+        </div>
+
+        <!-- Card Details -->
+        <div class="flex flex-col gap-4">
+          <app-input
+            label="Numero della carta"
+            formControlName="cardNumber"
+            mask="**** **** **** 0000"
+            placeholder="**** **** **** 5678"
+          />
+
+          <div class="grid grid-cols-2 gap-4">
+            <app-input
+              label="Scadenza"
+              formControlName="expiryDate"
+              placeholder="11/2028"
+            />
+            <app-input
+              label="Codice di sicurezza CVV"
+              formControlName="cvv"
+              mask="***"
+              placeholder="***"
+            />
+          </div>
+
+          <app-input
+            label="Nome del titolare"
+            formControlName="cardHolder"
+            placeholder="Mario Rossi"
+          />
+
+          <app-input
+            label="Paese"
+            formControlName="country"
+            placeholder="Italia"
+          />
+
+          <div class="flex items-center mt-4">
+            <input
+              type="checkbox"
+              formControlName="saveCard"
+              class="mr-2"
+            />
+            <label class="text-sm">Salva metodo di pagamento come predefinito</label>
+          </div>
+        </div>
+
+        <div class="border-t border-gray-200 my-6"></div>
+
+        <div class="space-y-4">
+          <div class="flex justify-between items-center">
+            <div class="flex items-center opacity-50">
+              <input
+                type="radio"
+                class="mr-3"
+                disabled
+              />
+              <app-paypal-icon />
+            </div>
+          </div>
+
+          <div class="flex justify-between items-center">
+            <div class="flex items-center opacity-50">
+              <input
+                type="radio"
+                class="mr-3"
+                disabled
+              />
+              <div class="flex items-center">
+                <app-google-pay-icon />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Billing Information -->
+        <div>
+          <h3 class="text-lg font-semibold mb-4">Indirizzo di fatturazione</h3>
+
+          <div class="flex flex-col gap-4">
+            <app-input
+              label="Via/Piazza"
+              formControlName="street"
+            />
+
+            <div class="grid grid-cols-2 gap-4">
+              <app-input
+                label="Numero civico"
+                formControlName="number"
+              />
+              <app-input
+                label="CAP"
+                formControlName="cap"
+              />
+            </div>
+
+            <app-input
+              label="Città"
+              formControlName="city"
+            />
+
+            <app-input
+              label="Paese"
+              formControlName="billingCountry"
+            />
+
+            <app-input
+              label="Numero di telefono"
+              formControlName="phone"
+            />
+
+            <app-input
+              label="Codice fiscale"
+              formControlName="fiscalCode"
+            />
+
+            <div class="flex items-center mt-4">
+              <input
+                type="checkbox"
+                formControlName="saveBilling"
+                class="mr-2"
+              />
+              <label class="text-sm">Salva indirizzo di fatturazione per acquisti futuri</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <app-button
+          type="primary"
+          [isDisabled]="paymentForm.invalid"
+          (click)="onSubmit()"
+          class="w-full"
+        >
+          <div class="px-6 py-3"> Aggiorna metodo di pagamento </div>
+        </app-button>
+      </div>
+    </form>
+  </div>
+</div>

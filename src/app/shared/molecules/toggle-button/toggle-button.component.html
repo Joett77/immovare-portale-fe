@@ -1,0 +1,17 @@
+<div class="flex flex-row flex-nowrap gap-x-1 w-[150px] items-center">
+  <span class="font-sans text-sm font-light">3 mesi</span>
+  <div class="relative inline-block">
+    <input
+      id="mode-toggle"
+      type="checkbox"
+      class="toggle__input hidden peer"
+      (change)="onSwitchchange($event)"
+    >
+    <label
+      for="mode-toggle"
+      class="toggle__label block w-14 h-[28px] py-1 px-1 bg-secondary rounded-3xl cursor-pointer after:peer-checked:left-8 after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:w-6 after:h-6 after:bg-black after:rounded-full
+      transition-all ease-in-out duration-300">
+    </label>
+  </div>
+  <span class="font-sans text-sm font-light">6 mesi</span>
+</div>

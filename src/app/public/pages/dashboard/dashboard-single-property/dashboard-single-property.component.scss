@@ -1,0 +1,185 @@
+// dashboard-single-property.component.scss - Mobile Responsive Styles
+
+/* Custom scrollbar for horizontal scroll */
+.horizontal-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 #f1f5f9;
+
+  &::-webkit-scrollbar {
+    height: 4px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 2px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 2px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+  }
+}
+
+/* Smooth scroll behavior */
+.scroll-smooth {
+  scroll-behavior: smooth;
+}
+
+/* Mobile card animations */
+.mobile-card {
+  transition:
+    transform 0.2s ease-in-out,
+    box-shadow 0.2s ease-in-out;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+}
+
+/* Fixed bottom button shadow */
+.fixed-bottom-bar {
+  box-shadow:
+    0 -4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 -2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .container-mobile {
+    padding-bottom: 5rem; // Space for fixed bottom bar
+  }
+
+  .card-mobile {
+    background: white;
+    border-radius: 0.5rem;
+    box-shadow:
+      0 1px 3px 0 rgba(0, 0, 0, 0.1),
+      0 1px 2px 0 rgba(0, 0, 0, 0.06);
+
+    @media (min-width: 1024px) {
+      background: transparent;
+      box-shadow: none;
+      border-radius: 0;
+    }
+  }
+}
+
+/* Loading overlay improvements */
+.loading-overlay {
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+/* Button hover effects */
+.btn-hover {
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+/* Status badge improvements */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  font-weight: 500;
+
+  &.status-active {
+    background-color: #ccfcd4;
+    color: #059669;
+  }
+
+  &.status-inactive {
+    background-color: #fee2e2;
+    color: #dc2626;
+  }
+
+  &.status-draft {
+    background-color: #fef3c7;
+    color: #d97706;
+  }
+}
+
+/* Horizontal scroll indicator */
+.scroll-container {
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 20px;
+    height: 100%;
+    background: linear-gradient(to left, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  &.scroll-end::after {
+    display: none;
+  }
+}
+
+/* Touch feedback for mobile */
+@media (hover: none) {
+  .touch-feedback {
+    &:active {
+      background-color: rgba(0, 0, 0, 0.05);
+      transform: scale(0.98);
+    }
+  }
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  .horizontal-scroll,
+  .scroll-smooth,
+  .mobile-card,
+  .btn-hover {
+    transition: none;
+    scroll-behavior: auto;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .card-mobile {
+    border: 2px solid currentColor;
+  }
+
+  .status-badge {
+    border: 1px solid currentColor;
+  }
+}
+
+/* Dark mode support (if needed) */
+@media (prefers-color-scheme: dark) {
+  .card-mobile {
+    background-color: #1f2937;
+    color: #f9fafb;
+  }
+
+  .horizontal-scroll {
+    scrollbar-color: #4b5563 #1f2937;
+
+    &::-webkit-scrollbar-track {
+      background: #1f2937;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: #4b5563;
+    }
+  }
+}

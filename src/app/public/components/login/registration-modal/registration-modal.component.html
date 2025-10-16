@@ -1,0 +1,29 @@
+<div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+  <div class="bg-white rounded-sm w-full h-screen lg:h-fit lg:max-w-xl lg:mx-4 relative py-8 px-12">
+    <!-- Close button -->
+    <button
+      (click)="closeModal()"
+      class="absolute right-4 top-4 p-2 hover:bg-gray-100 rounded-full"
+    >
+      <svg
+        class="h-6 w-6"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M6 18L18 6M6 6l12 12"
+        />
+      </svg>
+    </button>
+
+    <!-- Header -->
+    <h2 class="heading-md font-bold text-primary-dark mb-2">Crea il tuo account</h2>
+    <p class="text-gray-600 mb-6">Iscriviti per accedere a tutti i servizi Immovare.it</p>
+
+    <app-registration-form />
+  </div>
+</div>

@@ -1,0 +1,46 @@
+{
+    "guides": [
+        {
+            "id": 1,
+            "image": "/assets/placeholder-guide.png",
+            "title": "Un amore a prima vista",
+            "body": "I consigli dei migliori agenti su come mostrare la tua casa al meglio ai futuri acquirenti.",
+            "excerpt": "I consigli dei migliori agenti su come mostrare la tua casa al meglio ai futuri acquirenti."
+        },
+        {
+            "id": 2,
+            "image": "/assets/placeholder-guide.png",
+            "title": "Un amore a prima vista",
+            "body": "I consigli dei migliori agenti su come mostrare la tua casa al meglio ai futuri acquirenti.",
+            "excerpt": "I consigli dei migliori agenti su come mostrare la tua casa al meglio ai futuri acquirenti."
+        },
+        {
+            "id": 3,
+            "image": "/assets/placeholder-guide.png",
+            "title": "Un amore a prima vista",
+            "body": "I consigli dei migliori agenti su come mostrare la tua casa al meglio ai futuri acquirenti.",
+            "excerpt": "I consigli dei migliori agenti su come mostrare la tua casa al meglio ai futuri acquirenti."
+        },
+        {
+            "id": 4,
+            "image": "/assets/placeholder-guide.png",
+            "title": "Un amore a prima vista",
+            "body": "I consigli dei migliori agenti su come mostrare la tua casa al meglio ai futuri acquirenti.",
+            "excerpt": "I consigli dei migliori agenti su come mostrare la tua casa al meglio ai futuri acquirenti."
+        },
+        {
+            "id": 5,
+            "image": "/assets/placeholder-guide.png",
+            "title": "Un amore a prima vista",
+            "body": "I consigli dei migliori agenti su come mostrare la tua casa al meglio ai futuri acquirenti.",
+            "excerpt": "I consigli dei migliori agenti su come mostrare la tua casa al meglio ai futuri acquirenti."
+        },
+        {
+            "id": 6,
+            "image": "/assets/placeholder-guide.png",
+            "title": "Un amore a prima vista",
+            "body": "I consigli dei migliori agenti su come mostrare la tua casa al meglio ai futuri acquirenti.",
+            "excerpt": "I consigli dei migliori agenti su come mostrare la tua casa al meglio ai futuri acquirenti."
+        }
+    ]
+}

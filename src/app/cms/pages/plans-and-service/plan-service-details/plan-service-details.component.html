@@ -1,0 +1,376 @@
+<div class="container mx-auto">
+  <h1 class="heading-md font-bold text-primary-dark mb-6">
+    {{ !plan() ? 'Nuovo piano' : 'Modifica piano' }}
+  </h1>
+
+  <div class="flex mb-4 border-b border-[#CBCCCD]">
+    <div
+      class="px-6 py-3 cursor-pointer flex items-center gap-2 text-[#97999B] font-bold border-[#CBCCCD]"
+      (click)="setActiveTab('info')"
+      [ngClass]="{
+        'border-b-2 border-black -mb-[2px] bg-secondary text-black font-bold ':
+          activeTab() === 'info',
+      }"
+    >
+      <span
+        class="inline-flex items-center justify-center rounded-full bg-gray-200 w-5 h-5 text-sm font-bold"
+        >1</span
+      >
+      Informazioni piano
+    </div>
+    <div
+      [class.cursor-not-allowed]="(!isSectionInfoValid() || plansForm.untouched) && !plan()"
+      [class.pointer-events-none]="(!isSectionInfoValid() || plansForm.untouched) && !plan()"
+      class="px-6 py-3 cursor-pointer flex items-center gap-2 text-[#97999B] font-bold border-[#CBCCCD]"
+      [ngClass]="{
+        'border-b-2 border-black -mb-[2px] bg-secondary text-black font-bold':
+          activeTab() === 'service',
+      }"
+      (click)="setActiveTab('service')"
+    >
+      <span
+        class="inline-flex items-center justify-center rounded-full bg-gray-200 w-5 h-5 text-sm font-bold"
+        >2</span
+      >
+      Servizi
+    </div>
+    <div
+      [class.cursor-not-allowed]="(!plansForm.valid || plansForm.untouched) && !plan()"
+      [class.pointer-events-none]="(!plansForm.valid || plansForm.untouched) && !plan()"
+      class="px-6 py-3 cursor-pointer flex items-center gap-2 text-[#97999B] font-bold border-[#CBCCCD]"
+      [ngClass]="{
+        'border-b-2 border-black -mb-[2px] bg-secondary text-black font-bold':
+          activeTab() === 'view',
+      }"
+      (click)="setActiveTab('view')"
+    >
+      <span
+        class="inline-flex items-center justify-center rounded-full bg-gray-200 w-5 h-5 text-sm font-bold"
+        >3</span
+      >
+      Anteprima
+    </div>
+  </div>
+  <form
+    [formGroup]="plansForm"
+    class="space-y-6"
+  >
+    @switch (activeTab()) {
+      @case ('info') {
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-6 curso">
+          <div class="md:col-span-8">
+            <!-- Title field -->
+            <div>
+              <app-input
+                label="Nome piano*"
+                [control]="getControl('title')"
+              ></app-input>
+            </div>
+          </div>
+          <div class="md:col-span-8">
+            <!-- Description field -->
+            <div>
+              <app-input
+                type="textarea"
+                [rows]="4"
+                class="w-full"
+                label="Descrizione piano*"
+                [control]="getControl('description')"
+              ></app-input>
+            </div>
+          </div>
+        </div>
+
+        <!-- Free Plan Switch -->
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+          <div class="md:col-span-4">
+            <div class="flex items-center space-x-3">
+              <label
+                class="inline-flex items-center"
+                [class.opacity-60]="disabledForm"
+                [class.cursor-not-allowed]="disabledForm"
+                [class.cursor-pointer]="!disabledForm"
+              >
+                <input
+                  type="checkbox"
+                  formControlName="free"
+                  [disabled]="disabledForm"
+                  class="sr-only peer"
+                />
+
+                <div
+                  [ngClass]="{
+                    'bg-gray-300 dark:bg-gray-700': true,
+                    'peer-checked:bg-blue-600 dark:peer-checked:bg-blue-600': !disabledForm,
+                    'relative w-11 h-6 rounded-full transition-colors': true,
+                    'after:content-[\'\'] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600': true,
+                    'peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white':
+                      !disabledForm,
+                  }"
+                ></div>
+
+                <span class="ms-3 text-sm font-medium text-black select-none">
+                  Piano gratuito
+                </span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+          <div class="md:col-span-4">
+            <select
+              [disabled]="disabledForm"
+              [class.opacity-60]="disabledForm"
+              [class.cursor-not-allowed]="disabledForm"
+              [class.pointer-events-none]="disabledForm"
+              label="Vincolo*"
+              title="Inteval"
+              formControlName="interval"
+              class="text-gray-900 focus:border-primary-500 focus:ring-primary-500 peer h-14 w-full rounded-md border border-gray-300 px-4 text-base placeholder-transparent outline-none transition-all duration-200 focus:pb-2 focus:pt-6 focus:ring-1 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500 [&:not(:placeholder-shown)]:pb-2 [&:not(:placeholder-shown)]:pt-6 [&[type=number]]:appearance-none [&[type=password]]:tracking-widest"
+            >
+              @for (interval of intervals; track interval[0]) {
+                <option [value]="interval[0]">
+                  <span class="w-6 h-4 mr-2 inline-block"></span>
+                  {{ interval[1] }}
+                </option>
+              }
+            </select>
+          </div>
+          <div class="md:col-span-4">
+            <app-input
+              [isDisabled]="disabledForm || getControl('free')?.value"
+              [class.cursor-not-allowed]="disabledForm || getControl('free')?.value"
+              [class.pointer-events-none]="disabledForm || getControl('free')?.value"
+              [class.opacity-60]="getControl('free')?.value"
+              label="Prezzo/Mese"
+              [control]="getControl('price')"
+            ></app-input>
+            @if (getControl('free')?.value) {
+              <div class="text-sm text-gray-500 mt-1">
+                Il prezzo Ã¨ impostato a 0 per i piani gratuiti
+              </div>
+            }
+          </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+          <div class="md:col-span-8">
+            <app-input
+              [isDisabled]="disabledForm"
+              [class.cursor-not-allowed]="disabledForm"
+              [class.pointer-events-none]="disabledForm"
+              label="Descrizione prezzo*"
+              [control]="getControl('priceDescription')"
+            ></app-input>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+          <div class="md:col-span-8">
+            <app-input
+              label="Tag"
+              [control]="getControl('tag')"
+            ></app-input>
+          </div>
+        </div>
+
+        <!-- Action buttons -->
+        <div class="flex justify-between mt-8 mb-8">
+          <div>
+            @if (!plan()) {
+              <app-button
+                type="primary"
+                [text]="'Avanti'"
+                [size]="'md'"
+                [icon]="true"
+                [iconType]="'arrow-right'"
+                iconPosition="right"
+                [isDisabled]="!isSectionInfoValid() || plansForm.untouched"
+                (buttonClick)="onNextOrBack('next', 'info')"
+              ></app-button>
+            }
+          </div>
+        </div>
+      }
+      @case ('service') {
+        @for (item of getArrayControl('serviceList')?.controls; track $index) {
+          <div
+            class="grid grid-cols-1 md:grid-cols-12 gap-6 px-3 py-4"
+            style="background-color: #f6f6f6"
+          >
+            <div class="md:col-span-4">
+              <app-input
+                label="Nome servizio*"
+                [control]="asControl(item.get('name'))"
+              ></app-input>
+            </div>
+            <div class="md:col-span-4">
+              <textarea
+                label="Descrizione servizio*"
+                class="w-full textarea rounded-md"
+                [formControl]="asControl(item.get('description'))"
+              ></textarea>
+            </div>
+            <div class="md:col-span-4">
+              <select
+                label="Tipologia servizio*"
+                title="typeService"
+                [formControl]="asControl(item.get('type'))"
+                class="text-gray-900 focus:border-primary-500 focus:ring-primary-500 peer h-14 w-full rounded-md border border-gray-300 px-4 text-base placeholder-transparent outline-none transition-all duration-200 focus:pb-2 focus:pt-6 focus:ring-1 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500 [&:not(:placeholder-shown)]:pb-2 [&:not(:placeholder-shown)]:pt-6 [&[type=number]]:appearance-none [&[type=password]]:tracking-widest"
+              >
+                @for (type of serviceType; track type[0]) {
+                  <option [value]="type[0]">
+                    <span class="w-6 h-4 mr-2 inline-block"></span>
+                    {{ type[1] }}
+                  </option>
+                }
+              </select>
+            </div>
+            <div class="md:col-span-4">
+              <app-button
+                type="secondary"
+                (click)="removeInfo($index, 'serviceList')"
+                >Rimuovi servizio
+              </app-button>
+            </div>
+          </div>
+        }
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+          <div class="md:col-span-12">
+            <app-button
+              type="secondary"
+              (click)="addInArray('serviceList')"
+              >Aggiungi
+            </app-button>
+          </div>
+        </div>
+        @if (!plan()) {
+          <div class="flex justify-between mt-8 mb-8">
+            <div class="flex gap-3">
+              <app-button
+                type="secondary"
+                [text]="'Indietro'"
+                [size]="'md'"
+                [icon]="true"
+                [iconType]="'arrow-left'"
+                iconPosition="left"
+                (buttonClick)="onNextOrBack('back', 'service')"
+              ></app-button>
+              <app-button
+                type="primary"
+                [text]="'Avanti'"
+                [size]="'md'"
+                [icon]="true"
+                [iconType]="'arrow-right'"
+                iconPosition="right"
+                [isDisabled]="!plansForm.valid || !plansForm.touched"
+                (buttonClick)="onNextOrBack('next', 'service')"
+              ></app-button>
+            </div>
+          </div>
+        }
+      }
+      @case ('view') {
+        @if (plansForm.valid) {
+          <app-subscription-plan
+            [disableButton]="true"
+            [plan]="plansForm.value"
+          ></app-subscription-plan>
+        } @else {
+          <div class="text-red-500">Compila i campi richiesti per avere un anteprima</div>
+        }
+        @if (!plan()) {
+          <div class="flex justify-between mt-8 mb-8">
+            <div class="flex gap-3">
+              <app-button
+                type="secondary"
+                [text]="'Indietro'"
+                [size]="'md'"
+                [icon]="true"
+                [iconType]="'arrow-left'"
+                iconPosition="left"
+                (buttonClick)="onNextOrBack('back', 'view')"
+              ></app-button>
+              <app-button
+                type="primary"
+                [text]="'Conferma e attiva piano'"
+                [size]="'md'"
+                [icon]="true"
+                [iconType]="'check'"
+                [isDisabled]="!plansForm.valid || !plansForm.touched"
+                iconPosition="right"
+                (buttonClick)="add()"
+              ></app-button>
+            </div>
+          </div>
+        }
+      }
+    }
+    @if (plan()) {
+      <div class="flex mt-8 mb-8">
+        @if (plan()?.plan.status === 'active') {
+          <app-button
+            type="danger"
+            [text]="'Elimina piano'"
+            [size]="'md'"
+            [icon]="true"
+            [iconType]="'trash'"
+            iconPosition="left"
+            (buttonClick)="deletePlan()"
+          ></app-button>
+          <app-button
+            class="ml-2"
+            type="secondary"
+            [text]="'Disattiva piano'"
+            [size]="'md'"
+            [icon]="true"
+            [iconType]="'ban'"
+            iconPosition="left"
+            (buttonClick)="deactivatePlan()"
+          ></app-button>
+        } @else {
+          <app-button
+            type="danger"
+            [text]="'Elimina piano'"
+            [size]="'md'"
+            [icon]="true"
+            [iconType]="'trash'"
+            iconPosition="left"
+            (buttonClick)="deletePlan()"
+          ></app-button>
+          <app-button
+            class="ml-2"
+            type="secondary"
+            [text]="'Attiva piano'"
+            [size]="'md'"
+            [icon]="true"
+            [iconType]="'check'"
+            iconPosition="left"
+            (buttonClick)="activePlan()"
+          >
+          </app-button>
+        }
+        <app-button
+          class="ml-2"
+          [isDisabled]="!plansForm.valid || !plansForm.touched"
+          type="primary"
+          [text]="'Modifica piano'"
+          [size]="'md'"
+          [icon]="true"
+          [iconType]="'floppy'"
+          iconPosition="left"
+          (buttonClick)="updatePlan()"
+        ></app-button>
+      </div>
+    }
+  </form>
+</div>
+@if (modalType) {
+  <app-modal-small
+    [modalType]="modalType"
+    [loading]="isLoading"
+    [params]="{ planName: plan().plan.title }"
+    (onAction)="modalAction()"
+    (onClose)="modalClosed()"
+  >
+  </app-modal-small>
+}

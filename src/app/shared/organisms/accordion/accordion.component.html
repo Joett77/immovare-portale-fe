@@ -1,0 +1,25 @@
+<div class="group">
+  <div class="flex flex-row items-baseline flex-nowrap gap-x-4 cursor-pointer" (click)="toggleAccordion()">
+      @if(isAccordionOpen) {
+        <div class="rotate-180 font-montserrat text-base font-bold">
+          <app-arrow-down-icon class="w-4 h-4 text-[#3C3D3E]"></app-arrow-down-icon>
+        </div>
+      } @else {
+        <div class="font-montserrat text-base font-bold">
+          <app-arrow-down-icon class="text-[#3C3D3E]"></app-arrow-down-icon>
+        </div>
+      }
+    <button
+      class="w-full flex justify-between items-center text-[12px] font-bold py-2"
+    >
+      <span>{{ title() }}</span>
+    </button>
+  </div>
+  @if(isAccordionOpen) {
+    <div
+      class="space-y-1 text-[14px] text-[#3C3D3E] list-disc mb-4"
+      [innerHTML]="content()"
+    >
+    </div>
+  }
+</div>

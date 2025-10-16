@@ -1,0 +1,108 @@
+<!-- sidesheet.component.html - Fixed version with proper mobile scrolling -->
+<div
+  class="fixed inset-0 z-50 transition-opacity duration-300 ease-in-out"
+  [class.opacity-0]="!isOpen"
+  [class.opacity-100]="isOpen"
+  [class.invisible]="!isOpen"
+>
+  <div
+    class="absolute inset-0 bg-black/50 transition-opacity duration-300"
+    (click)="closeSheet.emit()"
+  ></div>
+
+  <div
+    class="absolute inset-y-0 right-0 w-full max-w-2xl bg-white shadow-xl transform transition-transform duration-300 ease-in-out flex flex-col"
+    [class.translate-x-0]="isOpen"
+    [class.translate-x-full]="!isOpen"
+  >
+    <!-- Fixed Header -->
+    <div class="flex-shrink-0 bg-white p-6 border-b border-gray-300">
+      <div class="flex justify-between items-center">
+        <h2 class="heading-md font-bold text-primary-dark font-montserrat"
+          >Fissa un appuntamento</h2
+        >
+        <button
+          class="text-gray-400 hover:text-gray-500 transition-colors"
+          (click)="closeSheet.emit()"
+        >
+          <span class="sr-only">Chiudi</span>
+          <svg
+            class="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Scrollable Content Area -->
+    <div class="flex-1 overflow-hidden">
+      @if (!showContactForm) {
+        <app-book-appointment (updatedForm)="updateDateFormData($event)" />
+      }
+      @if (showContactForm) {
+        <div class="h-full overflow-y-auto">
+          <app-contact-form (updatedForm)="updateContactFormData($event)" />
+        </div>
+      }
+    </div>
+
+    <!-- Error Message (if any) -->
+    @if (submitError) {
+      <div class="flex-shrink-0 bg-red-50 text-red-500 p-4">
+        {{ submitError }}
+      </div>
+    }
+
+    <!-- Fixed Footer -->
+    <div class="flex-shrink-0 bg-white border-t border-gray-300 p-4">
+      <div class="flex justify-between items-center">
+        @if (showContactForm) {
+          <app-button
+            (click)="backStepAppointment()"
+            type="withoutBorder"
+            [hasBorder]="false"
+            size="md"
+          >
+            <app-arrow-left-icon class="mr-2" />
+            Indietro
+          </app-button>
+          <app-button
+            (click)="confirmFormData()"
+            [isDisabled]="dateForm.invalid || contactForm.invalid"
+            type="primary"
+            size="md"
+          >
+            Conferma
+          </app-button>
+        }
+        @if (!showContactForm) {
+          <div></div>
+          <!-- Spacer -->
+          <app-button
+            (click)="proceedWithAppointment()"
+            [isDisabled]="dateForm.invalid"
+            type="primary"
+            size="md"
+          >
+            Avanti
+          </app-button>
+        }
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-success-modal
+  [isLogged]="isLoggedIn"
+  [isOpen]="showSuccessModal"
+  (onClose)="closeSuccessModal()"
+></app-success-modal>

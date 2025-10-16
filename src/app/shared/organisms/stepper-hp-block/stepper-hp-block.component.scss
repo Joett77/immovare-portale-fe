@@ -1,0 +1,19 @@
+.dashed-line {
+    background-image: linear-gradient(to right, #2c7a7b 50%, transparent 50%);
+    background-size: 16px 100%;
+    margin-right: 5px;
+    margin-left: 5px;
+    background-repeat: repeat-x;
+}
+.circle-blur {
+    box-shadow: 3px 3px 3px 3px rgba(255, 255, 255, 0.7);
+}
+.vertical-dashed-line {
+    background-image: linear-gradient(to bottom, #2c7a7b 50%, transparent 50%);
+    background-size: 100% 16px;
+    margin-bottom: 15px;
+    background-repeat: repeat-y;
+}
+.star-shape {
+    clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+}

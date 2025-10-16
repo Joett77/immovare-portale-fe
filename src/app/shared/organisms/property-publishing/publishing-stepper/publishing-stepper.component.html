@@ -1,0 +1,97 @@
+<!-- publishing-stepper.component.html - Updated with validation states -->
+<div class="h-24"></div>
+@if (isMobile) {
+  <div class="fixed w-full bottom-0 h-24 bg-gray-100 z-50 bg-[#F6F6F6]">
+    <div class="flex justify-between items-center gap-4 w-full p-8">
+      <app-button
+        (click)="backStep()"
+        [text]="'Indietro'"
+        type="secondary"
+        [icon]="true"
+        [iconType]="'arrow-left'"
+        iconPosition="left"
+        size="md"
+        class="lg:min-w-[240px]"
+        [isDisabled]="isBackButtonDisabled"
+      ></app-button>
+
+      <div class="flex flex-col items-baseline">
+        <div class="text-sm">Step</div>
+        <div class="text-sm">{{ currentStep + 1 }} / {{ steps.length }}</div>
+      </div>
+
+      <app-button
+        (click)="goNextStep()"
+        [text]="'Avanti'"
+        [icon]="true"
+        [iconType]="'arrow-right'"
+        class="lg:min-w-[240px]"
+        size="md"
+        [isDisabled]="isNextButtonDisabled"
+      ></app-button>
+    </div>
+  </div>
+} @else {
+  <div
+    class="fixed bottom-0 left-0 w-full h-24 flex justify-between items-center px-8 py-16 bg-gray-100 z-50"
+  >
+    <div class="w-2/3">
+      <div class="flex items-center justify-between">
+        @for (step of steps; track step; let i = $index) {
+          <div
+            class="flex flex-col items-center relative flex-1"
+            (click)="goToStep(step.step)"
+          >
+            @if (i !== 0) {
+              <div
+                class="absolute h-0.5 top-4 w-full right-1/2 {{
+                  i <= currentStep || steps[i].completed ? 'bg-black' : 'bg-[#CBCCCD]'
+                }}"
+              ></div>
+            }
+            <div
+              class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm z-10 transition-colors duration-300 cursor-pointer {{
+                i === currentStep || steps[i].completed
+                  ? 'bg-black text-[#F6F6F6]'
+                  : 'bg-[#CBCCCD] text-[#F6F6F6]'
+              }}"
+              >{{ i + 1 }}
+            </div>
+
+            <div
+              class="text-xs font-semibold mt-2 cursor-pointer {{
+                i === currentStep || steps[i].completed ? 'text-black' : 'text-[#CBCCCD]'
+              }}"
+            >
+              {{ step.text }}
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="flex justify-center gap-4 w-1/3">
+      <app-button
+        (click)="backStep()"
+        [text]="'Indietro'"
+        type="secondary"
+        [icon]="true"
+        [iconType]="'arrow-left'"
+        iconPosition="left"
+        size="md"
+        class="lg:min-w-[240px]"
+        [isDisabled]="isBackButtonDisabled"
+      ></app-button>
+
+      <app-button
+        (click)="goNextStep()"
+        [text]="'Avanti'"
+        [icon]="true"
+        [iconType]="'arrow-right'"
+        class="lg:min-w-[240px]"
+        size="md"
+        [isDisabled]="isNextButtonDisabled"
+      ></app-button>
+    </div>
+  </div>
+}

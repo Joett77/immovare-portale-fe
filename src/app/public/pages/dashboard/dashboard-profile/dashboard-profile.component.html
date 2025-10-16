@@ -1,0 +1,287 @@
+<div class="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
+  @if (deletionDate) {
+    <div class="w-full flex justify-between items-center alert p-2 mb-4">
+      <span class="font-bold">
+        <fa-icon
+          class="p-2"
+          [icon]="alertIcon"
+        />
+        Il tuo account e relativi servizi verranno eliminati il giorno
+        {{ deletionDate | date: 'dd/MM/yyyy' }}</span
+      >
+      <app-button
+        type="primary"
+        size="nopadding"
+        [isDisabled]="isLoading"
+        [iconPosition]="'right'"
+        (click)="sendRestore()"
+      >
+        <span class="px-4 py-2">Riattiva account</span>
+        @if (isLoading) {
+          <span class="inline-block animate-spin mr-2">⌛</span>
+        }
+      </app-button>
+    </div>
+  }
+  <!-- Breadcrumb -->
+  <div
+    class="flex items-center space-x-2 bg-[#F6F6F6] border border-[#F6F6F6] px-4 py-1 rounded-full text-xs mb-8 w-fit"
+  >
+    <a
+      class="text-[#97999B] font-semibold"
+      [routerLink]="['/dashboard']"
+      >Dashboard</a
+    >
+    <span class="text-[#3C3D3E]">›</span>
+    <span class="text-black font-bold">Profilo utente</span>
+  </div>
+
+  <h1 class="heading-lg font-montserrat font-bold text-primary-dark mb-8">Profilo utente</h1>
+
+  <form
+    [formGroup]="profileForm"
+    class="max-w-2xl space-y-8"
+  >
+    <!-- Personal Information -->
+    <div class="flex flex-col gap-y-4 max-w-[400px]">
+      <app-input
+        class="w-full"
+        label="Nome"
+        [control]="getControl('firstName')"
+        type="text"
+      >
+        @if (hasError('firstName', 'required')) {
+          <span class="text-red-500 text-sm">Il nome è obbligatorio</span>
+        }
+        @if (hasError('firstName', 'minlength')) {
+          <span class="text-red-500 text-sm">Il nome deve contenere almeno 2 caratteri</span>
+        }
+      </app-input>
+
+      <app-input
+        class="w-full"
+        label="Cognome"
+        [control]="getControl('lastName')"
+        type="text"
+      >
+        @if (hasError('lastName', 'required')) {
+          <span class="text-red-500 text-sm">Il cognome è obbligatorio</span>
+        }
+        @if (hasError('lastName', 'minlength')) {
+          <span class="text-red-500 text-sm">Il cognome deve contenere almeno 2 caratteri</span>
+        }
+      </app-input>
+
+      <app-input
+        class="w-full"
+        label="Numero di cellulare"
+        [control]="getControl('phone')"
+        type="number"
+      >
+        @if (hasError('phone', 'required')) {
+          <span class="text-red-500 text-sm">Il numero di telefono è obbligatorio</span>
+        }
+        @if (hasError('phone', 'pattern')) {
+          <span class="text-red-500 text-sm">Inserisci un numero di telefono valido</span>
+        }
+      </app-input>
+
+      <app-input
+        class="w-full"
+        label="Email"
+        [control]="getControl('email')"
+        type="email"
+      >
+        @if (hasError('email', 'required')) {
+          <span class="text-red-500 text-sm">L'email è obbligatoria</span>
+        }
+        @if (hasError('email', 'email')) {
+          <span class="text-red-500 text-sm">Inserisci un indirizzo email valido</span>
+        }
+      </app-input>
+
+      <div class="max-w-fit">
+        <app-button
+          [isDisabled]="loading || profileForm.invalid || profileForm.untouched"
+          type="primary"
+          size="nopadding"
+          (click)="saveProfile()"
+        >
+          <div class="flex items-center gap-x-2 px-6 py-3">
+            @if (loading) {
+              <span class="inline-block animate-spin mr-2">⌛</span>
+            }
+            <app-save-icon></app-save-icon>
+            Salva modifiche
+          </div>
+        </app-button>
+      </div>
+    </div>
+
+    <hr class="section-divider text-[#CBCCCD] my-4" />
+    <!-- Password Section -->
+    <div>
+      <h2 class="text-lg font-bold text-black mb-4">Password</h2>
+
+      @if (!isChangingPassword) {
+        <p class="text-gray-500 mb-4">••••••••••••</p>
+        <div class="max-w-fit">
+          <app-button
+            type="secondary"
+            size="nopadding"
+            (click)="modifyPassword()"
+          >
+            <div class="flex items-center gap-x-2 px-6 py-3">
+              <app-edit-icon></app-edit-icon>
+              Modifica password
+            </div>
+          </app-button>
+        </div>
+      } @else {
+        <form
+          [formGroup]="passwordForm"
+          class="max-w-[400px] flex flex-col gap-y-4"
+        >
+          <app-input
+            label="Vecchia password"
+            [control]="getPasswordControl('currentPassword')"
+            type="password"
+            class="w-full"
+          >
+            @if (
+              getPasswordControl('currentPassword').touched &&
+              getPasswordControl('currentPassword').errors?.['required']
+            ) {
+              <span class="text-red-500 text-sm">La password attuale è obbligatoria</span>
+            }
+          </app-input>
+
+          <app-input
+            label="Nuova password"
+            [control]="getPasswordControl('newPassword')"
+            type="password"
+            class="w-full"
+          >
+            @if (
+              getPasswordControl('newPassword').touched &&
+              getPasswordControl('newPassword').errors?.['required']
+            ) {
+              <span class="text-red-500 text-sm">La nuova password è obbligatoria</span>
+            }
+            @if (
+              getPasswordControl('newPassword').touched &&
+              getPasswordControl('newPassword').errors?.['minlength']
+            ) {
+              <span class="text-red-500 text-sm"
+                >La password deve contenere almeno 8 caratteri</span
+              >
+            }
+          </app-input>
+
+          <app-input
+            label="Ripeti nuova password"
+            [control]="getPasswordControl('confirmPassword')"
+            type="password"
+            class="w-full"
+          >
+            @if (
+              getPasswordControl('confirmPassword').touched &&
+              getPasswordControl('confirmPassword').errors?.['required']
+            ) {
+              <span class="text-red-500 text-sm">La conferma della password è obbligatoria</span>
+            }
+            @if (passwordForm.touched && passwordForm.errors?.['passwordMismatch']) {
+              <span class="text-red-500 text-sm">Le password non coincidono</span>
+            }
+          </app-input>
+
+          <div class="max-w-fit">
+            <app-button
+              [isDisabled]="passwordForm.invalid"
+              type="primary"
+              size="nopadding"
+              (click)="confirmPasswordChange()"
+            >
+              <div class="flex justify-center w-full px-6 py-3 bg-[#ECE81A] text-black">
+                Conferma password
+              </div>
+            </app-button>
+          </div>
+        </form>
+      }
+    </div>
+
+    <hr class="section-divider text-[#CBCCCD] my-4" />
+    <!-- Delete Account Section -->
+    <div>
+      <h2 class="text-lg font-bold text-black mb-4">Elimina account</h2>
+      <p class="text-sm mb-4">
+        Se desideri eliminare il tuo account, non avrai più accesso a tutti i servizi attivi
+        relativi alla tua utenza. Per maggiori informazioni consulta i
+        <a
+          href="#"
+          class="text-blue-600"
+          >termini e condizioni</a
+        >.
+      </p>
+
+      @if (!deletionDate) {
+        <app-button
+          [type]="'withoutBackground'"
+          [hasBorder]="false"
+          [icon]="true"
+          size="nopadding"
+          [iconPosition]="'left'"
+          (buttonClick)="deleteAccount()"
+        >
+          <div
+            class="flex items-center gap-x-2 text-[#FF3B30] border-[1px] text-base border-[#FF3B30] rounded-sm px-6 py-3"
+          >
+            <app-trash-icon class="child"></app-trash-icon>
+            <span class="child">Elimina account</span>
+          </div>
+        </app-button>
+      }
+    </div>
+
+    @if (submitError) {
+      <div class="bg-red-50 text-red-500 p-4 rounded">
+        {{ submitError }}
+      </div>
+    }
+  </form>
+
+  @if (deletionDate) {
+    <div class="w-full flex justify-between items-center alert p-2 mb-4">
+      <span class="font-bold">
+        <fa-icon
+          class="p-2"
+          [icon]="alertIcon"
+        />
+        Il tuo account e relativi servizi verranno eliminati il giorno
+        {{ deletionDate | date: 'dd/MM/yyyy' }}</span
+      >
+      <app-button
+        type="primary"
+        size="nopadding"
+        [isDisabled]="isLoading"
+        [iconPosition]="'right'"
+        (click)="sendRestore()"
+      >
+        <span class="px-4 py-2">Riattiva account</span>
+        @if (isLoading) {
+          <span class="inline-block animate-spin mr-2">⌛</span>
+        }
+      </app-button>
+    </div>
+  }
+</div>
+
+@if (this.modalType) {
+  <app-modal-small
+    [modalType]="modalType"
+    [loading]="modalLoading"
+    (onAction)="modalAction()"
+    (onClose)="modalClosed()"
+  ></app-modal-small>
+}

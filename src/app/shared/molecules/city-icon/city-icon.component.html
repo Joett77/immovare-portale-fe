@@ -1,0 +1,8 @@
+<div
+  class="w-44 min-h-[121px] py-3 flex flex-col items-center justify-center border border-gray-300 rounded-lg"
+>
+  <div class="text-4xl mb-2">
+    <ng-container *ngComponentOutlet="city()?.icon || null"></ng-container>
+  </div>
+  <span class="text-lg font-extrabold">{{ city()?.label }}</span>
+</div>

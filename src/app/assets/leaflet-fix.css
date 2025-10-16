@@ -1,0 +1,25 @@
+.leaflet-draw-toolbar a {
+  background-image: url('/assets/leaflet-draw/images/spritesheet.png');
+  background-image: linear-gradient(transparent, transparent),
+    url('/assets/leaflet-draw/images/spritesheet.svg');
+}
+
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .leaflet-draw-toolbar a {
+    background-image: url('/assets/leaflet-draw/images/spritesheet-2x.png');
+  }
+}
+
+.leaflet-control-layers-toggle {
+  background-image: url('/assets/leaflet/images/layers.png');
+}
+
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .leaflet-control-layers-toggle {
+    background-image: url('/assets/leaflet/images/layers-2x.png');
+  }
+}
+
+.leaflet-marker-icon {
+  background-image: url('/assets/leaflet/images/marker-icon.png');
+}

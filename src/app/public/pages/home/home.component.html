@@ -1,0 +1,49 @@
+<div>
+  <app-hero-block
+    [title]="
+      'Benvenuto nella prima<br>agenzia immobiliare online<br>dove ti abboni per vendere casa.<br><br><span class=\'font-extrabold \'>E non paghi provvigioni.</span>'
+    "
+    [evaluationButton]="true"
+    [hasVideo]="true"
+    [subtitleBold]="true"
+    [bgHeroImage]="'assets/mobile-hero.png'"
+    [bgHero]="'assets/video_1280.mp4'"
+    [theme]="'primary'"
+  />
+
+  <app-stepper-hp-block />
+
+  <app-pricing-hp-block />
+
+  <app-banner-cta
+    (click)="goToVoglioVendere()"
+    [title]="'Tu scegli il piano, noi ti vendiamo casa.'"
+    [description]="'I nostri agenti saranno al tuo fianco durante tutto il processo di vendita.'"
+    [buttonLabel]="'Scopri i piani'"
+    [icon]="'user'"
+  />
+
+  <app-image-right-block />
+  <hr class="section-divider text-[#CBCCCD]" />
+
+  <app-already-immovated-block
+    [isHpBlock]="true"
+    [linkToPage]="goToFavoritePropertiesPage.bind(this)"
+  />
+  <hr class="section-divider text-[#CBCCCD]" />
+
+  <app-talk-about-us-hp-block />
+  <hr class="section-divider text-[#CBCCCD]" />
+
+  <app-news-hp-block />
+
+  <app-banner-cta
+    (click)="goToGuide()"
+    [title]="'Non sai da dove iniziare?'"
+    [description]="
+      'Leggi una delle nostre guide, ti aiuteranno a compiere i primi passi verso i tuoi obbiettivi.'
+    "
+    [buttonLabel]="'Leggi le guide'"
+    [icon]="'book'"
+  />
+</div>

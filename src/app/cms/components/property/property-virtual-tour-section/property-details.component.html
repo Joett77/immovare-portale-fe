@@ -1,0 +1,41 @@
+<!-- Modified part of the property-details.component.html -->
+<!-- Add this section after the map section and before the photos section -->
+
+<!-- Virtual Tour section -->
+<app-property-virtual-tour-section [property]="property()"></app-property-virtual-tour-section>
+
+<!-- Photos section -->
+<div class="mb-8">
+  <div class="flex justify-between items-center mb-4">
+    <h2 class="text-lg font-bold text-black mb-4">Fotografie</h2>
+    <button
+      type="button"
+      class="px-3 py-1 border border-gray-300 rounded-sm text-xs"
+      (click)="openImagesModal()"
+    >
+      Modifica
+    </button>
+  </div>
+
+  <!-- Photos gallery -->
+  <div class="grid grid-cols-3 gap-4">
+    @if (uploadedImages && uploadedImages.length > 0) {
+      @for (image of uploadedImages.slice(0, 3); track image.id) {
+        <div class="relative h-40 bg-gray-200 rounded-sm overflow-hidden">
+          <img
+            [src]="image.url"
+            alt="Property photo"
+            class="h-full w-full object-cover"
+          />
+          @if (image.id === uploadedImages[0].id) {
+            <div class="absolute bottom-0 left-0 bg-yellow-400 text-xs py-1 px-2"> Principale </div>
+          }
+        </div>
+      }
+    } @else {
+      <div class="col-span-3 h-40 bg-gray-200 rounded-sm flex items-center justify-center">
+        <span class="text-gray-500">Nessuna foto caricata</span>
+      </div>
+    }
+  </div>
+</div>

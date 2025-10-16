@@ -1,0 +1,146 @@
+<form
+  [formGroup]="filterBarForm"
+  class="w-full h-fit mb-14 py-4 px-2 flex flex-col md:mb-0 md:border md:border-[#CBCCCD] md:flex-row md:flex-wrap md:justify-start md:items-center gap-x-2 gap-y-4 lg:px-6"
+>
+  <div class="w-full h-max-[42px] mt-4 md:mt-0 md:w-[25%] md:min-w-[260px] md:max-w-[410px]">
+    <app-leaflet-input-autocomplete></app-leaflet-input-autocomplete>
+  </div>
+  @if (isMobile) {
+    <div class="w-full h-fit mt-4 flex flex-row flex-nowrap justify-between gap-x-2">
+      <div class="relative">
+        <app-button
+          class="md:w-auto mb-2 md:mb-0"
+          size="sm"
+          type="withoutBorder"
+          [hasBorder]="true"
+          text="Filtri"
+          [icon]="true"
+          [iconType]="'bars-filter'"
+          iconPosition="left"
+          (click)="onOpenSideBarFilter()"
+        ></app-button>
+        @if (filterApplied()) {
+          <div
+            class="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-secondary flex items-center justify-center text-black text-xs font-bold"
+            >{{ filterCount() }}</div
+          >
+        }
+      </div>
+      <app-button
+        text="Salva"
+        [hasBorder]="true"
+        [size]="'sm'"
+        [icon]="true"
+        [iconType]="'floppy'"
+        iconPosition="left"
+        (click)="onSaveSearch()"
+      />
+      <app-button
+        class="md:w-auto md:mb-0"
+        size="sm"
+        type="withoutBorder"
+        [hasBorder]="true"
+        [text]="!isMapShown ? 'Mappa' : 'Listato'"
+        [icon]="true"
+        [iconType]="!isMapShown ? 'map' : 'list'"
+        iconPosition="left"
+        (click)="!isMapShown ? onShowMap() : onHideMap()"
+      ></app-button>
+    </div>
+  } @else {
+    <app-select
+      [withBorder]="true"
+      class="w-full md:max-w-52"
+      label="Tipologia"
+      id="type"
+      [options]="residentialCleanTypeList"
+      [control]="getControl('type')"
+      (selectionChange)="onSelectChange('type', $event)"
+    ></app-select>
+    <app-range-selector
+      #rangeSelectorRooms
+      title="Locali"
+      label="Locali"
+      range="number_rooms"
+      [min]="1"
+      [max]="10"
+      [resetMin]="1"
+      [resetMax]="10"
+      um=""
+      [isReset]="isReset()"
+      [control]="getControl('number_rooms')"
+      (rangeChange)="onRangeChange('number_rooms', $event)"
+      (dropdownToggle)="onRangeSelectorToggle(rangeSelectorRooms, $event)"
+    ></app-range-selector>
+    <app-range-selector
+      #rangeSelectorSurface
+      title="Superficie"
+      label="Superficie"
+      range="square_metres"
+      [min]="40"
+      [max]="1500"
+      [resetMin]="40"
+      [resetMax]="1500"
+      um="m2"
+      [isReset]="isReset()"
+      [control]="getControl('square_metres')"
+      (rangeChange)="onRangeChange('square_metres', $event)"
+      (dropdownToggle)="onRangeSelectorToggle(rangeSelectorSurface, $event)"
+    ></app-range-selector>
+    <app-range-selector
+      #rangeSelectorPrice
+      title="Prezzo"
+      label="Prezzo"
+      range="price"
+      [min]="50"
+      [max]="2000000"
+      [resetMin]="50"
+      [resetMax]="2000000"
+      um="mila/€"
+      [isReset]="isReset()"
+      [control]="getControl('price')"
+      (rangeChange)="onRangeChange('price', $event)"
+      (dropdownToggle)="onRangeSelectorToggle(rangeSelectorPrice, $event)"
+    ></app-range-selector>
+    <div>
+      <app-button
+        class="w-full min-w-[125px] md:w-auto mb-2 md:mb-0"
+        size="sm"
+        type="withoutBorder"
+        [hasBorder]="false"
+        text="Altri filtri"
+        [icon]="true"
+        [iconType]="'bars-filter'"
+        iconPosition="right"
+        (click)="onOpenSideBarFilter()"
+      ></app-button>
+      @if (filterApplied()) {
+        <div
+          class="relative top-[-35px] left-[100px] w-[14px] h-[14px] rounded-full bg-secondary p-2 flex items-center justify-center text-black text-xs font-bold"
+          >{{ filterCount() }}</div
+        >
+      }
+    </div>
+    <app-button
+      class="w-full min-w-[105px] md:w-auto mb-2 md:mb-0"
+      size="sm"
+      type="withoutBorder"
+      [hasBorder]="false"
+      [icon]="true"
+      [iconType]="'reset'"
+      iconPosition="right"
+      text="Reset"
+      (click)="onReset()"
+    ></app-button>
+    <app-button
+      class="min-w-[162px]"
+      text="Salva ricerca"
+      [hasBorder]="true"
+      [size]="'md'"
+      [icon]="true"
+      [iconType]="'floppy'"
+      iconPosition="right"
+      (click)="onSaveSearch()"
+    />
+  }
+</form>

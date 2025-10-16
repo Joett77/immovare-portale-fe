@@ -1,0 +1,26 @@
+<div class="flex gap-y-4 items-start">
+  <div class="group cursor-pointer flex flex-row items-center gap-x-10">
+    @for (button of radioButtonList; track button.label) {
+      <label
+        [for]="button.value"
+        class="flex flex-row items-center gap-x-3 cursor-pointer"
+      >
+        <div>
+          <input
+            type="radio"
+            [name]="'radio-group-' + (control?.value || 'default')"
+            [id]="button.value"
+            [value]="button.value"
+            [checked]="isSelected(button.value)"
+            (change)="onRadioChange(button.value)"
+            class="peer w-0"
+          />
+          <span
+            class="inline-block h-4 w-4 rounded-full border-spacing-2 border-white bg-white ring-2 ring-black peer-checked:border-2 peer-checked:bg-black peer-focus:ring-teal-600"
+          ></span>
+        </div>
+        {{ button.label }}
+      </label>
+    }
+  </div>
+</div>

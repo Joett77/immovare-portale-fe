@@ -1,0 +1,302 @@
+<!-- src/app/public/pages/dashboard/dashboard-messages/dashboard-messages.component.html -->
+<div class="container mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-8 py-6">
+  <div class="w-full min-h-[calc(100vh-90px)] lg:min-h-[calc(100vh-16rem)]">
+    <div class="flex justify-between items-center mb-4">
+      <div class="space-y-2">
+        <div
+          class="flex items-center space-x-2 bg-[#F6F6F6] border border-[#F6F6F6] px-4 py-1 rounded-full text-xs mb-4"
+        >
+          <a
+            class="text-[#97999B] font-semibold"
+            [routerLink]="['/dashboard']"
+            >Dashboard</a
+          >
+          <span class="text-[#3C3D3E]">›</span>
+          <span class="text-black font-bold">Centro messaggi</span>
+        </div>
+        <h1 class="heading-md font-bold text-primary-dark mb-8">Centro messaggi</h1>
+      </div>
+      <div class="hidden md:block">
+        <app-button
+          type="primary"
+          size="nopadding"
+          (click)="openNewMessage()"
+        >
+          <div class="px-5 py-3 flex items-center text-xs font-bold gap-x-2">
+            <app-plus-icon class="h-3 w-3 flex"></app-plus-icon> Nuovo messaggio
+          </div>
+        </app-button>
+      </div>
+    </div>
+
+    <div class="w-full">
+      <div class="mt-2 flex border-b border-[#97999B] mb-4">
+        <button
+          class="px-6 py-3 font-bold w-1/2 lg:w-fit"
+          [ngClass]="{
+            'bg-[#ECE81A] text-black border-b-2 border-[#3C3D3E]': activeTab === 'all-messages',
+            'text-[#97999B]': activeTab !== 'all-messages',
+          }"
+          (click)="switchTab('all-messages')"
+        >
+          Tutti i messaggi ({{ pagination?.allCount }})
+        </button>
+        <button
+          class="px-6 py-3 font-bold w-1/2 lg:w-fit"
+          [ngClass]="{
+            'bg-[#ECE81A] text-black border-b-2 border-[#3C3D3E]':
+              activeTab === 'in-progress-messages',
+            'text-[#97999B]': activeTab !== 'in-progress-messages',
+          }"
+          (click)="switchTab('in-progress-messages')"
+        >
+          Messaggi in corso ({{ pagination?.activeCount }})
+        </button>
+        <button
+          class="px-6 py-3 font-bold w-1/2 lg:w-fit"
+          [ngClass]="{
+            'bg-[#ECE81A] text-black border-b-2 border-[#3C3D3E]':
+              activeTab === 'resolved-messages',
+            'text-[#97999B]': activeTab !== 'resolved-messages',
+          }"
+          (click)="switchTab('resolved-messages')"
+        >
+          Messaggi risolti ({{ pagination?.closedCount }})
+        </button>
+      </div>
+
+      <!-- Loading State -->
+      @if (isLoading && tickets.length === 0) {
+        <div class="flex justify-center items-center py-16">
+          <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-primary"></div>
+        </div>
+      }
+      @else if (hasError) {
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+          <span class="block sm:inline">{{ errorMessage }}</span>
+          <button
+            (click)="refreshTickets()"
+            class="ml-2 underline hover:no-underline"
+          >
+            Riprova
+          </button>
+        </div>
+      }
+      @else if (tickets.length > 0) {
+        <div class="space-y-4">
+          @for (ticket of tickets; track ticket.id) {
+            <div
+              class="border rounded-lg p-6 border-[#CBCCCD] flex flex-col md:flex-row justify-between md:items-center hover:shadow-md transition-shadow cursor-pointer"
+              (click)="goToTicket(ticket.id)"
+            >
+              <div *ngIf="isUnread(ticket.id)"
+                   class="circle bg-secondary w-3 h-3 relative -left-4"
+                   style="top: -4.25rem"
+              >
+              </div>
+              <div class="flex-grow">
+                <div class="flex justify-between items-start mb-4">
+                  <div class="flex items-center space-x-3 flex-wrap">
+                    <span
+                      class="px-3 py-1 rounded-sm text-xs font-bold"
+                      [ngClass]="getStatusBadgeClass(ticket)"
+                    >
+                      {{ getDisplayStatus(ticket) }}
+                    </span>
+
+                    @if (ticket.priority === 'HIGH' || ticket.priority === 'URGENT') {
+                      <span class="px-2 py-1 bg-red-100 text-red-800 rounded-sm text-xs font-bold">
+                        {{ ticketService.formatPriority(ticket.priority) }}
+                      </span>
+                    }
+
+                    <span class="text-[#84818A] text-sm">Ticket #{{ ticket.id }}</span>
+                    <span class="text-[#84818A] text-sm hidden md:block">{{
+                      formatDate(ticket.creationDate)
+                    }}</span>
+                    <span class="text-[#84818A] text-sm hidden md:block">
+                      Rif. annuncio: {{ getPropertyReference(ticket) }}
+                    </span>
+
+                    @if (hasUnreadMessages(ticket)) {
+                      <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded-sm text-xs">
+                        Nuovo messaggio
+                      </span>
+                    }
+                  </div>
+                </div>
+
+                <h3 class="heading-xs font-montserrat font-bold text-primary-dark mb-2">
+                  {{ ticket.subject }}
+                </h3>
+
+                <p class="text-[#84818A] text-sm mb-2">
+                  {{ getDescriptionPreview(ticket.description) }}
+                </p>
+
+                <div class="flex items-center space-x-4 text-xs text-[#84818A]">
+                  <span>Categoria: {{ ticketService.formatCategory(ticket.category) }}</span>
+                  @if (ticket.lastUpdate !== ticket.creationDate) {
+                    <span>Ultimo aggiornamento: {{ formatDate(ticket.lastUpdate) }}</span>
+                  }
+                  @if (ticket.threads && ticket.threads.length > 0) {
+                    <span
+                      >{{ ticket.threads.length }}
+                      {{ ticket.threads.length === 1 ? 'messaggio' : 'messaggi' }}</span
+                    >
+                  }
+                </div>
+              </div>
+
+              <div class="flex items-center space-x-2 mt-4 md:mt-0">
+                <app-button
+                  type="withoutBorder"
+                  [hasBorder]="false"
+                  (click)="goToTicket(ticket.id)"
+                  size="nopadding"
+                >
+                  <div class="px-0 py-2 text-xs font-bold flex items-center">
+                    Visualizza ticket
+                  </div>
+                </app-button>
+              </div>
+            </div>
+          }
+        </div>
+        <app-pagination
+          [totalPages]="totalPages"
+          [currentPage]="currentPage"
+          (pageChange)="onPageChange($event)"
+        ></app-pagination>
+      } @else {
+        <div class="flex flex-col items-center justify-center py-16">
+          <div class="bg-gray-100 rounded-full p-4 mb-4">
+            <svg
+              width="164"
+              height="105"
+              viewBox="0 0 164 105"
+              fill="none"
+            >
+              <path
+                d="M16.0278 40.559C16.0278 40.559 41.653 47.9379 55.979 18.6388C70.3059 -10.6603 38.9338 0.435334 25.9332 12.4684C18.2349 19.5945 1.52561 35.1326 16.0278 40.559Z"
+                fill="#F6F6F6"
+              />
+              <path
+                d="M32.58 104.682H128.384C138.813 104.682 148.649 100.422 154.709 93.1612C162.347 84.0088 168.314 68.5829 159.916 44.0731C143.807 -2.94754 87.4623 -2.28304 75.2029 13.9653C58.7939 35.713 37.7755 50.7856 24.6863 50.7856C21.2889 50.7856 17.5402 52.0489 13.8626 54.2341C-12.1469 69.6919 0.908526 104.682 32.58 104.682Z"
+                fill="#F6F6F6"
+              />
+              <path
+                d="M65.5848 33.4375V79.3948L45.4746 86.9324V33.4375H65.5848Z"
+                fill="#CBCCCD"
+              />
+              <path
+                d="M45.4751 87.4237C45.3756 87.4237 45.2771 87.3936 45.1931 87.3352C45.0598 87.243 44.9795 87.0905 44.9795 86.9281V33.4331C44.9795 33.1593 45.2013 32.9375 45.4751 32.9375H65.5854C65.8592 32.9375 66.081 33.1593 66.081 33.4331V79.3904C66.081 79.5967 65.9532 79.782 65.7597 79.8541L45.6495 87.3918C45.5929 87.4128 45.5345 87.4228 45.476 87.4228L45.4751 87.4237ZM45.9708 33.9288V86.2134L65.0906 79.0472V33.9288H45.9708Z"
+                fill="#97999B"
+              />
+              <path
+                d="M116.571 33.4375H65.585V79.3948H116.571V33.4375Z"
+                fill="#CBCCCD"
+              />
+              <path
+                d="M116.571 79.886H65.5855C65.3116 79.886 65.0898 79.6642 65.0898 79.3904V33.4331C65.0898 33.1593 65.3116 32.9375 65.5855 32.9375H116.571C116.845 32.9375 117.067 33.1593 117.067 33.4331V79.3904C117.067 79.6642 116.845 79.886 116.571 79.886ZM66.0811 78.8948H116.076V33.9279H66.0811V78.8948Z"
+                fill="#97999B"
+              />
+              <path
+                d="M116.571 79.3906V86.9283H45.4746L65.5848 79.3906H116.571Z"
+                fill="#CBCCCD"
+              />
+              <path
+                d="M116.571 87.4265H45.475C45.2358 87.4265 45.0304 87.2549 44.9875 87.0194C44.9446 86.7839 45.077 86.5511 45.3006 86.4672L65.4108 78.9295C65.4665 78.9085 65.5249 78.8984 65.5843 78.8984H116.57C116.844 78.8984 117.066 79.1202 117.066 79.3941V86.9318C117.066 87.2056 116.844 87.4274 116.57 87.4274L116.571 87.4265ZM48.2078 86.4361H116.076V79.8888H65.6756L48.2078 86.4361Z"
+                fill="#97999B"
+              />
+              <path
+                d="M45.4746 33.4352L65.5848 25.8984H136.681L116.571 33.4352H45.4746Z"
+                fill="#CBCCCD"
+              />
+              <path
+                d="M116.571 33.9265H45.475C45.2358 33.9265 45.0304 33.7549 44.9875 33.5194C44.9446 33.2839 45.077 33.0511 45.3006 32.9672L65.4099 25.4304C65.4656 25.4094 65.524 25.3984 65.5834 25.3984H136.679C136.918 25.3984 137.124 25.57 137.167 25.8055C137.210 26.041 137.077 26.2738 136.854 26.3578L116.744 33.8945C116.689 33.9155 116.63 33.9265 116.571 33.9265ZM48.2078 32.9352H116.481L133.948 26.3888H65.6746L48.2078 32.9352Z"
+                fill="#97999B"
+              />
+              <path
+                d="M116.57 86.9302L136.681 79.3925V25.8984L116.57 33.4352V86.9302Z"
+                fill="#CBCCCD"
+              />
+              <path
+                d="M116.571 87.4277C116.471 87.4277 116.373 87.3975 116.289 87.3391C116.156 87.2469 116.075 87.0945 116.075 86.932V33.438C116.075 33.2317 116.203 33.0464 116.396 32.9743L136.506 25.4375C136.658 25.3809 136.828 25.4019 136.962 25.4941C137.095 25.5863 137.175 25.7387 137.175 25.9012V79.3962C137.175 79.6024 137.047 79.7877 136.854 79.8598L116.744 87.3966C116.688 87.4176 116.629 87.4277 116.571 87.4277ZM117.066 33.7812V86.2182L136.185 79.052V26.6159L117.066 33.7821V33.7812Z"
+                fill="#97999B"
+              />
+              <path
+                d="M45.4747 33.434H116.571L109.627 15.8047H38.5312L45.4747 33.434Z"
+                fill="#CBCCCD"
+              />
+              <path
+                d="M116.57 33.9322H45.4742C45.2707 33.9322 45.0881 33.808 45.0133 33.6182L38.0698 15.9889C38.0095 15.8364 38.0287 15.6639 38.1209 15.5288C38.2131 15.3937 38.3664 15.3125 38.5298 15.3125H109.626C109.829 15.3125 110.012 15.4366 110.087 15.6265L117.03 33.2558C117.09 33.4082 117.071 33.5808 116.979 33.7158C116.887 33.8509 116.734 33.9322 116.569 33.9322H116.57ZM45.8119 32.9418H115.844L109.29 16.3029H39.2582L45.8119 32.9418Z"
+                fill="#97999B"
+              />
+              <path
+                d="M98.4163 93.3474H27.3203L45.4745 86.9297H116.57L98.4163 93.3474Z"
+                fill="#CBCCCD"
+              />
+              <path
+                d="M98.4167 93.8465H27.3208C27.0798 93.8465 26.8735 93.6731 26.8324 93.4348C26.7914 93.1966 26.9283 92.9647 27.1556 92.8844L45.3097 86.4658C45.3627 86.4466 45.4184 86.4375 45.4749 86.4375H116.571C116.812 86.4375 117.018 86.6109 117.059 86.8492C117.100 87.0874 116.963 87.3192 116.736 87.3996L98.581 93.8182C98.5281 93.8374 98.4724 93.8465 98.4158 93.8465H98.4167ZM30.207 92.8561H98.3309L113.684 87.4279H45.5598L30.207 92.8561Z"
+                fill="#97999B"
+              />
+              <path
+                d="M129.858 93.3502L116.57 86.9324V33.4375L129.858 39.8561V93.3502Z"
+                fill="#CBCCCD"
+              />
+              <path
+                d="M129.859 93.8413C129.786 93.8413 129.712 93.8248 129.644 93.792L116.355 87.3743C116.184 87.2912 116.075 87.1187 116.075 86.9279V33.433C116.075 33.2623 116.163 33.1044 116.307 33.0131C116.451 32.9227 116.632 32.9127 116.785 32.9866L130.073 39.4043C130.245 39.4874 130.354 39.6599 130.354 39.8507V93.3456C130.354 93.5163 130.266 93.6742 130.122 93.7655C130.042 93.8157 129.95 93.8413 129.859 93.8413ZM117.066 86.6176L129.364 92.557V40.162L117.066 34.2225V86.6176Z"
+                fill="#97999B"
+              />
+              <path
+                d="M36.3594 79.9949L45.4743 86.9302V33.4353L36.3594 26.5V79.9949Z"
+                fill="#CBCCCD"
+              />
+              <path
+                d="M45.4749 87.4213C45.3681 87.4213 45.2631 87.3866 45.1746 87.32L36.0596 80.3838C35.9364 80.2898 35.8643 80.1446 35.8643 79.9895V26.4955C35.8643 26.3074 35.9711 26.1349 36.1399 26.0518C36.3088 25.9679 36.5105 25.987 36.6602 26.1011L45.7752 33.0364C45.8984 33.1304 45.9705 33.2755 45.9705 33.4307V86.9256C45.9705 87.1137 45.8637 87.2862 45.6948 87.3693C45.6255 87.4039 45.5497 87.4204 45.4749 87.4204V87.4213ZM36.8546 79.7449L44.9792 85.9271V33.6762L36.8546 27.494V79.7439V79.7449Z"
+                fill="#97999B"
+              />
+              <path
+                opacity="0.3"
+                d="M45.4746 33.4375V63.3938L65.5848 75.0582H116.571V33.4375H45.4746Z"
+                fill="#97999B"
+              />
+            </svg>
+          </div>
+          <h3 class="text-lg font-bold text-gray-900 mb-1">
+            @if (activeTab === 'all-messages') {
+              Nessun messaggio
+            } @else if (activeTab === 'in-progress-messages') {
+              Nessun messaggio in corso
+            } @else {
+              Nessun messaggio risolto
+            }
+          </h3>
+          <p class="text-base text-center mb-4">
+            @if (activeTab === 'all-messages') {
+              Qui troverai i ticket inviati ad assistenza.
+            } @else if (activeTab === 'in-progress-messages') {
+              Qui troverai i messaggi ancora in elaborazione.
+            } @else {
+              Qui troverai i messaggi già risolti o chiusi.
+            }
+          </p>
+        </div>
+      }
+    </div>
+
+    <!-- Mobile new message button -->
+    <div class="md:hidden w-full fixed bottom-0 left-0 px-4 py-8 bg-[#F6F6F6]">
+      <app-button
+        type="primary"
+        class="w-full"
+        (click)="openNewMessage()"
+      >
+        <div class="px-5 py-3 flex items-center justify-center text-xs font-bold gap-x-2">
+          <app-plus-icon class="h-3 w-3 flex"></app-plus-icon> Nuovo messaggio
+        </div>
+      </app-button>
+    </div>
+  </div>
+</div>

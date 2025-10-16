@@ -1,0 +1,26 @@
+<app-hero-block
+  [title]="'Porta a casa la vendita'"
+  [subtitle]="
+    'Chi vuole vendere casa deve poterlo fare con gli strumenti giusti. Noi siamo qui per questo.'
+  "
+  [hasImage]="true"
+  [bgHero]="'assets/hero-sell.png'"
+  [theme]="'yellow'"
+>
+</app-hero-block>
+<app-how-it-works />
+<hr class="section-divider text-[#CBCCCD]" />
+<app-choose-a-plan />
+<hr class="section-divider text-[#CBCCCD]" />
+<app-savings-calculator />
+<hr class="section-divider text-[#CBCCCD]" />
+<app-faq-sell-property [faqItems]="faqSellItems" />
+<app-banner-cta
+  [title]="'Non sai quanto può valere il tuo immobile?'"
+  [description]="
+    'Inizia con la valutazione del tuo immobile e scopri quanto puoi risparmiare con immovare.'
+  "
+  [buttonLabel]="'Valuta il tuo immobile'"
+  [icon]="'hands'"
+  (buttonClick)="goToValutazioneImmobile()"
+></app-banner-cta>

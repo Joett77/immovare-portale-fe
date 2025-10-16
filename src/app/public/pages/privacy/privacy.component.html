@@ -1,0 +1,15 @@
+<div class="border-b border-[#CBCCCD]">
+  <div class="container-title">
+    <h1 class="text-5xl text-primary-dark font-bold">Informativa sulla Privacy</h1>
+  </div>
+</div>
+
+<div class="container-content">
+  <div class="accordion-content mb-3">
+    @for (content of PRIVACY_DATA.content; track $index) {
+      <p class="text-primary-dark mb-3">
+        {{ content.text }}
+      </p>
+    }
+  </div>
+</div>

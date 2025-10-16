@@ -1,0 +1,56 @@
+<div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+  <div class="bg-white rounded-sm w-full h-screen lg:h-fit lg:max-w-xl lg:mx-4 relative py-8 px-12">
+    <button
+      (click)="closeModal()"
+      class="absolute right-4 top-4 text-gray-500 hover:text-gray-700"
+    >
+      <svg
+        class="h-6 w-6"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M6 18L18 6M6 6l12 12"
+        />
+      </svg>
+    </button>
+
+    <h2 class="heading-md font-bold text-primary-dark mb-2">Crea il tuo account</h2>
+    <p class="mb-8">Inserisci il codice che hai ricevuto per email.</p>
+
+    <form
+      [formGroup]="verificationForm"
+      (ngSubmit)="onSubmit()"
+    >
+      <app-input
+        label="Inserisci codice"
+        [control]="getControl('code')"
+        type="text"
+        class="mb-4"
+      />
+
+      <p class="text-sm text-gray-600 mb-6">
+        Non hai ricevuto il codice?
+        <button
+          type="button"
+          (click)="resendCode()"
+          class="text-primary-dark underline hover:text-primary-dark/80"
+        >
+          Reinvia il codice
+        </button>
+      </p>
+
+      <app-button
+        type="primary"
+        class="w-full"
+        size="md"
+      >
+        Conferma
+      </app-button>
+    </form>
+  </div>
+</div>

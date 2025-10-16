@@ -1,0 +1,180 @@
+<!-- advertisement-card.component.html -->
+<div
+  class="property-card flex flex-col lg:flex-row border border-gray-300 cursor-pointer bg-white overflow-hidden mb-2 w-full hover:shadow-md transition-shadow duration-200"
+  [routerLink]="['/property', property.id]"
+>
+  <!-- Property image -->
+  <div class="w-full lg:w-[240px] lg:h-auto flex-shrink-0 relative overflow-hidden">
+    <img
+      *ngIf="property?.images && property.images.length > 0; else defaultImage"
+      [src]="property.images[0]?.url"
+      alt="Property Image"
+      class="w-full h-full object-cover"
+    />
+    <ng-template #defaultImage>
+      <div class="w-full h-full bg-gray-200 flex items-center justify-center">
+        <span class="text-gray-500">No image available</span>
+      </div>
+    </ng-template>
+  </div>
+
+  <!-- Property details -->
+  <div class="flex flex-col flex-grow justify-between px-6 py-6 gap-y-4 lg:gap-y-0">
+    <!-- Location and Title -->
+    <div>
+      <span class="text-[10px] lg:text-xs text-[#97999B] uppercase font-open-sans">
+        {{ property.city }} - {{ property.district }} - {{ property.region }}
+      </span>
+      <h2 class="font-bold text-primary-dark heading-xs">
+        {{ property.type }} in {{ property.address }}, {{ property.house_number }} -
+        {{ property.city }} {{ property.district }} {{ property.region }},
+        {{ property.country }}
+      </h2>
+    </div>
+
+    <!-- Property info (Rooms, Size, Bathrooms) and Price -->
+    <div class="flex items-center justify-between mt-2 text-black">
+      <div class="flex flex-wrap space-x-4 gap-y-2 text-sm">
+        <div class="flex flex-nowrap w-min-[160px] items-center gap-x-2">
+          <app-floorplan-icon class="w-4 h-4"></app-floorplan-icon>
+          <span>{{ property.number_rooms }} {{ property.type }}</span>
+        </div>
+
+        <div class="flex flex-nowrap w-min-[160px] items-center gap-x-2">
+          <app-measure-icon class="w-4 h-4"></app-measure-icon>
+          <span>{{ property.square_metres }} m²</span>
+        </div>
+
+        <div class="flex flex-nowrap w-min-[160px] items-center gap-x-2">
+          <app-bath-icon class="w-4 h-4"></app-bath-icon>
+          <span>{{ property.number_baths }} bagni</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action buttons -->
+    <div class="flex flex-wrap items-center gap-x-3 lg:gap-x-6 mb-2 lg:mb-0 lg:mt-2">
+      <!-- Favorite button with heart icon -->
+      <app-button
+        class="z-10"
+        [size]="'nopadding'"
+        type="withoutBorder"
+        [hasBorder]="false"
+        (click)="onToggleFavorite()"
+        [disabled]="isLoadingFavorite()"
+      >
+        <div
+          class="text-xs flex items-center py-2"
+          [ngClass]="{ 'text-red-500': isFavorite(), 'text-gray-600': !isFavorite() }"
+        >
+          <!-- Show loading spinner when processing favorite -->
+          <div
+            *ngIf="isLoadingFavorite()"
+            class="animate-spin rounded-full h-4 w-4 border-b-2 border-current mr-1"
+          ></div>
+
+          <!-- Show appropriate heart icon based on favorite status -->
+          <fa-icon
+            *ngIf="!isLoadingFavorite()"
+            [icon]="isFavorite() ? faHeart : faHeartRegular"
+            class="w-4 h-4 mr-1"
+            [ngClass]="{ 'text-red-500': isFavorite() }"
+          />
+        </div>
+      </app-button>
+
+      <!-- Share button with tooltip -->
+      <div class="relative">
+        <app-button
+          class="z-10"
+          [size]="'nopadding'"
+          type="withoutBorder"
+          [hasBorder]="false"
+          (click)="toggleShareTooltip($event)"
+        >
+          <div class="text-xs flex items-center py-2">
+            <app-share-icon class="w-3 h-2 mr-1"></app-share-icon>
+          </div>
+        </app-button>
+
+        <!-- Share tooltip -->
+        <div
+          *ngIf="isShareTooltipOpen"
+          class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 bg-white border border-gray-300 rounded-lg shadow-lg p-2 z-50"
+        >
+          <!-- Tooltip arrow -->
+          <div
+            class="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-300"
+          ></div>
+
+          <div class="flex items-center space-x-3">
+            <!-- Copy URL -->
+            <button
+              (click)="copyUrl($event)"
+              class="p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded transition-colors"
+              title="Copia link"
+            >
+              <fa-icon
+                [icon]="faCopy"
+                class="w-4 h-4"
+              ></fa-icon>
+            </button>
+
+            <!-- Email -->
+            <button
+              (click)="shareViaEmail($event)"
+              class="p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded transition-colors"
+              title="Condividi via email"
+            >
+              <fa-icon
+                [icon]="faEnvelope"
+                class="w-4 h-4"
+              ></fa-icon>
+            </button>
+
+            <!-- WhatsApp -->
+            <button
+              (click)="shareViaWhatsApp($event)"
+              class="p-2 text-green-500 hover:text-green-600 hover:bg-gray-100 rounded transition-colors"
+              title="Condividi su WhatsApp"
+            >
+              <fa-icon
+                [icon]="faWhatsapp"
+                class="w-4 h-4"
+              ></fa-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <app-button
+        class="z-10"
+        [size]="'nopadding'"
+        type="withoutBorder"
+        [hasBorder]="false"
+        (click)="goToPropertyWithRequestInfo($event)"
+      >
+        <div class="text-xs flex items-center py-2">
+          <app-mail-icon class="w-4 h-3 items-center flex mr-1"></app-mail-icon> Contatta
+        </div>
+      </app-button>
+
+      <app-button
+        class="z-10"
+        [size]="'nopadding'"
+        type="withoutBorder"
+        [hasBorder]="false"
+        (click)="goToPropertyWithAppointment($event)"
+      >
+        <div class="text-xs flex items-center py-2">
+          <app-calendar-icon class="w-4 h-3 items-center flex mr-1"></app-calendar-icon>
+          Appuntamento
+        </div>
+      </app-button>
+
+      <div class="w-full flex justify-end text-sm font-bold pt-4 lg:pl-0 lg:pt-0 lg:text-lg">
+        {{ property.price }} €
+      </div>
+    </div>
+  </div>
+</div>

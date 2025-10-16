@@ -1,0 +1,286 @@
+<!-- Filters -->
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-6">
+  <div class="relative">
+    <input
+      type="text"
+      [(ngModel)]="searchQuery"
+      (ngModelChange)="onFilterChange($event, 'title')"
+      placeholder="Nome piano"
+      class="w-full px-4 py-2 border border-black focus:outline-none focus:ring-2 focus:ring-yellow-300"
+    />
+    <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+      <app-search-icon class="h-5 w-5 text-gray-400"></app-search-icon>
+    </div>
+  </div>
+
+  <div>
+    <select
+      title="status"
+      [(ngModel)]="selectedStatus"
+      (ngModelChange)="onFilterChange($event, 'status')"
+      class="w-full px-4 py-2 border border-black bg-white focus:outline-none focus:ring-2 focus:ring-yellow-300"
+    >
+      <option
+        value=""
+        selected
+        >Stato piano</option
+      >
+      @for (option of statusOptions; track option) {
+        <option [value]="option.value">{{ option.label }}</option>
+      }
+    </select>
+  </div>
+
+  <div>
+    <select
+      title="duration"
+      [(ngModel)]="selectedDuration"
+      (ngModelChange)="onFilterChange($event, 'duration')"
+      class="w-full px-4 py-2 border border-black bg-white focus:outline-none focus:ring-2 focus:ring-yellow-300"
+    >
+      <option
+        value=""
+        selected
+        >Durata piano</option
+      >
+      @for (option of durationOptions; track option) {
+        <option [value]="option[0]">{{ option[1] }}</option>
+      }
+    </select>
+  </div>
+  <div></div>
+  <div></div>
+
+  <div class="flex justify-end">
+    <app-button
+      type="primary"
+      size="nopadding"
+      class="w-fit flex"
+      [routerLink]="['../create-plan']"
+    >
+      <div class="px-4 py-2 flex items-center text-xs font-bold gap-x-2 w-fit">
+        <app-plus-icon class="h-3 w-3 flex"></app-plus-icon> Nuovo piano
+      </div>
+    </app-button>
+  </div>
+</div>
+<!-- Error message -->
+<!--  @if (error) {
+    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+      <span class="block sm:inline">{{ error }}</span>
+      <button
+        class="absolute top-0 bottom-0 right-0 px-4 py-3"
+        (click)="error = null"
+      >
+        <span class="sr-only">Chiudi</span>
+      </button>
+    </div>
+  } -->
+
+<!-- Plans and services table -->
+<div>
+  <table class="min-w-full divide-y divide-[#F6F6F6]">
+    <thead class="bg-[#F6F6F6]">
+      <tr>
+        <th
+          scope="col"
+          class="px-6 py-3 text-left text-xs font-medium border-black tracking-wider"
+          >ID</th
+        >
+        <th
+          scope="col"
+          class="px-6 py-3 text-left text-xs font-medium border-black tracking-wider"
+          >Stato</th
+        >
+        <th
+          scope="col"
+          class="px-6 py-3 text-left text-xs font-medium border-black tracking-wider"
+          >Data inserimento</th
+        >
+        <th
+          scope="col"
+          class="px-6 py-3 text-left text-xs font-medium border-black tracking-wider"
+          >Nome / Tipologia</th
+        >
+        <th
+          scope="col"
+          class="px-6 py-3 text-left text-xs font-medium border-black tracking-wider"
+        >
+          Descrizione</th
+        >
+        <th
+          scope="col"
+          class="px-6 py-3 text-left text-xs font-medium border-black tracking-wider"
+          >Funzionalità incluse</th
+        >
+        <th
+          scope="col"
+          class="px-6 py-3 text-left text-xs font-medium border-black tracking-wider"
+          >Durata Piano<fa-icon
+            class="ml-2"
+            [icon]="faInfoCircle"
+          ></fa-icon
+        ></th>
+        <th
+          scope="col"
+          class="px-6 py-3 text-left text-xs font-medium border-black tracking-wider"
+        ></th>
+        <th
+          scope="col"
+          class="px-6 py-3 text-left text-xs font-medium border-black tracking-wider"
+          >Prezzo / Mese</th
+        >
+        <th
+          scope="col"
+          class="px-6 py-3 text-right text-xs font-medium border-black tracking-wider"
+          >Azioni</th
+        >
+      </tr>
+    </thead>
+    <tbody class="bg-white divide-y divide-[#F6F6F6]">
+      @if (isLoading) {
+        <tr>
+          <td
+            colspan="8"
+            class="px-6 py-4 text-center"
+          >
+            <div class="flex justify-center">
+              <svg
+                class="animate-spin h-5 w-5 border-black"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  class="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  stroke-width="4"
+                ></circle>
+                <path
+                  class="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
+              </svg>
+            </div>
+          </td>
+        </tr>
+      } @else {
+        @for (planService of filteredPlans(); track planService.id) {
+          <tr class="hover:bg-gray-50">
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{
+              planService.id
+            }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm">
+              @switch (planService.status) {
+                @case ('active') {
+                  <span
+                    class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-[#CCFCD4] text-black"
+                  >
+                    Attivo
+                  </span>
+                }
+                @case ('inactive') {
+                  <span
+                    class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-secondary-light text-black"
+                  >
+                    Disattivo
+                  </span>
+                }
+                @default {
+                  <span
+                    class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-black"
+                  >
+                    {{ planService.status }}
+                  </span>
+                }
+              }
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm border-black">{{
+              planService.createdAt | date: 'dd/MM/yyyy'
+            }}</td>
+            <td class="px-6 py-4 text-sm text-gray-900">
+              <div class="flex items-center">
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  {{ planService.title }}
+                  <br />
+                  <span class="py-1 text-yellow-800 rounded-full text-xs">
+                    {{ planService.price === 0 ? 'Gratuito' : 'A pagamento' }}
+                  </span>
+                </td>
+              </div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm border-black">
+              <span class="px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs">
+                {{ planService.description }}</span
+              >
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm border-black">
+              <span class="px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs">
+                {{ planService.serviceList?.length }}</span
+              >
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm border-black">{{
+                translateInterval(planService.interval)
+            }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm border-black"
+              ><fa-icon [icon]="faArrowRight"></fa-icon
+            ></td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm border-black">{{
+              planService.price | currency: 'EUR' : 'symbol' : '1.2-2'
+            }}</td>
+
+            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+              <app-plan-service-actions-dropdown
+                [plan]="planService"
+                [status]="planService?.status"
+                (viewPlanService)="reloadList()"
+              ></app-plan-service-actions-dropdown>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td
+              colspan="8"
+              class="px-6 py-4 text-center text-sm border-black"
+            >
+              Nessun piano o servizio trovato
+            </td>
+          </tr>
+        }
+      }
+    </tbody>
+  </table>
+</div>
+
+<!-- Pagination
+  @if (totalItems > 0 && !isLoading) {
+    <div class="flex justify-between items-center mt-6">
+      <div class="text-sm text-gray-700">
+        Mostrando <span class="font-medium">{{ (currentPage - 1) * itemsPerPage + 1 }}</span> a
+        <span class="font-medium">{{ Math.min(currentPage * itemsPerPage, totalItems) }}</span> di
+        <span class="font-medium">{{ totalItems }}</span> elementi
+      </div>
+      <div class="flex space-x-2">
+        <button
+          [disabled]="currentPage === 1"
+          [class.opacity-50]="currentPage === 1"
+          (click)="currentPage = currentPage - 1; loadPlansServices()"
+          class="px-3 py-1 border border-black rounded text-sm"
+        >
+          Precedente
+        </button>
+        <button
+          [disabled]="currentPage * itemsPerPage >= totalItems"
+          [class.opacity-50]="currentPage * itemsPerPage >= totalItems"
+          (click)="currentPage = currentPage + 1; loadPlansServices()"
+          class="px-3 py-1 border border-black rounded text-sm"
+        >
+          Successivo
+        </button>
+      </div>
+    </div>
+  }-->

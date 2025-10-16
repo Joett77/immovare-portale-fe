@@ -1,0 +1,100 @@
+<!-- leaflet-input-autocomplete.component.html -->
+<div class="flex flex-col lg:flex-row gap-2 items-center autocomplete-container">
+  <div class="w-full h-full lg:flex lg:flex-grow lg:gap-x-4 relative">
+    <app-input
+      class="min-w-[405px] w-full lg:flex-grow"
+      #searchInput
+      [label]="label"
+      [control]="searchControl"
+    ></app-input>
+
+    <!-- Hidden Google Map for Places Service -->
+    <div class="hidden">
+      <google-map
+        #mapContainer
+        height="1px"
+        width="1px"
+        [center]="center"
+        [zoom]="zoom"
+        [options]="mapOptions"
+        (mapInitialized)="onMapReady($event)"
+      >
+      </google-map>
+    </div>
+
+    @if (isLoading) {
+      <div class="absolute right-2 top-1/2 transform -translate-y-1/2">
+        <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
+      </div>
+    }
+
+    @if (results.length > 0 && !isLoading) {
+      <ul
+        class="w-full mt-2 line-style-none absolute z-100 bg-white rounded border border-gray-300 shadow-md md:mt-16 md:max-w-[670px]"
+      >
+        @if (shouldShowDrawOption()) {
+          <div class="justify-start text-left">
+            <app-button
+              size="sm"
+              class="w-[195px] justify-start text-left"
+              type="withoutBorder"
+              [hasBorder]="false"
+              [icon]="true"
+              iconPosition="left"
+              (click)="openModal()"
+            >
+              <div class="flex items-center gap-x-2 py-4 w-fit px-4">
+                <app-map-icon class="w-4 h-4" />
+                Disegna su mappa
+              </div>
+            </app-button>
+          </div>
+        }
+        <div class="w-full px-4 border border-gray-300">
+          @for (result of results; track result.place_id) {
+            <li
+              class="py-2 cursor-pointer hover:bg-gray-100 border-b border-gray-100 last:border-b-0"
+              (click)="onSubmit(result)"
+            >
+              <p [innerHTML]="highlightMatch(formatAddress(result), searchControl.value || '')"></p>
+              <!-- Show structured formatting if available -->
+              @if (result.structured_formatting?.secondary_text) {
+                <small class="text-gray-500 block mt-1">{{
+                  result.structured_formatting?.secondary_text
+                }}</small>
+              }
+            </li>
+          }
+        </div>
+      </ul>
+    }
+
+    @if (redirectToAdvertisementsPage) {
+      <div class="w-full max-h-[54px] mt-4 lg:mt-0 lg:w-auto">
+        <app-button
+          (click)="goToAdvertisementsPage()"
+          [text]="btnText"
+          [hasBorder]="true"
+          [size]="'md'"
+          [icon]="true"
+          [iconType]="'search'"
+          iconPosition="right"
+        />
+      </div>
+    }
+
+    @if (redirectToPropertyEvaluation) {
+      <div class="w-full max-h-[54px] mt-4 lg:mt-0 lg:w-auto">
+        <app-button
+          (click)="goToPropertyEvaluation()"
+          [text]="btnText"
+          [hasBorder]="true"
+          [size]="'md'"
+          [icon]="true"
+          [iconType]="'search'"
+          iconPosition="right"
+        />
+      </div>
+    }
+  </div>
+</div>

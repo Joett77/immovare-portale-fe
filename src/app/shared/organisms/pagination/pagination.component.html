@@ -1,0 +1,25 @@
+<div class="w-fit mx-auto flex container items-center gap-x-3 py-6">
+  <button
+    (click)="loadPage(currentPage - 1)"
+    [disabled]="currentPage === 1"
+    [class.disabled]="currentPage === 1">←</button>
+
+  @for (page of totalPagesArr; track page) {
+    <button
+      *ngIf="page !== '...'; else dots"
+      (click)="loadPage(page)"
+      class="pages"
+      [ngClass]="{
+        'active': currentPage === page
+      }">{{ page }}
+    </button>
+
+    <ng-template #dots>
+      <span class="text-gray bg-blue-700">...</span>
+    </ng-template>
+  }
+  <button
+    (click)="loadPage(currentPage + 1)"
+    [disabled]="currentPage === totalPages"
+    [class.disabled]="currentPage === totalPages">→</button>
+</div>

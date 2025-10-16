@@ -1,0 +1,124 @@
+<div class="container mx-auto">
+  <h1 class="heading-md font-bold text-primary-dark mb-6">
+    {{ !service() ? 'Nuovo Servizio' : 'Modifica servizio' }}
+  </h1>
+  <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+    <div class="md:col-span-8">
+      <!-- Title field -->
+      <div>
+        <app-input
+          label="Nome servizio"
+          [control]="getControl('title')"
+        ></app-input>
+      </div>
+    </div>
+    <div class="md:col-span-8">
+      <!-- Title field -->
+      <div>
+        <app-input
+          type="textarea"
+          [rows]="4"
+          class="w-full"
+          label="descrizione servizio"
+          [control]="getControl('description')"
+        ></app-input>
+      </div>
+    </div>
+    <div
+      [formGroup]="serviceForm"
+      class="md:col-span-8"
+    >
+      <select
+        title="countryCode"
+        formControlName="type"
+        class="w-full p-2 border rounded"
+      >
+        @for (type of serviceType; track type[0]) {
+          <option [value]="type[0]">
+            <span class="w-6 h-4 mr-2 inline-block"></span>
+            {{ type[1] }}
+          </option>
+        }
+      </select>
+    </div>
+    <div class="md:col-span-8">
+      <!-- Title field -->
+      <div>
+        <app-input
+          label="Prezzo*"
+          [control]="getControl('price')"
+        ></app-input>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="flex mt-8 mb-8">
+  @if (!service()) {
+    <app-button
+      type="primary"
+      [text]="'Conferma e attiva servizio'"
+      [size]="'md'"
+      [icon]="true"
+      [iconType]="'check'"
+      iconPosition="right"
+      (buttonClick)="add()"
+      [isDisabled]="!serviceForm.valid"
+    ></app-button>
+  } @else {
+    <app-button
+      type="danger"
+      [text]="'Elimina servizio'"
+      [size]="'md'"
+      [icon]="true"
+      [iconType]="'trash'"
+      iconPosition="left"
+      (buttonClick)="delete()"
+    ></app-button>
+    @if (service()?.plan.status === 'active') {
+      <app-button
+        class="ml-2"
+        type="secondary"
+        [text]="'Disattiva servizio'"
+        [size]="'md'"
+        [icon]="true"
+        [iconType]="'ban'"
+        iconPosition="left"
+        (buttonClick)="deactivatePlan()"
+      ></app-button>
+    } @else {
+      <app-button
+        class="ml-2"
+        type="secondary"
+        [text]="'Attiva servizio'"
+        [size]="'md'"
+        [icon]="true"
+        [iconType]="'check'"
+        iconPosition="left"
+        (buttonClick)="activePlan()"
+      >
+      </app-button>
+    }
+    <app-button
+      class="ml-2"
+      [isDisabled]="!serviceForm.valid || !serviceForm.touched"
+      type="primary"
+      [text]="'Modifica servizio'"
+      [size]="'md'"
+      [icon]="true"
+      [iconType]="'floppy'"
+      iconPosition="left"
+      (buttonClick)="save()"
+    ></app-button>
+  }
+</div>
+
+@if (modalType) {
+  <app-modal-small
+    [modalType]="modalType"
+    [loading]="isLoading"
+    [params]="{planName: service().plan.title}"
+    (onAction)="modalAction()"
+    (onClose)="modalClosed()">
+  </app-modal-small>
+
+}

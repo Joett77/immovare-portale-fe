@@ -1,0 +1,72 @@
+<div class="max-h-[55vh] overflow-y-auto px-4">
+  <div class="flex justify-between items-center mb-5 mt-2">
+    <h1 class="heading-md font-bold text-primary-dark">Storico piani acquistati e fatture </h1>
+    <fa-icon
+      [icon]="faClose"
+      class="w-5 h-5 mr-2 text-primary-dark cursor-pointer"
+      (click)="closeModal()"
+    ></fa-icon>
+  </div>
+
+  <table class="min-w-full divide-y divide-[#F6F6F6] table-fixed">
+    <thead>
+      <tr class="bg-[#F6F6F6] px-1 py-2">
+        <th
+          class="text-left ml-1 w-1/4 mb-2">Piano</th>
+        <th class="text-left w-1/4 mb-2">Inizio validità</th>
+        <th class="text-left w-1/4 mb-2">Fine Validità</th>
+        <th class="text-left w-1/4 mb-2">Fattura</th>
+      </tr>
+    </thead>
+    <tbody>
+      @if (this.subscriptions) {
+        @for (sub of subscriptions; track $index) {
+          @if (isLoading) {
+            <tr>
+              <td
+                colspan="4"
+                class="px-1 py-1 text-center"
+              >
+                <div class="flex justify-center">
+                  <svg
+                    class="animate-spin h-5 w-5 border-black"
+                    viewBox="0 0 24 24"
+                  ></svg>
+                </div>
+              </td>
+            </tr>
+          }
+          @for (invoice of sub.invoice; track $index) {
+            <tr class="hover:bg-gray-50">
+              <td class="px-1 py-2 whitespace-nowrap text-sm text-gray-900"
+                  [class.font-bold]="sub.status === 'active' && isAfterNow(invoice.lines.data[0].period.end * 1000)">
+                {{ invoice.planName + (sub.status === 'active' && isAfterNow(invoice.lines.data[0].period.end * 1000) ? ' (Attuale)' : '') }}
+              </td>
+              <td class="px-1 py-2 whitespace-nowrap text-sm text-gray-900"
+                  [class.font-bold]="sub.status === 'active' && isAfterNow(invoice.lines.data[0].period.end * 1000)">
+                {{ invoice.lines.data[0].period.start * 1000 | date: 'dd/MM/yyyy' }}
+              </td>
+              <td class="px-1 py-2 whitespace-nowrap text-sm text-gray-900"
+                  [class.font-bold]="sub.status === 'active' && isAfterNow(invoice.lines.data[0].period.end * 1000)">
+                {{ invoice.lines.data[0].period.end * 1000 | date: 'dd/MM/yyyy' }}
+              </td>
+              <td
+                class="flex px-1 py-2 whitespace-nowrap text-sm cursor-pointer"
+                [class.font-bold]="sub.status === 'active' && isAfterNow(invoice.lines.data[0].period.end * 1000)"
+              >
+                <app-button
+                  type="secondary"
+                  [text]="'Scarica fattura'"
+                  [icon]="true"
+                  [iconType]="'download'"
+                  iconPosition="left"
+                  [size]="'xs'"
+                  (click)="downloadPDF(invoice.invoice_pdf)"
+                ></app-button> </td
+              ></tr>
+          }
+        }
+      }
+    </tbody>
+  </table>
+</div>

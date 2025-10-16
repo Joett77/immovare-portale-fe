@@ -1,0 +1,141 @@
+<!-- /src/app/cms/components/blog-image-uploader/blog-image-uploader.component.html -->
+<div class="image-uploader">
+  <!-- Error message -->
+  @if (error) {
+    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+      <span class="block sm:inline">{{ error }}</span>
+      <button
+        class="absolute top-0 bottom-0 right-0 px-4 py-3"
+        (click)="error = null"
+      >
+        <span class="sr-only">Chiudi</span>
+      </button>
+    </div>
+  }
+
+  <!-- Image display area -->
+  @if (image) {
+    <div class="relative mb-4">
+      <img
+        [src]="image.url"
+        alt="Immagine dell'articolo"
+        class="w-full max-h-64 object-cover border rounded"
+      />
+
+      <!-- Loading overlay -->
+      @if (image.isUploading) {
+        <div
+          class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 text-white"
+        >
+          <div class="flex flex-col items-center">
+            <svg
+              class="animate-spin h-10 w-10 mb-2"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                class="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                stroke-width="4"
+              ></circle>
+              <path
+                class="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              ></path>
+            </svg>
+            <span>Caricamento in corso...</span>
+          </div>
+        </div>
+      }
+
+      <!-- Remove button -->
+      @if (!image.isUploading) {
+        <button
+          class="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
+          (click)="removeImage()"
+        >
+          <svg
+            class="h-5 w-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"
+            ></path>
+          </svg>
+        </button>
+      }
+
+      <div class="mt-2 text-sm text-gray-500">
+        {{ image.fileName }}
+      </div>
+    </div>
+  } @else {
+    <!-- Drop zone -->
+    <div
+      class="border-2 border-dashed rounded-md p-6 flex flex-col items-center justify-center min-h-[200px] cursor-pointer"
+      [class.bg-gray-50]="!dragOver"
+      [class.border-gray-300]="!dragOver"
+      [class.bg-blue-50]="dragOver"
+      [class.border-blue-300]="dragOver"
+      (dragover)="onDragOver($event)"
+      (dragleave)="onDragLeave($event)"
+      (drop)="onDrop($event)"
+      (click)="fileInput.click()"
+    >
+      <svg
+        class="h-12 w-12 text-gray-400 mb-3"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
+        />
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"
+        />
+      </svg>
+
+      <p class="text-sm text-center">
+        <span class="font-medium"> Trascina qui l'immagine in evidenza dell'articolo </span>
+        <br />
+        Formati accettati: JPG, PNG, GIF max 10 mb
+      </p>
+
+      <div class="mt-4 text-center">
+        <span class="text-sm text-gray-500 block mb-2">Oppure</span>
+        <button
+          type="button"
+          class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
+        >
+          Cercale nel computer
+        </button>
+      </div>
+    </div>
+  }
+
+  <!-- Hidden file input -->
+  <input
+    #fileInput
+    type="file"
+    accept="image/jpeg,image/png,image/gif"
+    class="hidden"
+    (change)="onFileSelected($event)"
+  />
+</div>

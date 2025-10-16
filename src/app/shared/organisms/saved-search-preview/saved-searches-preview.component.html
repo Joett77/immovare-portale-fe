@@ -1,0 +1,104 @@
+<section class="bg-white py-16 px-6 mb:px-4">
+  @if (savedSearchesList().length === 0) {
+    <app-not-logged-card
+      [sectionObj]="emptyStateSavedSearches"
+      titleCard="Ricerche salvate"
+      [imgUrl]="notLoggedSavedSearchesImg"
+    ></app-not-logged-card>
+  } @else {
+    <div class="container mx-auto text-center">
+      <div class="mb-6 flex md:flex-row md:flex-nowrap md:justify-between md:items-start">
+        <h2 class="mb-2 md:mb-8 heading-lg font-extrabold font-montserrat text-primary-dark">
+          Ricerche salvate
+        </h2>
+        @if (!isMobile) {
+          <div class="flex justify-end">
+            <app-button
+              (click)="goToSavedSearches('saved')"
+              class="w-full lg:w-fit"
+              [text]="'Vedi tutte'"
+              size="md"
+              [hasBorder]="true"
+              [icon]="true"
+            >
+            </app-button>
+          </div>
+        }
+      </div>
+      <div class="flex flex-wrap -mx-2 mb-8">
+        <swiper-container
+          slides-per-view="1"
+          pagination="true"
+          pagination-clickable="true"
+          space-between="10"
+          breakpoints='{"768": {"slidesPerView": 2}, "1024": {"slidesPerView": 3} ,"1280": {"slidesPerView": 4}}'
+          class="w-full"
+        >
+          <swiper-slide
+            *ngFor="let card of savedSearchesList(); let i = index"
+            class="pb-16"
+            (click)="goToAnnunci()"
+          >
+            <div class="min-h-[156px] flex flex-row flex-nowrap rounded">
+              <div class="w-1/6 overflow-hidden border border-[#CBCCCD]">
+                <img
+                  [src]="mapImage"
+                  alt="Immagine della ricerca"
+                  class="w-full h-full object-cover"
+                />
+              </div>
+              <div class="w-5/6 min-h-[156px]">
+                <div
+                  class="min-h-[156px] bg-white overflow-hidden cursor-pointer border border-[#CBCCCD]"
+                >
+                  <div class="p-4 gap-y-4 flex flex-col">
+                    <div class="flex justify-between items-center mb-4">
+                      @if (card.number_rooms) {
+                        <div class="flex flex-nowrap w-min-[160px] items-center gap-x-2">
+                          <app-floorplan-icon class="w-4 h-4"></app-floorplan-icon>
+                          <span class="text-sm">{{ card.number_rooms[1] }} locali</span>
+                        </div>
+                      }
+                      @if (card.square_metres) {
+                        <div class="flex flex-nowrap w-min-[160px] items-center gap-x-2">
+                          <app-measure-icon class="w-4 h-4"></app-measure-icon>
+                          <span class="text-sm">{{ card.square_metres[1] }} m²</span>
+                        </div>
+                      }
+                      @if (card.price) {
+                        <div class="flex gap-x-2 items-center">
+                          <span class="text-sm text-black"
+                            >€ {{ card.price[0] }}K - {{ card.price[1] }}K</span
+                          >
+                        </div>
+                      }
+                    </div>
+                    <div class="flex flex-col gap-y-6">
+                      <h2 class="heading-sm font-bold font-montserrat text-primary-dark text-left"
+                        >Ricerca salvata {{ i + 1 }}</h2
+                      >
+                      <p class="text-black text-sm text-left">{{ card.type }}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </swiper-slide>
+        </swiper-container>
+        @if (isMobile) {
+          <div class="w-full">
+            <app-button
+              (click)="goToSavedSearches('favorite-realestate')"
+              class="w-full lg:w-fit"
+              [text]="'Vedi tutti'"
+              size="md"
+              [hasBorder]="true"
+              [icon]="true"
+            >
+            </app-button>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</section>

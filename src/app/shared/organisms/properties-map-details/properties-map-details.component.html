@@ -1,0 +1,23 @@
+<div class="p-4 flex flex-col flex-wrap border gap-y-2 border-[#CBCCCD] md:px-8 md:py-4">
+  <div class="min-w-72 w-3/5">
+    <p class="mb-2 text-base font-montserrat font-semibold">{{street + ', ' + street_number + ', ' + city}}</p>
+    <div class="grid grid-cols-3">
+      <div class="flex items-center gap-x-2">
+        <app-floorplan-icon></app-floorplan-icon>
+        <p class="text-sm font-montserrat font-normal">{{rooms}} locali</p>
+      </div>
+      <div class="flex items-center gap-x-2">
+        <app-measure-icon></app-measure-icon>
+        <p class="text-sm font-montserrat font-normal">{{squareMeters}} m2</p>
+      </div>
+      <div class="flex items-center gap-x-2">
+        <app-bath-icon></app-bath-icon>
+        <p class="text-sm font-montserrat font-normal">{{bathrooms}} bagni</p>
+      </div>
+    </div>
+  </div>
+  <div class="min-w-72 w-2/5 flex flex-col md:items-end md:self-end">
+    <p class="text-sm font-montserrat font-normal">Prezzo di vendita</p>
+    <div class="text-xl font-montserrat font-semibold">{{sellingPrice | currency: 'EUR':'symbol':'4.2-2':'it'}}</div>
+  </div>
+</div>

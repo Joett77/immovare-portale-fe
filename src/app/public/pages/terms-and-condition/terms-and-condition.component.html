@@ -1,0 +1,169 @@
+<div class="border-b border-[#CBCCCD]">
+  <div class="container-title">
+    <h1 class="text-5xl text-primary-dark font-bold">Termini e condizioni</h1>
+  </div>
+</div>
+
+<div class="container-title"
+  ><h3 class="text-3xl text-primary-dark font-bold"
+    >Condizioni generali per i servizi in abbonamento</h3
+  >
+</div>
+
+<div class="container-content">
+  @for (section of GENERAL_CONDITIONS_FOR_SUBSCRIPTION_SERVICES; track $index) {
+    <div class="border-b border-[#CBCCCD]">
+      <button
+        (click)="toggleAccordion($index, 'subscription')"
+        class="w-full text-left flex justify-between items-center py-4 transition"
+      >
+        <span class="font-semibold text-primary-dark">{{ section.title }}</span>
+        <svg
+          class="w-5 h-5 transform transition-transform duration-200"
+          [class.rotate-180]="section.open"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M5.23 7.21a.75.75 0 011.06.02L10 11.06l3.71-3.83a.75.75 0 111.08 1.04l-4.25 4.4a.75.75 0 01-1.08 0L5.23 8.27a.75.75 0 01.02-1.06z"
+            clip-rule="evenodd"
+          />
+        </svg>
+      </button>
+      @if (section.open) {
+        <div class="accordion-content mb-3">
+          @for (accordion of section.accordion; track $index) {
+            @switch (accordion.type) {
+              @case ('text') {
+                <p class="text-primary-dark mb-3">
+                  @for (item of accordion.element; track $index) {
+                    @if (item.bold) {
+                      <span
+                        class="bold"
+                        [class]="item.class ? item.class : ''"
+                      >
+                        {{ item.text }}
+                      </span>
+                    } @else {
+                      {{ item.text }}
+
+                      @if (item.link) {
+                        <a
+                          [class]="item.class"
+                          [href]="item.link"
+                          >{{ item.linkText }}</a
+                        >
+                      }
+                    }
+                  }
+                </p>
+              }
+              @case ('list') {
+                <ul class="list-disc pl-5 mb-2">
+                  @for (item of accordion.element; track $index) {
+                    <li class="text-primary-dark text-base mb-2">
+                      {{ item.text }}
+
+                      @if (item.link) {
+                        <a
+                          [class]="item.class"
+                          [href]="item.link"
+                          >{{ item.linkText }}</a
+                        >
+                      }
+                    </li>
+                  }
+                </ul>
+              }
+            }
+          }
+        </div>
+      }
+    </div>
+  }
+</div>
+
+<hr />
+
+<div class="container-title"
+  ><h3 class="text-3xl text-primary-dark font-bold"
+    >Condizioni generali per i servizi di intermediazione immobiliare</h3
+  >
+</div>
+
+<div class="container-content">
+  @for (section of GENERAL_CONDITIONS_FOR_FOR_REAL_ESTATE_BROKERAGE_SERVICES; track $index) {
+    <div class="border-b border-[#CBCCCD]">
+      <button
+        (click)="toggleAccordion($index, 'brokerage')"
+        class="w-full text-left flex justify-between items-center py-4 transition"
+      >
+        <span class="font-semibold text-primary-dark">{{ section.title }}</span>
+        <svg
+          class="w-5 h-5 transform transition-transform duration-200"
+          [class.rotate-180]="section.open"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M5.23 7.21a.75.75 0 011.06.02L10 11.06l3.71-3.83a.75.75 0 111.08 1.04l-4.25 4.4a.75.75 0 01-1.08 0L5.23 8.27a.75.75 0 01.02-1.06z"
+            clip-rule="evenodd"
+          />
+        </svg>
+      </button>
+      @if (section.open) {
+        <div class="accordion-content mb-3">
+          @for (accordion of section.accordion; track $index) {
+            @switch (accordion.type) {
+              @case ('text') {
+                <p class="text-primary-dark mb-3">
+                  @for (item of accordion.element; track $index) {
+                    @if (item.bold) {
+                      <span
+                        class="bold"
+                        [class]="item.class ? item.class : ''"
+                      >
+                        {{ item.text }}
+                      </span>
+                    } @else {
+                      {{ item.text }}
+
+                      @if (item.link) {
+                        <a
+                          [class]="item.class"
+                          [href]="item.link"
+                          >{{ item.linkText }}</a
+                        >
+                      }
+                    }
+                  }
+                </p>
+              }
+              @case ('list') {
+                <ul class="list-disc pl-5 mb-2">
+                  @for (item of accordion.element; track $index) {
+                    <li class="text-primary-dark text-base mb-2">
+                      {{ item.text }}
+
+                      @if (item.link) {
+                        <a
+                          [class]="item.class"
+                          [href]="item.link"
+                          >{{ item.linkText }}</a
+                        >
+                      }
+                    </li>
+                  }
+                </ul>
+              }
+            }
+          }
+        </div>
+      }
+    </div>
+  }
+</div>

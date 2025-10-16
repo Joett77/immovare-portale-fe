@@ -1,0 +1,556 @@
+<div class="container mx-auto max-w-6xl py-4 lg:py-16 lg:px-0">
+  <header class="flex justify-between items-center mb-4">
+    <app-button
+      [size]="'sm'"
+      type="secondary"
+      [hasBorder]="false"
+      (click)="goVoglioAcquistare()"
+    >
+      <app-chevron-left-icon class="h-4 w-4 mr-2" />
+      <span class="text-xs lg:text-base"> Torna agli annunci </span>
+    </app-button>
+    <div class="flex items-center">
+      <span class="mr-4 text-black text-xs lg:text-base"
+        >{{ property?.visitCount || 0 }} Visite</span
+      >
+      <span class="mr-4 text-black text-xs lg:text-base hidden"
+        >{{ property?.requestCount || 0 }} Richiesta di informazioni</span
+      >
+      <span class="mr-4 text-black text-xs lg:text-base hidden"
+        >{{ property?.appointmentCount || 0 }} Appuntamento fissato</span
+      >
+
+      <app-button
+        [size]="'sm'"
+        type="secondary"
+        [hasBorder]="false"
+        (click)="addToFavorites()"
+      >
+        <!-- Change the button appearance based on favorite status -->
+        <div [ngClass]="{ 'text-red-500 font-bold': isFavorite(), 'text-black': !isFavorite() }">
+          <fa-icon
+            [icon]="isFavorite() ? faHeart : faHeartRegular"
+            [ngClass]="{ 'fill-red-500': isFavorite() }"
+            class="h-4 w-4 mr-2"
+          />
+          <span class="hidden lg:inline-block">
+            {{ isFavorite() ? 'Rimuovi dai preferiti' : 'Aggiungi ai preferiti' }}
+          </span>
+        </div>
+      </app-button>
+
+      <!-- Share button with tooltip -->
+      <div class="relative share-tooltip-container">
+        <app-button
+          [size]="'sm'"
+          type="secondary"
+          [hasBorder]="false"
+          (click)="toggleShareTooltip($event)"
+        >
+          <app-share-icon class="h-4 w-4 mr-2" />
+          <span class="hidden lg:inline-block"> Condividi </span>
+        </app-button>
+
+        <!-- Share tooltip -->
+        <div
+          *ngIf="isShareTooltipOpen"
+          class="absolute top-full right-0 mt-2 bg-white ring-1ring-opacity-5 z-50 border-black border rounded-sm"
+        >
+          <!-- Tooltip arrow -->
+          <div
+            class="absolute bottom-full right-6 w-0 h-0 border-l-4 border-r-4 border-b-4 border-transparent border-b-black"
+          ></div>
+
+          <div class="p-2">
+            <div class="flex items-center space-x-3">
+              <!-- Copy URL -->
+              <button
+                (click)="copyUrl($event)"
+                class="p-2 text-gray-600 hover:text-gray-800 hover:bg-secondary-light rounded transition-colors"
+                title="Copia link"
+              >
+                <fa-icon
+                  [icon]="faCopy"
+                  class="w-4 h-4"
+                ></fa-icon>
+              </button>
+
+              <!-- Email -->
+              <button
+                (click)="shareViaEmail($event)"
+                class="p-2 text-gray-600 hover:text-gray-800 hover:bg-secondary-light rounded transition-colors"
+                title="Condividi via email"
+              >
+                <fa-icon
+                  [icon]="faEnvelope"
+                  class="w-4 h-4"
+                ></fa-icon>
+              </button>
+
+              <!-- WhatsApp -->
+              <button
+                (click)="shareViaWhatsApp($event)"
+                class="p-2 text-green-500 hover:text-green-600 hover:bg-secondary-light rounded transition-colors"
+                title="Condividi su WhatsApp"
+              >
+                <fa-icon
+                  [icon]="faWhatsapp"
+                  class="w-4 h-4"
+                ></fa-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="flex flex-wrap lg:-mx-2 mx-0">
+    <div class="w-full lg:w-7/12 px-0 lg:px-2 mb-4">
+      <div class="h-96 overflow-hidden lg:rounded">
+        <img
+          [src]="mainImage"
+          alt="Main property image"
+          [ngClass]="{
+            'border-[1px] border-[#D9D9D9]': mainImage === '/assets/placeholder-noimage.png',
+          }"
+          class="w-full h-full object-cover cursor-pointer"
+          (click)="openModal('gallery')"
+        />
+      </div>
+    </div>
+    <div class="lg:block hidden w-5/12 px-2">
+      <div
+        class="flex flex-wrap -mx-2 h-full"
+        *ngIf="thumbnails.length > 1"
+      >
+        <div
+          class="w-1/2 px-2 mb-4"
+          *ngFor="let image of thumbnails.slice(0, 3)"
+        >
+          <div class="h-full overflow-hidden rounded">
+            <img
+              [src]="image"
+              alt="Property thumbnail"
+              class="w-full h-full object-cover cursor-pointer"
+              (click)="openModal('gallery')"
+            />
+          </div>
+        </div>
+        <div class="w-1/2 px-2 mb-4">
+          <div
+            class="relative h-full overflow-hidden rounded"
+            *ngIf="thumbnails.length > 3"
+          >
+            <img
+              [src]="thumbnails[3]"
+              alt="Property thumbnail"
+              class="w-full h-full object-cover"
+            />
+            <div
+              class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center cursor-pointer"
+              (click)="openModal('gallery')"
+            >
+              <span class="text-white text-xl font-bold">+{{ remainingPhotos }} Fotografie</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Rest of the component remains the same -->
+  <div class="mb-8 flex gap-x-4 px-4 lg:px-0">
+    <app-button
+      type="secondary"
+      (click)="openModal('map')"
+    >
+      <div class="px-1 py-1 lg:px-4 lg:py-2 flex items-center">
+        <app-map-icon class="h-3 w-3 lg:w-4 lg:h-4 mr-2 flex" />
+        <span class="text-xs lg:text-base inline-block"> Vedi sulla mappa </span>
+      </div>
+    </app-button>
+    <app-button
+      type="secondary"
+      (click)="openModal('floorplan')"
+    >
+      <div class="px-1 py-1 lg:px-4 lg:py-2 flex items-center">
+        <app-floorplan-icon class="w-3 lg:w-4 lg:h-4 mr-2 flex" />
+        <span class="text-xs lg:text-base inline-block"> Planimetria </span>
+      </div>
+    </app-button>
+  </div>
+
+  <div class="flex flex-col lg:flex-row justify-between items-start mb-8 px-4 lg:px-0">
+    <div>
+      <h1 class="heading-md font-bold text-primary-dark">
+        {{ getPropertyTitle() }}
+      </h1>
+      <p class="text-lg text-black mt-2 flex items-center gap-2">
+        <app-location-dot-icon class="h-5 w-5" />
+        {{ getFullAddress() }}
+      </p>
+    </div>
+    <div class="heading-md font-semibold text-black mt-4 lg:mt-0">{{
+      formatPrice(property?.price || 0)
+    }}</div>
+  </div>
+
+  <div class="flex flex-col lg:flex-row gap-8">
+    <div class="w-full lg:w-7/12">
+      <app-property-info [property]="property" />
+
+      <div class="mb-8">
+        <h2 class="text-lg font-bold text-black mb-4 px-4 lg:px-0">Mappa</h2>
+        <div class="relative">
+          <app-button
+            [size]="'sm'"
+            class="absolute top-4 right-4 z-50"
+            (click)="openModal('map')"
+          >
+            <app-map-icon class="mr-2" />
+
+            Apri mappa
+          </app-button>
+          <app-leaflet-map-lite
+            [latitude]="property?.latitude || 0"
+            [longitude]="property?.longitude || 0"
+            [height]="'400px'"
+          />
+        </div>
+      </div>
+
+      @if (property?.floorplan) {
+        <div class="mb-8">
+          <h2 class="text-lg font-bold text-black mb-4 px-4 lg:px-0">Planimetria</h2>
+          <div class="relative">
+            <app-button
+              [size]="'sm'"
+              class="absolute top-4 right-4"
+              (click)="openModal('floorplan')"
+            >
+              <app-floorplan-icon class="h-4 w-4 inline-block mr-1" />
+              Apri planimetria
+            </app-button>
+            <img
+              [src]="property?.floorplan?.[0]?.url || '/assets/placeholder-noimage.png'"
+              alt=""
+            />
+          </div>
+        </div>
+      }
+
+      @if (property?.virtualTourFrameUrl) {
+        <div class="mb-8">
+          <h2 class="text-lg font-bold text-black mb-4 px-4 lg:px-0">Virtual tour</h2>
+          <div class="relative">
+            <ng-container *ngIf="virtualTourUrl">
+              <iframe
+                [src]="virtualTourUrl"
+                width="100%"
+                height="100%"
+                frameborder="0"
+                allowfullscreen
+                class="w-full h-[500px]"
+              ></iframe>
+            </ng-container>
+          </div>
+        </div>
+      }
+
+      <div class="mb-8 px-4 lg:px-0">
+        <app-calculate-mortgage />
+      </div>
+
+      <!-- Added ID and class for better targeting -->
+      <div
+        #requestInfoSection
+        id="request-info-section"
+        class="mb-8 px-4 lg:px-0 request-info-section"
+      >
+        <app-request-info [propertyId]="property?.id" />
+      </div>
+    </div>
+
+    <div class="w-full lg:w-5/12 fixed lg:relative bottom-0 h-fit lg:h-auto z-10">
+      <div
+        class="bg-[#F6F6F6] p-4 lg:p-8 lg:sticky top-4 w-full lg:max-w-[390px] float-end flex lg:block gap-x-2 py-6 lg:py-6"
+      >
+        <h3
+          class="heading-xs font-bold font-montserrat tracking-wider text-primary-dark mb-8 hidden lg:block"
+        >
+          Richiedi maggiori informazioni
+        </h3>
+        <app-button
+          class="lg:hidden"
+          (click)="makePhoneCall()"
+          [type]="'secondary'"
+          [size]="'sm'"
+        >
+          <app-phone-icon class="w-[12px] h-[12px] inline-block mr-1" />
+          Chiama
+        </app-button>
+
+        <div class="lg:my-4">
+          <app-button
+            (click)="scrollToRequestInfo()"
+            [type]="'secondary'"
+            [size]="'sm'"
+          >
+            <app-mail-icon class="mr-2 text-black" />
+            <span class="hidden lg:inline-block"> Richiedi informazioni </span>
+            <span class="inline-block lg:hidden"> Info </span>
+          </app-button>
+        </div>
+        <div class="lg:mb-4">
+          <app-button
+            (click)="openSidesheet()"
+            [type]="'primary'"
+            [size]="'sm'"
+          >
+            <app-calendar-icon class="mr-2 text-black" />
+            <span class="hidden lg:inline-block"> Fissa appuntamento </span>
+            <span class="inline-block lg:hidden"> Appuntamento </span>
+          </app-button>
+        </div>
+
+        <div class="justify-between items-center mt-4 pt-4 hidden lg:flex">
+          <span class="text-black text-sm">Contatta l'agente</span>
+          <button
+            class="text-black font-semibold"
+            (click)="showAgentPhoneNumber()"
+          >
+            <app-phone-icon class="w-[12px] h-[12px] inline-block mr-1" />
+            Mostra numero
+          </button>
+        </div>
+        @if (showAgentPhone()) {
+          <div class="mt-4 p-4 rounded-sm border border-gray-200 hidden lg:block">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-sm text-gray-600 mb-1">Numero dell'agente</p>
+                <p class="text-lg font-semibold text-primary-dark">
+                  {{ property?.agentData?.phone || 'N/A' }}
+                </p>
+              </div>
+              <button
+                (click)="showAgentPhone.set(false)"
+                class="text-gray-400 hover:text-gray-600"
+              >
+                <fa-icon
+                  [icon]="faClose"
+                  class="w-4 h-4"
+                ></fa-icon>
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-sidesheet
+  [isOpen]="isSidesheetOpen"
+  [propertyId]="property?.id"
+  (closeSheet)="closeSidesheet()"
+/>
+
+<div
+  *ngIf="isModalOpen"
+  class="fixed inset-0 z-50 bg-white flex flex-col"
+>
+  <!-- Header -->
+  <div class="py-4 relative hidden lg:block">
+    <div class="container mx-auto bg-[#F6F6F6] px-6 py-4 flex justify-between items-center">
+      <div class="flex-grow">
+        <h2 class="heading-xs font-bold text-primary-dark">
+          {{ getPropertyTitle() }}
+        </h2>
+        <p class="text-sm text-black mt-1">
+          <span class="mr-3">{{ property?.type || 'Villa indipendente' }}</span>
+          <span class="mr-3">
+            <app-floorplan-icon class="h-4 w-4 inline-block mr-1" />
+            {{ property?.numberRooms || 3 }} locali</span
+          >
+          <span class="mr-3">
+            <app-measure-icon class="h-4 w-4 inline-block mr-1" />
+            {{ property?.squareMetres || 400 }} m²</span
+          >
+          <span class="mr-3">
+            <app-bath-icon class="h-4 w-4 inline-block mr-1" />
+            {{ property?.numberBaths || 4 }} bagni</span
+          >
+          <span class="font-bold text-lg ml-8">{{ formatPrice(property?.price || 0) }}</span>
+        </p>
+      </div>
+      <div class="flex items-center space-x-2">
+        <div class="mr-2">
+          <app-button
+            [type]="'secondary'"
+            [size]="'sm'"
+            (click)="scrollToRequestInfo()"
+          >
+            <app-mail-icon class="mr-2 text-black" />
+            Richiedi informazioni
+          </app-button>
+        </div>
+        <div class="mr-2">
+          <app-button
+            [type]="'primary'"
+            [size]="'sm'"
+            (click)="openSidesheet()"
+          >
+            <app-calendar-icon class="mr-2 text-black" />
+            Fissa appuntamento
+          </app-button>
+        </div>
+      </div>
+    </div>
+    <button
+      (click)="closeModal()"
+      class="text-gray-500 hover:text-gray-700 absolute top-8 right-8"
+    >
+      <fa-icon
+        [icon]="faClose"
+        class="w-6 h-6 mr-2 text-lg"
+      ></fa-icon>
+    </button>
+  </div>
+
+  <div class="py-4 relative lg:hidden flex justify-between px-4">
+    <h2 class="heading-xs font-bold text-primary-dark">Gallery </h2>
+    <button
+      (click)="closeModal()"
+      class="text-gray-500 hover:text-gray-700"
+    >
+      <fa-icon
+        [icon]="faClose"
+        class="w-6 h-6 mr-2 text-lg"
+      ></fa-icon>
+    </button>
+  </div>
+
+  <div class="container mx-auto pt-4 border-b-[2px] border-[#CBCCCD]">
+    <div class="overflow-x-auto">
+      <div class="flex text-sm lg:text-xl text-[#97999B] min-w-min">
+        <button
+          (click)="setActiveTab('gallery')"
+          [ngClass]="{
+            'border-b-2 border-black -mb-[2px] bg-secondary  text-black font-bold':
+              activeTab === 'gallery',
+          }"
+          class="py-4 px-6 w-50 whitespace-nowrap flex items-center"
+        >
+          <fa-icon
+            [icon]="faCamera"
+            [ngClass]="{
+              'text-black': activeTab === 'gallery',
+              'text-[#97999B]': activeTab !== 'gallery',
+            }"
+            class="w-5 h-5 mr-2 items-center flex"
+          ></fa-icon>
+
+          Foto ({{ thumbnails.length }})
+        </button>
+        <button
+          (click)="setActiveTab('floorplan')"
+          [ngClass]="{
+            'border-b-2 border-black -mb-[2px] bg-secondary  text-black font-bold':
+              activeTab === 'floorplan',
+          }"
+          class="py-4 px-6 w-50 whitespace-nowrap flex items-center"
+        >
+          <app-floorplan-icon
+            class="mr-2 inline-block h-5 w-5"
+            [ngClass]="{
+              'fill-black': activeTab === 'floorplan',
+              'fill-[#97999B]': activeTab !== 'floorplan',
+            }"
+          ></app-floorplan-icon>
+          Planimetria
+        </button>
+        <button
+          (click)="setActiveTab('map')"
+          [ngClass]="{
+            'border-b-2 border-black -mb-[2px] bg-secondary  text-black font-bold':
+              activeTab === 'map',
+          }"
+          class="py-4 px-6 w-50 whitespace-nowrap flex items-center"
+        >
+          <app-map-icon
+            class="mr-2 inline-block"
+            [ngClass]="{
+              'fill-black': activeTab === 'map',
+              'fill-[#97999B]': activeTab !== 'map',
+            }"
+          ></app-map-icon>
+          Mappa
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex-grow overflow-hidden">
+    <div class="h-full overflow-auto">
+      <div
+        [ngSwitch]="activeTab"
+        class="container mx-auto px-4 py-6 h-full"
+      >
+        <div
+          *ngSwitchCase="'gallery'"
+          class="h-full flex items-center justify-center"
+        >
+          <div class="w-full max-w-4xl mx-auto h-full flex items-center">
+            <swiper-container
+              id="property-gallery"
+              slides-per-view="1"
+              pagination="true"
+              pagination-clickable="true"
+              navigation="true"
+              space-between="10"
+              class="w-full h-full"
+            >
+              <swiper-slide
+                *ngFor="let image of thumbnails"
+                class="flex items-center justify-center"
+              >
+                <img
+                  [src]="image"
+                  alt="Property image"
+                  class="w-full max-h-full object-contain"
+                />
+              </swiper-slide>
+            </swiper-container>
+          </div>
+        </div>
+        <div
+          *ngSwitchCase="'floorplan'"
+          class="text-center h-full flex flex-col justify-center"
+        >
+          @if (property?.floorplan) {
+            <img
+              [src]="property?.floorplan?.[0]?.url || '/assets/placeholder-noimage.png'"
+              alt="Floorplan"
+              class="max-w-full max-h-full object-contain mx-auto"
+            />
+          }
+        </div>
+        <div
+          *ngSwitchCase="'map'"
+          class="h-full flex items-center justify-center w-full"
+        >
+          <app-leaflet-map-lite
+            *ngIf="activeTab === 'map'"
+            [latitude]="property?.latitude || 0"
+            [longitude]="property?.longitude || 0"
+            [height]="'100%'"
+            [width]="'100%'"
+            [mapId]="'modal-map-' + (property?.id || 'default')"
+            class="w-full h-full"
+          ></app-leaflet-map-lite>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

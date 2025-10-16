@@ -1,0 +1,43 @@
+<div>
+  <app-hero-block
+    class="relative z-20"
+    [title]="'Vuoi comprare casa ?'"
+    [subtitle]="'Apri pure tutte le finestre che vuoi.'"
+    [hasImage]="true"
+    [isPropertyBuy]="true"
+    [bgHero]="'assets/hero-sell.png'"
+    [theme]="'yellow'"
+    [selectOptions]="selectOptions"
+    [getControl]="propertyTypeControl"
+  ></app-hero-block>
+
+  <div class="w-full border-b border-[#CBCCCD]"></div>
+  @if (authenticated) {
+    <div class="w-full border-b border-[#CBCCCD]"></div>
+    <app-saved-search-preview></app-saved-search-preview>
+    <div class="w-full border-b border-[#CBCCCD]"></div>
+    <app-already-immovated-block
+      [isHpBlock]="false"
+      [linkToPage]="goToFavoritePropertiesPage.bind(this)"
+    />
+  } @else {
+    <app-not-logged-card
+      [sectionObj]="notLoggedSavedSearches"
+      titleCard="Ricerche salvate"
+      [imgUrl]="notLoggedSavedSearchesImg"
+    ></app-not-logged-card>
+    <div class="w-full border-b border-[#CBCCCD]"></div>
+    <app-not-logged-card
+      [sectionObj]="notLoggedFavoriteProperties"
+      [titleCard]="'Immobili preferiti'"
+      [imgUrl]="notLoggedFavoritePropertiesImg"
+    ></app-not-logged-card>
+  }
+  <div class="w-full border-b border-[#CBCCCD]"></div>
+  <app-faq-sell-property [faqItems]="faqBuyItems"></app-faq-sell-property>
+  <div class="w-full border-b border-[#CBCCCD]"></div>
+  <app-stepper-block />
+  @if (isDrawMapModalOpen()) {
+    <app-draw-map-modal (onClose)="closeDrawMapModal()"></app-draw-map-modal>
+  }
+</div>

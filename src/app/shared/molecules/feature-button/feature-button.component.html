@@ -1,0 +1,17 @@
+<button
+  class="w-full mb-4 p-3 rounded-md border border-[#CBCCCD] hover:bg-gray-900 flex items-center justify-between"
+  [ngClass]="{
+    'border-black bg-secondary': selectedItemId() === id() || isSelected(),
+    'border-[#CBCCCD]': selectedItemId() !== id() || !isSelected(),
+  }"
+  (click)="selectItem(id())"
+>
+  <span class="flex items-center">
+    @if(icon()){
+      <div class="h-6 w-6 mr-3">
+        <ng-container *ngComponentOutlet="icon() || null"></ng-container>
+      </div>
+    }
+    {{ label() }}
+  </span>
+</button>

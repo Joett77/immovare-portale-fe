@@ -1,0 +1,20 @@
+<a [routerLink]="['/blog', post.id]">
+  <div class="border-[#CBCCCD] border-[1px] rounded overflow-hidden mb-4 mt-[40px] lg:mb-8">
+    <img
+      class="w-full h-64 object-cover object-bottom"
+      [src]="post.image?.url || ''"
+      alt="{{ post.title }}"
+    />
+    <div class="p-6">
+      <div class="flex space-x-2 mb-4">
+        @for (tag of post.tags; track tag) {
+          <app-tag-label [text]="tag" />
+        }
+      </div>
+      <h2 class="heading-lg font-bold text-primary-dark mb-3">{{ post.title }}</h2>
+      <!-- Use the excerpt instead of raw content -->
+      <p class="text-black text-sm line-clamp-3">{{ excerpt }}</p>
+      <p class="text-black text-xs mt-4">Di {{ post.author }}</p>
+    </div>
+  </div>
+</a>

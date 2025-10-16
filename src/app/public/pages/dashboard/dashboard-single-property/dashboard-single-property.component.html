@@ -1,0 +1,331 @@
+<!-- dashboard-single-property.component.html - Updated with responsive design and fixed mobile button -->
+<div class="container mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-8 py-6">
+  <div class="w-full min-h-[calc(100vh-90px)] lg:min-h-[calc(100vh-16rem)] pb-20 md:pb-0">
+    <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-4 gap-4">
+      <div class="space-y-2 flex-1">
+        <div
+          class="flex items-center space-x-2 bg-[#F6F6F6] border border-[#F6F6F6] px-4 py-1 rounded-full text-xs mb-4 w-fit"
+        >
+          <a
+            class="text-[#97999B] font-semibold"
+            [routerLink]="['/dashboard']"
+            >Dashboard</a
+          >
+          <span class="text-[#3C3D3E]">›</span>
+          <span class="text-black font-bold">Impostazioni annuncio</span>
+        </div>
+        <h1 class="heading-md font-bold text-primary-dark mb-4 md:mb-8">Impostazioni annuncio</h1>
+      </div>
+      <div class="hidden md:block flex-shrink-0">
+        <app-button
+          type="primary"
+          size="md"
+          [routerLink]="['/property-publishing', property()?.id]"
+        >
+          Visualizza annuncio
+        </app-button>
+      </div>
+    </div>
+
+    <div class="mb-4 md:mb-6">
+      <h2 class="font-bold text-sm md:text-base mb-2">Id Annuncio</h2>
+      <p class="text-sm md:text-base break-all">{{ property()?.id }}</p>
+    </div>
+
+    <div class="mb-4 md:mb-6">
+      @if (property()) {
+        <h2 class="font-bold text-sm md:text-base mb-2">Stato Annuncio</h2>
+
+        @switch (property().adStatus) {
+          @case ('active') {
+            <p
+              class="px-3 md:px-5 py-1 inline-flex text-sm md:text-md leading-5 font-semibold rounded-full bg-[#CCFCD4] text-black"
+            >
+              Attivo
+            </p>
+          }
+          @case ('inactive') {
+            <p
+              class="px-3 md:px-5 py-1 inline-flex text-sm md:text-md leading-5 font-semibold rounded-full bg-secondary-light text-black"
+            >
+              Disattivo
+            </p>
+          }
+          @default {
+            <p
+              class="px-3 md:px-5 py-1 inline-flex text-sm md:text-md leading-5 font-semibold rounded-full bg-gray-100 text-black"
+            >
+              {{
+                property().adStatus === 'published'
+                  ? 'Pubblicato'
+                  : property().adStatus === 'draft'
+                    ? 'Bozza'
+                    : property().adStatus === 'sent'
+                      ? 'In attesa'
+                      : property().adStatus
+              }}
+            </p>
+          }
+        }
+      }
+    </div>
+
+    <div class="mb-4 md:mb-6">
+      <div class="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-2">
+        <h2 class="text-lg font-bold">Abbonamenti attivi</h2>
+        @if (subscription().length > 0 || payment().length > 0) {
+          <app-button
+            type="secondary"
+            size="sm"
+            (click)="modaInvoiceOpen.set(true)"
+            >Storico fatture</app-button
+          >
+        }
+      </div>
+
+      <div class="mt-4">
+        @for (item of subscription(); track $index) {
+          @let planData = item.stripeProductId | planData | async;
+          <div class="bg-gray-50 p-4 md:p-6 mb-6 md:mb-8 rounded-sm bg-[#F6F6F6]">
+            <div class="space-y-4 md:space-y-0 md:grid md:grid-cols-6 md:gap-4 mb-4">
+              <div class="md:col-span-2">
+                <h4 class="font-semibold text-sm md:text-base mb-2">Piano attuale</h4>
+                <div>
+                  <p class="text-base md:text-lg font-bold">{{ planData?.plan.title }}</p>
+                  @if (item.cancel_at_period_end) {
+                    <p class="text-xs md:text-sm text-red-500 mt-1"
+                      >⚠ Non più disponibile al rinnovo. Cancellata il
+                      {{ item.canceled_at | date: 'dd/MM/YYYY' }}</p
+                    >
+                  }
+                </div>
+              </div>
+              <div class="md:col-span-1">
+                <h4 class="font-semibold text-sm md:text-base mb-2">Attivazione</h4>
+                <p class="text-sm md:text-base">{{ item.createdAt | date: 'dd/MM/YYYY' }}</p>
+              </div>
+              <div class="md:col-span-1">
+                <h4 class="font-semibold text-sm md:text-base mb-2">Data fine/Rinnovo</h4>
+                <p class="text-sm md:text-base">{{ item.endDate | date: 'dd/MM/YYYY' }}</p>
+              </div>
+              <div class="md:col-span-1">
+                <h4 class="font-semibold text-sm md:text-base mb-2">Fattura</h4>
+                <a
+                  target="_blank"
+                  href="{{ item.stripeHostedInvoice }}"
+                  class="inline-block"
+                >
+                  <button
+                    class="flex items-center px-3 py-1 border border-black rounded-sm text-xs hover:bg-black hover:text-white transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0"
+                  >
+                    <fa-icon
+                      [icon]="faDownload"
+                      class="mr-1"
+                    ></fa-icon>
+                    Scarica
+                  </button>
+                </a>
+              </div>
+              <div class="md:col-span-1">
+                <div class="space-y-2">
+                  <button
+                    class="w-full md:w-auto flex items-center justify-center px-3 py-1 border border-black rounded-sm text-xs bg-[#ece81a] hover:bg-[#d4d117] transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0"
+                    (click)="openUpgradePlan(item.stripeProductId)"
+                  >
+                    <span class="whitespace-nowrap">Upgrade piano</span>
+                    <fa-icon
+                      [icon]="faArrowRight"
+                      class="ml-2"
+                    ></fa-icon>
+                  </button>
+                  @if (!planData?.plan.free) {
+                    @if (item.cancel_at_period_end && planData?.plan.status === 'active') {
+                      <button
+                        class="w-full md:w-auto flex items-center justify-center px-3 py-1 border border-black rounded-sm text-xs hover:bg-black hover:text-white transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0"
+                        (click)="activeSubscription(item.stripeSubscriptionId!)"
+                      >
+                        <span class="whitespace-nowrap">Riattiva Rinnovo</span>
+                      </button>
+                    } @else if (!item.cancel_at_period_end && planData?.plan.status === 'active') {
+                      <button
+                        class="w-full md:w-auto flex items-center justify-center px-3 py-1 border border-black rounded-sm text-xs hover:bg-black hover:text-white transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0"
+                        (click)="cancelSubscription(item.stripeSubscriptionId!)"
+                      >
+                        <span class="whitespace-nowrap">Annulla Rinnovo</span>
+                      </button>
+                    }
+                  }
+                </div>
+              </div>
+            </div>
+          </div>
+        } @empty {
+          <div class="bg-gray-50 p-4 md:p-6 mb-6 md:mb-8 rounded-sm bg-[#F6F6F6]">
+            <h4 class="font-semibold text-sm md:text-base">Nessun abbonamento attivo</h4>
+          </div>
+        }
+      </div>
+
+      <h2 class="text-lg font-bold mb-4 md:mb-6">Servizi singoli acquistati</h2>
+      <div class="bg-gray-50 p-4 md:p-6 rounded-sm bg-[#F6F6F6] mb-6 md:mb-8">
+        @if (payment().length > 0) {
+          <!-- Mobile view - stacked layout -->
+          <div class="md:hidden space-y-4">
+            @for (item of payment(); track $index) {
+              @let serviceData = item.stripeProductId | planData | async;
+              <div class="border-b border-gray-200 pb-4 last:border-b-0 last:pb-0">
+                <div class="space-y-2">
+                  <div>
+                    <h4 class="font-semibold text-sm">Nome servizio</h4>
+                    <p class="text-sm">{{ serviceData?.plan.title }}</p>
+                  </div>
+                  <div>
+                    <h4 class="font-semibold text-sm">Acquistato il</h4>
+                    <p class="text-sm">{{ item.createdAt | date }}</p>
+                  </div>
+                  <div>
+                    <h4 class="font-semibold text-sm">Fattura</h4>
+                    <a
+                      target="_blank"
+                      href="{{ item.stripeHostedInvoice }}"
+                      class="inline-block"
+                    >
+                      <button
+                        class="flex items-center px-3 py-1 border border-black rounded-sm text-xs hover:bg-black hover:text-white transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 whitespace-nowrap"
+                      >
+                        <fa-icon
+                          [icon]="faDownload"
+                          class="mr-1"
+                        ></fa-icon>
+                        Scarica
+                      </button>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+
+          <!-- Desktop view - table layout -->
+          <div class="hidden md:block">
+            <div class="grid grid-cols-5 gap-4 mb-4">
+              <div class="col-span-3">
+                <h4 class="font-semibold">Nome servizio</h4>
+              </div>
+              <div class="col-span-1">
+                <h4 class="font-semibold">Acquistato il</h4>
+              </div>
+              <div class="col-span-1">
+                <h4 class="font-semibold">Fattura</h4>
+              </div>
+            </div>
+            @for (item of payment(); track $index) {
+              @let serviceData = item.stripeProductId | planData | async;
+              <div class="grid grid-cols-5 gap-4 items-center py-2">
+                <div class="col-span-3">
+                  <p>{{ serviceData?.plan.title }}</p>
+                </div>
+                <div class="col-span-1">
+                  <p>{{ item.createdAt | date }}</p>
+                </div>
+                <div class="col-span-1">
+                  <a
+                    target="_blank"
+                    href="{{ item.stripeHostedInvoice }}"
+                    class="inline-block"
+                  >
+                    <button
+                      class="flex items-center px-3 py-1 border border-black rounded-sm text-xs hover:bg-black hover:text-white transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 whitespace-nowrap"
+                    >
+                      <fa-icon
+                        [icon]="faDownload"
+                        class="mr-1"
+                      ></fa-icon>
+                      Scarica
+                    </button>
+                  </a>
+                </div>
+              </div>
+            }
+          </div>
+        } @else {
+          <h4 class="font-semibold text-sm md:text-base">Nessun servizio acquistato</h4>
+        }
+      </div>
+
+      <div class="mb-6 md:mb-8">
+        <app-payment-method-manager
+          (paymentMethodAdded)="onPaymentMethodAdded($event)"
+          (paymentMethodDeleted)="onPaymentMethodDeleted($event)"
+          (defaultPaymentMethodChanged)="onDefaultPaymentMethodChanged($event)"
+        ></app-payment-method-manager>
+      </div>
+
+      <h2 class="text-lg font-bold mb-4 md:mb-6">Assistenza</h2>
+
+      <div
+        class="bg-gray-50 p-4 md:p-6 rounded-sm bg-[#ece81a] flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4"
+      >
+        <div class="flex items-start sm:items-center">
+          <div class="mr-2 flex-shrink-0 mt-1 sm:mt-0">
+            <app-user-headset-icon class="w-5 h-5 text-primary-dark" />
+          </div>
+          <p class="text-sm md:text-base"
+            >Il nostro personale è a tua disposizione per ogni tipo esigenza.</p
+          >
+        </div>
+        <button
+          (click)="goToTicket()"
+          class="border border-black text-xs px-3 py-2 h-10 rounded hover:bg-black hover:text-white transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 flex-shrink-0 w-full sm:w-auto whitespace-nowrap"
+        >
+          Richiedi assistenza
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Fixed bottom button for mobile -->
+<div
+  class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-sm border-t border-gray-200 p-4 md:hidden z-40 shadow-lg"
+>
+  <app-button
+    type="primary"
+    size="md"
+    [routerLink]="['/property-publishing', property()?.id]"
+    class="w-full shadow-md"
+  >
+    Visualizza annuncio
+  </app-button>
+</div>
+
+@if (isLoading()) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-50">
+    <app-spinner></app-spinner>
+  </div>
+}
+
+@if (modaPlanOpen()) {
+  <app-modal-full-screen
+    class="modal-full-screen"
+    [open]="modaPlanOpen()"
+  >
+    <app-choose-a-plan
+      [propertyId]="property()?.id"
+      [listService]="true"
+      [activePlan]="activePlan()"
+      (onModalClose)="modaPlanOpen.set(false)"
+    ></app-choose-a-plan>
+  </app-modal-full-screen>
+}
+
+@if (modaInvoiceOpen()) {
+  <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-lg w-full max-w-4xl max-h-[90vh] overflow-auto shadow-2xl">
+      <app-subscription-invoice
+        [apartmentId]="property()?.id"
+        [onClose]="closeModalInvoice"
+      ></app-subscription-invoice>
+    </div>
+  </div>
+}

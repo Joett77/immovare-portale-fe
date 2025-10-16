@@ -1,0 +1,42 @@
+<div class="markdown-editor border border-gray-300 rounded-md overflow-hidden">
+  <!-- Toolbar -->
+  <div class="flex flex-wrap items-center p-2 bg-gray-100 border-b border-gray-300">
+    @for (option of toolbarOptions; track option.action) {
+      <button
+        class="p-2 hover:bg-gray-200 rounded mx-1"
+        [title]="option.title"
+        (click)="onToolbarAction(option.action)"
+        [disabled]="isPreviewMode"
+      >
+        <span class="icon-{{ option.icon }}"></span>
+      </button>
+    }
+    <div class="ml-auto">
+      <button
+        class="px-3 py-1 rounded border border-gray-300 bg-white hover:bg-gray-50"
+        (click)="togglePreview()"
+      >
+        {{ isPreviewMode ? 'Editor' : 'Anteprima' }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Editor and Preview areas -->
+  <div class="relative">
+    <!-- Editor area - always in DOM but hidden during preview -->
+    <div
+      #editorContainer
+      class="min-h-[400px] p-4 outline-none whitespace-pre-wrap"
+      contenteditable="true"
+      (input)="onContentChanged()"
+      [style.display]="isPreviewMode ? 'none' : 'block'"
+    ></div>
+
+    <!-- Preview area - only visible during preview mode -->
+    @if (isPreviewMode) {
+      <div class="min-h-[400px] p-4 prose max-w-none">
+        <div [innerHTML]="renderMarkdown(rawContent)"></div>
+      </div>
+    }
+  </div>
+</div>
