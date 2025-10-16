@@ -1,0 +1,20 @@
+{
+    "/auth": {
+        "target": "http://192.168.200.56:30444",
+        "secure": false,
+        "logLevel": "debug",
+        "pathRewrite": {
+            "^/auth/*": "/auth/"
+        },
+        "changeOrigin": true
+    },
+    "/api/": {
+        "target": "http://192.168.200.56:30100",
+        "secure": false,
+        "logLevel": "debug",
+        "pathRewrite": {
+            "^/api/*": "/"
+        },
+        "changeOrigin": true
+    }
+}
